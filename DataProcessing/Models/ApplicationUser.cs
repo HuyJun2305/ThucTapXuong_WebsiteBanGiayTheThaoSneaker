@@ -14,6 +14,6 @@ namespace DataProcessing.Models
         public string PhoneNumber { get; set; }
         public bool Status { get; set; }
         public string CIC { get; set; }
-        public string ImageURL { get; set; }
+        public string? ImageURL { get; set; }
     }
 }
