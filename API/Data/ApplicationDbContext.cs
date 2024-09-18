@@ -35,6 +35,7 @@ namespace API.Data
         public DbSet<Size> Sizes { get; set; }
         public DbSet<Sole> Soles { get; set; }
         public DbSet<Voucher> Vouchers { get; set; }
+        public DbSet<SelectedImage> SelectedImages { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

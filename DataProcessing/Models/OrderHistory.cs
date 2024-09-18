@@ -14,7 +14,6 @@ namespace DataProcessing.Models
         public string Note { get; set; }
 
         public Guid UpdatedByUserId { get; set; }
-        public virtual ApplicationUser User { get; set; }
         public Guid OrderId { get; set; }
         public virtual Order Order { get; set; }
     }
