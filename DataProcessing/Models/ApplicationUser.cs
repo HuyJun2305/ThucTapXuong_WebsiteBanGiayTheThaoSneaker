@@ -11,11 +11,9 @@ namespace DataProcessing.Models
     {
         public string Name { get; set; }
         public DateTime Birthday { get; set; }
-        public string Address { get; set; }
         public string PhoneNumber { get; set; }
         public bool Status { get; set; }
         public string CIC { get; set; }
         public string ImageURL { get; set; }
-
     }
 }

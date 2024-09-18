@@ -19,7 +19,7 @@ namespace DataProcessing.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public bool Status { get; set; }
-
-        public virtual Account_Voucher Account_Voucher { get; set; }
+        
+        public Guid? AccountId { get; set; }
     }
 }

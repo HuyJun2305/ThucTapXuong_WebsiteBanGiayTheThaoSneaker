@@ -11,5 +11,7 @@ namespace DataProcessing.Models
         public Guid Id { get; set; }
         public string URL { get; set; }
 
+        public Guid ColorId { get; set; }
+        public virtual Color Color { get; set; }
     }
 }

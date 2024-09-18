@@ -11,7 +11,11 @@ namespace DataProcessing.Models
         public Guid Id { get; set; }
         public decimal TotalPrice { get; set; }
         public int Quanlity { get; set; }
+
+        public Guid CartId { get; set; }
         public virtual Cart Cart { get; set; }
-        public ICollection<ProductDetail> ProductDetails { get; set; }
+
+        public Guid ProductDetailId { get; set; }
+        public ProductDetail ProductDetail { get; set; }
     }
 }

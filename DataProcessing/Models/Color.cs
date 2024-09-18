@@ -12,7 +12,6 @@ namespace DataProcessing.Models
         public string Name { get; set; }
         public string HEX { get; set; }
         public bool Status { get; set; }
-        public virtual ProductDetail ProductDetail { get; set; }
 
     }
 }

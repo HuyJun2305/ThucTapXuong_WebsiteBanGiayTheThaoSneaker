@@ -13,9 +13,12 @@ namespace DataProcessing.Models
         public int Stock { get; set; }
         public float Weight { get; set; }
 
-        public virtual ICollection<Product> Products { get; set; }
-        public virtual ICollection<Color> Colors { get; set; }
-        public virtual ICollection<Size> Sizes { get; set; }
+        public Guid ProductId { get; set; }
+        public virtual Product Product { get; set; }
+        public Guid ColorId { get; set; }
+        public virtual Color Color { get; set; }
+        public Guid SizeId { get; set; }
+        public virtual Size Size { get; set; }
 
     }
 }
