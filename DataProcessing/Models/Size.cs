@@ -11,6 +11,5 @@ namespace DataProcessing.Models
         public Guid Id { get; set; }
         public int Value { get; set; }
         public bool Status { get; set; }
-        public virtual ProductDetail ProductDetail { get; set; }
     }
 }

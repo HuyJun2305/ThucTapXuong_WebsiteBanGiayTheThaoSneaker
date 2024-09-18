@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace DataProcessing.Models
 {
-    public class Account_Voucher
-    {
+	public class SelectedImage
+	{
         public Guid Id { get; set; }
-        public virtual ICollection<Voucher> Voucher { get; set; }
-        public virtual ICollection<ApplicationUser> Account { get; set; }
+		public string URL { get; set; }
 
+        public Guid ProductId { get; set; }
+        public Guid ColorId { get; set; }
+        public virtual Color Color { get; set; }
     }
 }

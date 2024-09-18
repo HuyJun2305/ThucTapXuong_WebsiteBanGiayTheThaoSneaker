@@ -12,10 +12,16 @@ namespace DataProcessing.Models
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public virtual Category Category { get; set; }
-        public virtual Sole Sole { get; set; }
-        public virtual Brand Brand { get; set; }
-        public virtual Material Material { get; set; }
 
+        public Guid? PromotionId { get; set; }
+        public virtual Promotion Promotion { get; set; }
+        public Guid CategoryId { get; set; }
+        public virtual Category Category { get; set; }
+        public Guid SoleId { get; set; }
+        public virtual Sole Sole { get; set; }
+        public Guid BrandId { get; set; }
+        public virtual Brand Brand { get; set; }
+        public Guid MaterialId { get; set; }
+        public virtual Material Material { get; set; }
     }
 }
