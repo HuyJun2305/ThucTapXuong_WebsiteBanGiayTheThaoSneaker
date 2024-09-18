@@ -15,6 +15,7 @@ namespace DataProcessing.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
                 : base(options)
         {
+            ///text
         }
     }
 }
