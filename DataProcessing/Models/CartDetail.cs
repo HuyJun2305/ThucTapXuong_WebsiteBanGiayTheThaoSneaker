@@ -14,7 +14,7 @@ namespace DataProcessing.Models
 
         public Guid CartId { get; set; }
         public virtual Cart Cart { get; set; }
-
+        //test
         public Guid ProductDetailId { get; set; }
         public ProductDetail ProductDetail { get; set; }
     }
