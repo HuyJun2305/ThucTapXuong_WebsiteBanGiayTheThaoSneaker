@@ -18,5 +18,7 @@ namespace DataProcessing.Models
 
 		public Guid AccountId { get; set; }
 		public virtual ApplicationUser User { get; set; }
+
+		////12345645
     }
 }

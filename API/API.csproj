@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DataProcessing\DataProcessing.csproj" />
+    <ProjectReference Include="..\DataProcessing\Data.csproj" />
   </ItemGroup>
 
 </Project>
