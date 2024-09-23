@@ -9,8 +9,7 @@ namespace DataProcessing.Models
     public class Cart
     {
         public Guid Id { get; set; }
-        public decimal TotalPrice { get; set; }
-
+        public decimal? TotalPrice { get; set; }
         public Guid AccountId {  get; set; }
         public virtual ApplicationUser Account {  get; set; }
     }
