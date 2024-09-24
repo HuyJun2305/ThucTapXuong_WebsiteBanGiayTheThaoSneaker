@@ -78,6 +78,8 @@ namespace API.Data
                 );
             var adminUserId = Guid.NewGuid();
             var CustomerUserId = Guid.NewGuid();
+            var EmployeeUserId = Guid.NewGuid();
+            var GuestUserId = Guid.NewGuid();
 
             var passwordHasher = new PasswordHasher<ApplicationUser>();
 
@@ -113,6 +115,7 @@ namespace API.Data
                     PasswordHash = passwordHasher.HashPassword(null, "UserPass123!"),
                     SecurityStamp = Guid.NewGuid().ToString()
                 }
+          
             );
 
             modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
