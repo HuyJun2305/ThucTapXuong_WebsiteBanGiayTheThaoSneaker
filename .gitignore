@@ -365,3 +365,4 @@ FodyWeavers.xsd
 # Bỏ qua appsettings.json và các biến thể của nó
 appsettings.json
 appsettings.*.json
+/API/appsettings.json
