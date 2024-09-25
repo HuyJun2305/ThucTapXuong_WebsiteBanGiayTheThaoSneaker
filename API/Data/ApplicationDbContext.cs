@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using API.DTO;
 
 namespace API.Data
 {
@@ -131,6 +132,8 @@ namespace API.Data
                 }
             );
         }
+
+        public DbSet<API.DTO.ProductDetailDTO>? ProductDetailDTO { get; set; }
 
     }
 }

@@ -24,6 +24,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IProductRepo, ProductRepos>();
+builder.Services.AddScoped<IProductDetailRepos, ProductDetailRepos>();
 builder.Services.AddScoped<ISoleRepo, SoleRepos>();
 builder.Services.AddScoped<ICategoryRepo, CategoryRepos>();
 builder.Services.AddScoped<IBrandRepo, BrandRepos>();

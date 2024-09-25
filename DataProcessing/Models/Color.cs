@@ -15,7 +15,8 @@ namespace DataProcessing.Models
         public string Name { get; set; }
         [Required(ErrorMessage = "HEX color is required")]
         [RegularExpression("^#([A-Fa-f0-9]{6})$", ErrorMessage = "Invalid HEX color format")]
-        [Display(Name = "HEX Color")] public string HEX { get; set; }
+        [Display(Name = "HEX Color")]
+        public string HEX { get; set; }
         public bool Status { get; set; }
 
     }
