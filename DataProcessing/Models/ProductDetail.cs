@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,8 +10,11 @@ namespace DataProcessing.Models
     public class ProductDetail
     {
         public Guid Id { get; set; }
+        [Required]
         public decimal Price { get; set; }
+        [Required]
         public int Stock { get; set; }
+        [Required]
         public float Weight { get; set; }
 
         public Guid ProductId { get; set; }

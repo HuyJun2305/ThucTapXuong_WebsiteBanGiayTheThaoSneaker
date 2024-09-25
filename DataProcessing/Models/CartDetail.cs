@@ -9,8 +9,8 @@ namespace DataProcessing.Models
     public class CartDetail
     {
         public Guid Id { get; set; }
-        public decimal TotalPrice { get; set; }
-        public int Quanlity { get; set; }
+        public decimal? TotalPrice { get; set; }
+        public int? Quanlity { get; set; }
 
         public Guid CartId { get; set; }
         public virtual Cart Cart { get; set; }
