@@ -9,7 +9,6 @@ namespace API.DTO
 		public string Description { get; set; }
 
 
-		public Guid? PromotionId { get; set; }
 		public Guid CategoryId { get; set; }
 		public Guid SoleId { get; set; }
 		public Guid BrandId { get; set; }

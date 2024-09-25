@@ -65,7 +65,6 @@ namespace API.Controllers
 					Name = productDTO.Name,
 					Description = productDTO.Description,
 
-					PromotionId = productDTO.PromotionId,
 					SoleId = productDTO.SoleId,
 					CategoryId = productDTO.CategoryId,
 					BrandId = productDTO.BrandId,
@@ -96,7 +95,6 @@ namespace API.Controllers
 					Name = productDTO.Name,
 					Description = productDTO.Description,
 
-					PromotionId = productDTO.PromotionId,
 					SoleId = productDTO.SoleId,
 					CategoryId = productDTO.CategoryId,
 					BrandId = productDTO.BrandId,
