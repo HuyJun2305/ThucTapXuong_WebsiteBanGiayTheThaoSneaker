@@ -4,6 +4,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240925030019_thanh01")]
+    partial class thanh01
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,71 +108,41 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-<<<<<<< Updated upstream
-                            Id = new Guid("f50b8a77-8522-4214-b001-4ecbe447c9cc"),
-                            AccessFailedCount = 0,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CIC = "002204004364",
-                            ConcurrencyStamp = "6a295e22-5a64-4b86-a126-63c164eef857",
-=======
                             Id = new Guid("ba518611-9bda-4e01-b5e4-d3e6ecbcc06b"),
                             AccessFailedCount = 0,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CIC = "002204004364",
                             ConcurrencyStamp = "5a7514f3-f780-4dee-b0ee-644a06466d9c",
->>>>>>> Stashed changes
                             Email = "admin@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             Name = "Admin User",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-<<<<<<< Updated upstream
-                            PasswordHash = "AQAAAAEAACcQAAAAEH9fjlSHtDIUmgO4Zyhc6fzMjQmh0IVQDKPNddZw+8hPidg1AChjDO3vdGiJyN6/jQ==",
-                            PhoneNumber = "0123456789",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "2be8a5c5-5f75-4554-bb5b-7b6cbde2253e",
-=======
                             PasswordHash = "AQAAAAEAACcQAAAAEHqYbIiGi60nu2139W7OSfgYj7oHYntpSVqHnq79Ko33jBYzbq83QIZf+uz4YIsB7Q==",
                             PhoneNumber = "0123456789",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "88f0a4bc-3448-42e8-92c7-93b94abe9747",
->>>>>>> Stashed changes
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
                         new
                         {
-<<<<<<< Updated upstream
-                            Id = new Guid("6477eefa-a270-4d57-b874-39555e1386a9"),
-                            AccessFailedCount = 0,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CIC = "004204004364",
-                            ConcurrencyStamp = "3664f6fa-0b85-4fc8-90fd-5611d57f6749",
-=======
                             Id = new Guid("708749d0-ddc4-41f9-8350-3544df3a58b8"),
                             AccessFailedCount = 0,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CIC = "004204004364",
                             ConcurrencyStamp = "3c7d50c4-1275-4a7b-94ac-2021e694effa",
->>>>>>> Stashed changes
                             Email = "user@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             Name = "Regular User",
                             NormalizedEmail = "USER@EXAMPLE.COM",
                             NormalizedUserName = "USER@EXAMPLE.COM",
-<<<<<<< Updated upstream
-                            PasswordHash = "AQAAAAEAACcQAAAAEMHLNTpRX7wRCFnFb2dfSry1ZgdrTX7Qp8sQFvE45LWrKf+Lp2DOQCGxaSff9iGlVQ==",
-                            PhoneNumber = "0987654321",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "d047a0ef-df7c-4589-b031-5f074bc577f3",
-=======
                             PasswordHash = "AQAAAAEAACcQAAAAEDJcd+lKysqrJz6qFtt1aMTVbzYNhJXLAZNOVQR5T2ZvHh2EctPGtp5rAMcEtObXzg==",
                             PhoneNumber = "0987654321",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "2b4e0b1e-5808-44ab-b8d9-2e38d991767d",
->>>>>>> Stashed changes
                             TwoFactorEnabled = false,
                             UserName = "user@example.com"
                         });
@@ -223,9 +195,8 @@ namespace API.Migrations
                     b.Property<Guid>("CartId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ProductDetailId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("ProductDetailId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("Quanlity")
                         .HasColumnType("int");
@@ -367,9 +338,8 @@ namespace API.Migrations
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ProductDetailId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("ProductDetailId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -462,8 +432,9 @@ namespace API.Migrations
 
             modelBuilder.Entity("DataProcessing.Models.ProductDetail", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ColorId")
                         .HasColumnType("uniqueidentifier");
@@ -660,49 +631,29 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-<<<<<<< Updated upstream
-                            Id = new Guid("a74b398d-264e-4c5f-b80e-93c2d040a07e"),
-                            ConcurrencyStamp = "722539ab-83df-4c2b-a038-3ce6c2929699",
-=======
                             Id = new Guid("af050f2c-0fc7-48f0-b12e-55a5c342dac5"),
                             ConcurrencyStamp = "253d1687-40bf-4e39-87c7-c8badecb3260",
->>>>>>> Stashed changes
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-<<<<<<< Updated upstream
-                            Id = new Guid("7b906cdf-71c9-4b12-9aeb-1bb93034dc2b"),
-                            ConcurrencyStamp = "5ca9b665-a98c-4dbd-94e0-230da1b66b8f",
-=======
                             Id = new Guid("a2891426-b7c3-487e-8244-a2ad4189347c"),
                             ConcurrencyStamp = "b230a7ef-b6d5-4885-a55f-8c667dd76d53",
->>>>>>> Stashed changes
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-<<<<<<< Updated upstream
-                            Id = new Guid("0ce8e2cf-6560-46b8-8b4d-5517ceea581e"),
-                            ConcurrencyStamp = "f0600865-1f89-4782-9060-0fbf1b0fb394",
-=======
                             Id = new Guid("cd31d980-38f6-49b8-97c4-d954bbcb39be"),
                             ConcurrencyStamp = "54ab7021-ee7c-4c1b-8c46-b61956dc89c3",
->>>>>>> Stashed changes
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-<<<<<<< Updated upstream
-                            Id = new Guid("e1f79f03-f844-49e8-bc96-444ef11f5866"),
-                            ConcurrencyStamp = "c5943a85-b76b-4756-80fa-4969ebd7a127",
-=======
                             Id = new Guid("882770c5-c11b-4705-9842-3f60ac54e9a7"),
                             ConcurrencyStamp = "983a4dd3-c233-40f6-beaf-243f05da70fc",
->>>>>>> Stashed changes
                             Name = "Guest",
                             NormalizedName = "GUEST"
                         });
@@ -794,15 +745,6 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-<<<<<<< Updated upstream
-                            UserId = new Guid("f50b8a77-8522-4214-b001-4ecbe447c9cc"),
-                            RoleId = new Guid("a74b398d-264e-4c5f-b80e-93c2d040a07e")
-                        },
-                        new
-                        {
-                            UserId = new Guid("6477eefa-a270-4d57-b874-39555e1386a9"),
-                            RoleId = new Guid("7b906cdf-71c9-4b12-9aeb-1bb93034dc2b")
-=======
                             UserId = new Guid("ba518611-9bda-4e01-b5e4-d3e6ecbcc06b"),
                             RoleId = new Guid("af050f2c-0fc7-48f0-b12e-55a5c342dac5")
                         },
@@ -810,7 +752,6 @@ namespace API.Migrations
                         {
                             UserId = new Guid("708749d0-ddc4-41f9-8350-3544df3a58b8"),
                             RoleId = new Guid("a2891426-b7c3-487e-8244-a2ad4189347c")
->>>>>>> Stashed changes
                         });
                 });
 

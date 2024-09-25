@@ -6,16 +6,18 @@ namespace API.Repositories
 {
     public class VoucherRepos : IVoucherRepos
     {
-        private readonly ApplicationDbContext _context;
-
-        public VoucherRepos(ApplicationDbContext context)
+        public Task create(Voucher voucher)
         {
+<<<<<<< Updated upstream
             _context = context;
         }
 
         public async Task create(Voucher v)
         {
            
+=======
+            throw new NotImplementedException();
+>>>>>>> Stashed changes
         }
 
         public Task delete(int id)
