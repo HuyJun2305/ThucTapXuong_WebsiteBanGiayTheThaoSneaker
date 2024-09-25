@@ -360,6 +360,8 @@ MigrationBackup/
 .ionide/
 
 # Fody - auto-generated XML schema
-FodyWeavers.xsd
-API/appsettings.json
-API/appsettings.json
+FodyWeavers.xsd 
+
+# Bỏ qua appsettings.json và các biến thể của nó
+appsettings.json
+appsettings.*.json

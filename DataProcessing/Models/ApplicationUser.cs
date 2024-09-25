@@ -24,10 +24,10 @@ namespace DataProcessing.Models
         [RegularExpression(@"^(03|05|07|08|09)\d{8}$", ErrorMessage = "Invalid Vietnamese phone number format")]
         [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
-
         [Required(ErrorMessage = "CIC is required")]
         [RegularExpression(@"^\d{12}$", ErrorMessage = "CIC must be exactly 12 digits")]
         [Display(Name = "CIC")]
+
         public string CIC { get; set; }
         public string? ImageURL { get; set; }
     }

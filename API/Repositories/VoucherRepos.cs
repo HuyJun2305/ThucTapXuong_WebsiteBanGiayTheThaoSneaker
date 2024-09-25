@@ -15,14 +15,7 @@ namespace API.Repositories
 
         public async Task create(Voucher v)
         {
-            try
-            {
-               await _context.Accounts.AddAsync(v);
-                await _context.SaveChangesAsync();
-            }catch (Exception ex)
-            {
-
-            }
+           
         }
 
         public Task delete(int id)
