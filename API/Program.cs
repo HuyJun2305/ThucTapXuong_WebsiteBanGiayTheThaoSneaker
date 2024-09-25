@@ -28,10 +28,7 @@ builder.Services.AddScoped<ISoleRepo, SoleRepos>();
 builder.Services.AddScoped<ICategoryRepo, CategoryRepos>();
 builder.Services.AddScoped<IBrandRepo, BrandRepos>();
 builder.Services.AddScoped<IMaterialRepo, MaterialRepos>();
-builder.Services.AddScoped<IColorRepo, ColorRepo>();
-builder.Services.AddScoped<ISizeRepo, SizeRepo>();
-builder.Services.AddScoped<IImageRepo, ImageRepo>();
-builder.Services.AddScoped<ISelectedImageRepo, SelectedImageRepo>();
+builder.Services.AddScoped<IPromotionRepos, PromotionRepos>();
 
 builder.Services.AddAuthentication(options =>
 {
