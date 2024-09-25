@@ -51,4 +51,7 @@ namespace API.IRepositories
 		Task Delete(Guid id);
 		Task SaveChanges();
 	}
+
+	
+
 }
