@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-    public partial class Init : Migration
+    public partial class Project : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,10 +28,9 @@ namespace API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Birthday = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false),
                     CIC = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -58,7 +57,7 @@ namespace API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -71,7 +70,7 @@ namespace API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -84,7 +83,7 @@ namespace API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     HEX = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -98,7 +97,7 @@ namespace API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -111,7 +110,7 @@ namespace API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     DiscountValue = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -154,11 +153,11 @@ namespace API.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     VoucherCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     VoucherType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DiscountAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     DiscountPercent = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Condittion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Condittion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Stock = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -281,7 +280,7 @@ namespace API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     AccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -315,12 +314,32 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SelectedImages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    URL = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ColorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SelectedImages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SelectedImages_Colors_ColorId",
+                        column: x => x.ColorId,
+                        principalTable: "Colors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PromotionId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -452,8 +471,8 @@ namespace API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Quanlity = table.Column<int>(type: "int", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Quanlity = table.Column<int>(type: "int", nullable: true),
                     CartId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductDetailId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
@@ -506,30 +525,30 @@ namespace API.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("192bc43d-5fb8-4f3c-b33e-10337908a8d1"), "6c3d09fc-45cc-41d3-bfbd-20387d2959e7", "Admin", "ADMIN" },
-                    { new Guid("41e5a304-bd8c-4a75-b633-c043a3d2ee86"), "2cd18742-99ef-40cb-8c2c-aef1cd8068b0", "Guest", "GUEST" },
-                    { new Guid("9c011398-9c45-4279-bb11-a8f9b8bb0d9e"), "4432f5f5-9779-4f4c-9b88-527c6741d0a2", "Customer", "CUSTOMER" },
-                    { new Guid("fe561fe0-1f6f-4b68-b4d4-0dd86494be29"), "c1649986-ca39-4778-959a-f5a63b2f4138", "Employee", "EMPLOYEE" }
+                    { new Guid("1493d0ea-dcf6-4728-9ec6-0e5980731e6e"), "e2c63468-1c51-4fb2-adf0-b7fb6817ff75", "Admin", "ADMIN" },
+                    { new Guid("1497ead0-d056-41d8-9fe3-d2c823bd134b"), "e1b269e1-0d0b-445e-a171-c78fad515322", "Customer", "CUSTOMER" },
+                    { new Guid("b57230de-8dc9-4f1c-b551-29ab6ae577e2"), "d0315cf8-58ab-43b8-9a0a-fb5dc1bda3b5", "Guest", "GUEST" },
+                    { new Guid("f437e50c-e547-4152-9ff5-ca2117f570e8"), "55b1c492-2c3e-474d-8b5c-3f6b2027e8e7", "Employee", "EMPLOYEE" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "Birthday", "CIC", "ConcurrencyStamp", "Email", "EmailConfirmed", "ImageURL", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Status", "TwoFactorEnabled", "UserName" },
+                columns: new[] { "Id", "AccessFailedCount", "Birthday", "CIC", "ConcurrencyStamp", "Email", "EmailConfirmed", "ImageURL", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("2587653e-7156-44c3-9920-4cd2eae94dda"), 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "002204004364", "44d582db-78ed-4deb-8e20-f03fbb57ca1c", "admin@example.com", false, null, true, null, "Admin User", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAEAACcQAAAAECOgIy+WDRw5XkyeVPyP8MAUd4QrwpDCfxdausyuDB/i4Xp/xAh7vKPHDNyFgm96NA==", "0123456789", false, "b931e775-ffd4-4888-933f-6f6f08f34c9e", false, false, "admin@example.com" },
-                    { new Guid("8ff46efd-aa15-41cb-8881-03793e9f2b98"), 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "004204004364", "7807a9f3-59d5-48d4-a2f0-9ef815e0ce1b", "user@example.com", false, null, true, null, "Regular User", "USER@EXAMPLE.COM", "USER@EXAMPLE.COM", "AQAAAAEAACcQAAAAEHf9eZwVOxkFU/azUmww6ePi/ghl2/KE+Peo2SXDcz1kXsKbPHFhObtS+SSWgbn/pw==", "0987654321", false, "41350454-7fa7-4832-9865-19801dd9848f", false, false, "user@example.com" }
+                    { new Guid("833d2f44-cdc0-4ad9-9b67-ebff9b1ab122"), 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "004204004364", "66452ab4-351f-4a9f-8029-5bdf8c853f3d", "user@example.com", false, null, true, null, "Regular User", "USER@EXAMPLE.COM", "USER@EXAMPLE.COM", "AQAAAAEAACcQAAAAEEQcjB4KJWMrFeUiAHLnijRLd8m5ptBGsTSX1B+oFHKh0ECdQHCAT6Od+8Zqrs3NyA==", "0987654321", false, "23f5433a-3413-4ea2-bb6d-3090f520b57a", false, "user@example.com" },
+                    { new Guid("f6ac835b-82be-4df8-807f-e82c48609e78"), 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "002204004364", "e69dc719-ea28-42ff-adb5-27fd9622826f", "admin@example.com", false, null, true, null, "Admin User", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAEAACcQAAAAEJNMYJg9Dha69eN2F9Rffw4B7BTwGGkcjcvJJxGcvCzIIPahCkfxuEyG2iSXlTSreQ==", "0123456789", false, "9e7c3106-80b9-4e51-84d8-7b99a414261d", false, "admin@example.com" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { new Guid("192bc43d-5fb8-4f3c-b33e-10337908a8d1"), new Guid("2587653e-7156-44c3-9920-4cd2eae94dda") });
+                values: new object[] { new Guid("1497ead0-d056-41d8-9fe3-d2c823bd134b"), new Guid("833d2f44-cdc0-4ad9-9b67-ebff9b1ab122") });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { new Guid("9c011398-9c45-4279-bb11-a8f9b8bb0d9e"), new Guid("8ff46efd-aa15-41cb-8881-03793e9f2b98") });
+                values: new object[] { new Guid("1493d0ea-dcf6-4728-9ec6-0e5980731e6e"), new Guid("f6ac835b-82be-4df8-807f-e82c48609e78") });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -654,6 +673,11 @@ namespace API.Migrations
                 name: "IX_Products_SoleId",
                 table: "Products",
                 column: "SoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SelectedImages_ColorId",
+                table: "SelectedImages",
+                column: "ColorId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -684,6 +708,9 @@ namespace API.Migrations
 
             migrationBuilder.DropTable(
                 name: "OrderHistories");
+
+            migrationBuilder.DropTable(
+                name: "SelectedImages");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

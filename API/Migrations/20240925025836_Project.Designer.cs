@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240923082727_updateData")]
-    partial class updateData
+    [Migration("20240925025836_Project")]
+    partial class Project
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -62,7 +62,8 @@ namespace API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -107,41 +108,41 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c3215e38-5541-4abb-b6a0-d0a857e0884d"),
+                            Id = new Guid("f6ac835b-82be-4df8-807f-e82c48609e78"),
                             AccessFailedCount = 0,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CIC = "002204004364",
-                            ConcurrencyStamp = "a04e8679-e100-441b-a9c4-831a3517c85b",
+                            ConcurrencyStamp = "e69dc719-ea28-42ff-adb5-27fd9622826f",
                             Email = "admin@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             Name = "Admin User",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGa2mInbtObK/BJErWiLTF07KjRxMYeY6f6frPfFtVF9+Bz6o5RMF4Qt2RDChYFvUQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJNMYJg9Dha69eN2F9Rffw4B7BTwGGkcjcvJJxGcvCzIIPahCkfxuEyG2iSXlTSreQ==",
                             PhoneNumber = "0123456789",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3655bfde-a7ed-4d15-bfb3-fa9e991bd6a2",
+                            SecurityStamp = "9e7c3106-80b9-4e51-84d8-7b99a414261d",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
                         new
                         {
-                            Id = new Guid("467aafd8-aac6-4eeb-b289-d277447b054f"),
+                            Id = new Guid("833d2f44-cdc0-4ad9-9b67-ebff9b1ab122"),
                             AccessFailedCount = 0,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CIC = "004204004364",
-                            ConcurrencyStamp = "b0b43d71-63c8-404f-a4f3-c3351c3a168f",
+                            ConcurrencyStamp = "66452ab4-351f-4a9f-8029-5bdf8c853f3d",
                             Email = "user@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             Name = "Regular User",
                             NormalizedEmail = "USER@EXAMPLE.COM",
                             NormalizedUserName = "USER@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEO5PcC1tBj2c7nR4sEh/58qz3Xf5jxAp0+6OL5lEaXYSXCTPvksZf2a0nLUYDFDdgQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEQcjB4KJWMrFeUiAHLnijRLd8m5ptBGsTSX1B+oFHKh0ECdQHCAT6Od+8Zqrs3NyA==",
                             PhoneNumber = "0987654321",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9da0375e-434b-4f78-8a5a-4b934bfb7b2f",
+                            SecurityStamp = "23f5433a-3413-4ea2-bb6d-3090f520b57a",
                             TwoFactorEnabled = false,
                             UserName = "user@example.com"
                         });
@@ -155,7 +156,8 @@ namespace API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
@@ -174,7 +176,7 @@ namespace API.Migrations
                     b.Property<Guid>("AccountId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("TotalPrice")
+                    b.Property<decimal?>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -196,10 +198,10 @@ namespace API.Migrations
                     b.Property<Guid>("ProductDetailId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Quanlity")
+                    b.Property<int?>("Quanlity")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("TotalPrice")
+                    b.Property<decimal?>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -219,7 +221,8 @@ namespace API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
@@ -241,7 +244,8 @@ namespace API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
@@ -279,7 +283,8 @@ namespace API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
@@ -394,7 +399,6 @@ namespace API.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("MaterialId")
@@ -402,7 +406,8 @@ namespace API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<Guid?>("PromotionId")
                         .HasColumnType("uniqueidentifier");
@@ -474,7 +479,8 @@ namespace API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -556,7 +562,8 @@ namespace API.Migrations
 
                     b.Property<string>("Condittion")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<decimal>("DiscountAmount")
                         .HasColumnType("decimal(18,2)");
@@ -569,7 +576,8 @@ namespace API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -623,29 +631,29 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("cc936a3b-6647-485b-a499-9f9f9a383ac0"),
-                            ConcurrencyStamp = "27901760-48f9-488a-9f46-57e4e2b65912",
+                            Id = new Guid("1493d0ea-dcf6-4728-9ec6-0e5980731e6e"),
+                            ConcurrencyStamp = "e2c63468-1c51-4fb2-adf0-b7fb6817ff75",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("efef958e-254f-4e59-8af8-5ec19ec78b0d"),
-                            ConcurrencyStamp = "87fbb196-4230-4a70-8f13-b3189cfa620e",
+                            Id = new Guid("1497ead0-d056-41d8-9fe3-d2c823bd134b"),
+                            ConcurrencyStamp = "e1b269e1-0d0b-445e-a171-c78fad515322",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = new Guid("a3af1476-e907-4ca3-9650-1bd5e4b2a6b1"),
-                            ConcurrencyStamp = "abc90dfe-1b39-43b9-9175-e2b8f04edea2",
+                            Id = new Guid("f437e50c-e547-4152-9ff5-ca2117f570e8"),
+                            ConcurrencyStamp = "55b1c492-2c3e-474d-8b5c-3f6b2027e8e7",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = new Guid("3d027692-dbda-44f9-b68a-cb923bd8ea3e"),
-                            ConcurrencyStamp = "f1db4628-e0b8-4e27-9f87-12b00fc5d46a",
+                            Id = new Guid("b57230de-8dc9-4f1c-b551-29ab6ae577e2"),
+                            ConcurrencyStamp = "d0315cf8-58ab-43b8-9a0a-fb5dc1bda3b5",
                             Name = "Guest",
                             NormalizedName = "GUEST"
                         });
@@ -737,13 +745,13 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("c3215e38-5541-4abb-b6a0-d0a857e0884d"),
-                            RoleId = new Guid("cc936a3b-6647-485b-a499-9f9f9a383ac0")
+                            UserId = new Guid("f6ac835b-82be-4df8-807f-e82c48609e78"),
+                            RoleId = new Guid("1493d0ea-dcf6-4728-9ec6-0e5980731e6e")
                         },
                         new
                         {
-                            UserId = new Guid("467aafd8-aac6-4eeb-b289-d277447b054f"),
-                            RoleId = new Guid("efef958e-254f-4e59-8af8-5ec19ec78b0d")
+                            UserId = new Guid("833d2f44-cdc0-4ad9-9b67-ebff9b1ab122"),
+                            RoleId = new Guid("1497ead0-d056-41d8-9fe3-d2c823bd134b")
                         });
                 });
 
