@@ -30,6 +30,10 @@ builder.Services.AddScoped<IBrandRepo, BrandRepos>();
 builder.Services.AddScoped<IMaterialRepo, MaterialRepos>();
 builder.Services.AddScoped<IPromotionRepos, PromotionRepos>();
 
+builder.Services.AddScoped<IColorRepo, ColorRepo>();
+builder.Services.AddScoped<IImageRepo, ImageRepo>();
+builder.Services.AddScoped<ISelectedImageRepo, SelectedImageRepo>();
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

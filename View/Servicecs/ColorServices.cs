@@ -24,19 +24,21 @@ namespace View.Servicecs
 
 		public async Task<IEnumerable<Color>?> GetAllColors()
 		{
-			var colors = JsonConvert.DeserializeObject<IEnumerable<Color>>("https://localhost:7170/api/Colors");
+			var response = await _httpClient.GetStringAsync("https://localhost:7170/api/Colors");
+			var colors = JsonConvert.DeserializeObject<IEnumerable<Color>>(response);
 			return colors;
 		}
 
 		public async Task<Color?> GetColorById(Guid id)
 		{
-			var color = JsonConvert.DeserializeObject<Color>($"https://localhost:7170/api/Colors/{id}");
+			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/Colors/{id}");
+			var color = JsonConvert.DeserializeObject<Color>(response);
 			return color;
 		}
 
 		public async Task Update(Color color)
 		{
-			await _httpClient.PutAsJsonAsync("https://localhost:7170/api/Colors", color);
+			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/Colors/{color.Id}", color);
 		}
 	}
 
@@ -60,19 +62,21 @@ namespace View.Servicecs
 
 		public async Task<IEnumerable<Image>?> GetAllImages()
 		{
-			var Images = JsonConvert.DeserializeObject<IEnumerable<Image>>("https://localhost:7170/api/Images");
+			var response = await _httpClient.GetStringAsync("https://localhost:7170/api/Images");
+			var Images = JsonConvert.DeserializeObject<IEnumerable<Image>>(response);
 			return Images;
 		}
 
 		public async Task<Image?> GetImageById(Guid id)
 		{
-			var Image = JsonConvert.DeserializeObject<Image>($"https://localhost:7170/api/Images/{id}");
+			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/Images/{id}");
+			var Image = JsonConvert.DeserializeObject<Image>(response);
 			return Image;
 		}
 
 		public async Task Update(Image Image)
 		{
-			await _httpClient.PutAsJsonAsync("https://localhost:7170/api/Images", Image);
+			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/Images/{Image.Id}", Image);
 		}
 	}
 
@@ -96,19 +100,21 @@ namespace View.Servicecs
 
 		public async Task<IEnumerable<SelectedImage>?> GetAllSelectedImages()
 		{
-			var SelectedImages = JsonConvert.DeserializeObject<IEnumerable<SelectedImage>>("https://localhost:7170/api/SelectedImages");
+			var response = await _httpClient.GetStringAsync("https://localhost:7170/api/SelectedImages");
+			var SelectedImages = JsonConvert.DeserializeObject<IEnumerable<SelectedImage>>(response);
 			return SelectedImages;
 		}
 
 		public async Task<SelectedImage?> GetSelectedImageById(Guid id)
 		{
-			var SelectedImage = JsonConvert.DeserializeObject<SelectedImage>($"https://localhost:7170/api/SelectedImages/{id}");
+			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/SelectedImages/{id}");
+			var SelectedImage = JsonConvert.DeserializeObject<SelectedImage>(response);
 			return SelectedImage;
 		}
 
 		public async Task Update(SelectedImage SelectedImage)
 		{
-			await _httpClient.PutAsJsonAsync("https://localhost:7170/api/SelectedImages", SelectedImage);
+			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/SelectedImages/{SelectedImage.Id}", SelectedImage);
 		}
 	}
 }
