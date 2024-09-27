@@ -19,5 +19,13 @@ namespace View.Data
         public DbSet<DataProcessing.Models.Product>? Product { get; set; }
 
         public DbSet<DataProcessing.Models.Color>? Color { get; set; }
+
+        public DbSet<DataProcessing.Models.Size>? Size { get; set; }
+
+        public DbSet<DataProcessing.Models.Category>? Category { get; set; }
+
+        public DbSet<DataProcessing.Models.Brand>? Brand { get; set; }
+
+        public DbSet<DataProcessing.Models.Material>? Material { get; set; }
     }
 }
