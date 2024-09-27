@@ -31,7 +31,7 @@ namespace View.IServices
 
 	public interface ICategoryServices
 	{
-		Task<IEnumerable<Category>> GetAllCategorys();
+		Task<IEnumerable<Category>> GetAllCategories();
 		Task<Category> GetCategoryById(Guid id);
 		Task Create(Category Category);
 		Task Update(Category Category);

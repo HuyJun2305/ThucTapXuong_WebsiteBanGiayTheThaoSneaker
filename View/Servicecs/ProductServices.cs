@@ -4,8 +4,41 @@ using View.IServices;
 
 namespace View.Servicecs
 {
-	public class ProductServices
+	public class ProductServices : IProductServices
 	{
+		private readonly HttpClient _httpClient;
+        public ProductServices(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+        public async Task Create(Product product)
+		{
+			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/Products", product);
+		}
+
+		public async Task Delete(Guid id)
+		{
+			await _httpClient.DeleteAsync($"https://localhost:7170/api/Products/{id}");
+		}
+
+		public async Task<IEnumerable<Product>?> GetAllProducts()
+		{
+			var response = await _httpClient.GetStringAsync("https://localhost:7170/api/Products");
+			var products = JsonConvert.DeserializeObject<IEnumerable<Product>>(response);
+			return products;
+		}
+
+		public async Task<Product?> GetProductById(Guid id)
+		{
+			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/Products/{id}");
+			var product = JsonConvert.DeserializeObject<Product>(response);
+			return product;
+		}
+
+		public async Task Update(Product product)
+		{
+			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/Products/{product.Id}", product);
+		}
 	}
 
 	//Sole Services
@@ -94,31 +127,31 @@ namespace View.Servicecs
 		}
 		public async Task Create(Category Category)
 		{
-			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/Categorys", Category);
+			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/Categories", Category);
 		}
 
 		public async Task Delete(Guid id)
 		{
-			await _httpClient.DeleteAsync($"https://localhost:7170/api/Categorys/{id}");
+			await _httpClient.DeleteAsync($"https://localhost:7170/api/Categories/{id}");
 		}
 
-		public async Task<IEnumerable<Category>?> GetAllCategorys()
+		public async Task<IEnumerable<Category>?> GetAllCategories()
 		{
-			var response = await _httpClient.GetStringAsync("https://localhost:7170/api/Categorys");
+			var response = await _httpClient.GetStringAsync("https://localhost:7170/api/Categories");
 			IEnumerable<Category>? Categorys = JsonConvert.DeserializeObject<IEnumerable<Category>>(response);
 			return Categorys;
 		}
 
 		public async Task<Category?> GetCategoryById(Guid id)
 		{
-			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/Categorys/{id}");
+			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/Categories/{id}");
 			Category? Category = JsonConvert.DeserializeObject<Category>(response);
 			return Category;
 		}
 
 		public async Task Update(Category Category)
 		{
-			await _httpClient.PutAsJsonAsync("https://localhost:7170/api/Categorys", Category);
+			await _httpClient.PutAsJsonAsync("https://localhost:7170/api/Categories", Category);
 		}
 	}
 

@@ -6,11 +6,12 @@ using View.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ViewContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ViewContext") ?? throw new InvalidOperationException("Connection string 'ViewContext' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ViewContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddHttpClient<IProductServices, ProductServices>();
 builder.Services.AddHttpClient<ISoleServices, SoleServices>();
 builder.Services.AddHttpClient<IBrandServices, BrandServices>();
 builder.Services.AddHttpClient<ICategoryServices, CategoryServices>();
