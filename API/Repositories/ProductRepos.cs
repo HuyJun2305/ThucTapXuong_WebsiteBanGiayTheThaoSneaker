@@ -28,12 +28,19 @@ namespace API.Repositories
 
 		public async Task<List<Product>> GetAllProduct()
 		{
-			return await _context.Products.ToListAsync();
+			return await _context.Products.Include(p => p.Brand)
+				.Include(p => p.Category)
+				.Include(p => p.Material)
+				.Include(p => p.Sole)
+				.ToListAsync();
 		}
 
 		public async Task<Product> GetProductById(Guid id)
 		{
-			return await _context.Products.FindAsync(id);
+			return await _context.Products.Where(p=>p.Id == id).Include(p => p.Brand)
+				.Include(p => p.Category)
+				.Include(p => p.Material)
+				.Include(p => p.Sole).FirstOrDefaultAsync();
 		}
 
 		public async Task SaveChanges()
@@ -48,6 +55,7 @@ namespace API.Repositories
 		}
 	}
 
+	//Sole Repository
 	public class SoleRepos : ISoleRepo
 	{
 		private readonly ApplicationDbContext _context;
@@ -66,6 +74,7 @@ namespace API.Repositories
 		{
 			var sole = await GetSoleById(id);
 			if (sole == null) throw new KeyNotFoundException("Not found this sole!");
+			if (_context.Products.Where(p => p.SoleId == id).Any()) throw new Exception("This sole has used for some product!");
 			_context.Soles.Remove(sole);
 		}
 
@@ -91,6 +100,7 @@ namespace API.Repositories
 		}
 	}
 
+	//Category Repository
 	public class CategoryRepos : ICategoryRepo
 	{
 		private readonly ApplicationDbContext _context;
@@ -109,6 +119,7 @@ namespace API.Repositories
 		{
 			var data = await GetCategoryById(id);
 			if (data == null) throw new KeyNotFoundException("Not found this category!");
+			if (_context.Products.Where(p => p.CategoryId == id).Any()) throw new Exception("This category has used for some product!");
 			_context.Categories.Remove(data);
 		}
 
@@ -134,6 +145,7 @@ namespace API.Repositories
 		}
 	}
 
+	//Brand Repository
 	public class BrandRepos : IBrandRepo
 	{
 		private readonly ApplicationDbContext _context;
@@ -152,6 +164,7 @@ namespace API.Repositories
 		{
 			var data = await GetBrandById(id);
 			if (data == null) throw new KeyNotFoundException("Not found this brand!");
+			if (_context.Products.Where(p => p.BrandId == data.Id).Any()) throw new Exception("This brand has used for some product!");
 			_context.Brands.Remove(data);
 		}
 
@@ -177,6 +190,7 @@ namespace API.Repositories
 		}
 	}
 
+	//Material Repository
 	public class MaterialRepos : IMaterialRepo
 	{
 		private readonly ApplicationDbContext _context;
@@ -195,6 +209,7 @@ namespace API.Repositories
 		{
 			var data = await GetMaterialById(id);
 			if (data == null) throw new KeyNotFoundException("Not found this material!");
+			if (_context.Products.Where(p => p.MaterialId == id).Any()) throw new Exception("This material has used for some product!");
 			_context.Materials.Remove(data);
 		}
 

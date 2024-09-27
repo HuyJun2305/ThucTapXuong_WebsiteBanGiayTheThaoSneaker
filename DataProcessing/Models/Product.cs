@@ -16,8 +16,6 @@ namespace DataProcessing.Models
         public string? Description { get; set; }
 
 
-        public Guid? PromotionId { get; set; }
-        public virtual Promotion Promotion { get; set; }
         public Guid CategoryId { get; set; }
         public virtual Category Category { get; set; }
         public Guid SoleId { get; set; }

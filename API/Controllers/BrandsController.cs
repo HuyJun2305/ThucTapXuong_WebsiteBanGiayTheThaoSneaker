@@ -50,7 +50,7 @@ namespace API.Controllers
 
 		}
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutBrand(Brand Brand)
         {
             try
