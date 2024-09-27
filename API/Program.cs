@@ -29,7 +29,11 @@ builder.Services.AddScoped<ICategoryRepo, CategoryRepos>();
 builder.Services.AddScoped<IBrandRepo, BrandRepos>();
 builder.Services.AddScoped<IMaterialRepo, MaterialRepos>();
 builder.Services.AddScoped<IPromotionRepos, PromotionRepos>();
-builder.Services.AddScoped<IProductDetailPromotion, ProductDetailPromotionRepo>();
+
+builder.Services.AddScoped<IColorRepo, ColorRepo>();
+builder.Services.AddScoped<IImageRepo, ImageRepo>();
+builder.Services.AddScoped<ISelectedImageRepo, SelectedImageRepo>();
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
