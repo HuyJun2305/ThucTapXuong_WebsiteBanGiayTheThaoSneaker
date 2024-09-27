@@ -113,7 +113,7 @@ namespace View.Servicecs
 
 		public async Task Update(Brand Brand)
 		{
-			await _httpClient.PutAsJsonAsync("https://localhost:7170/api/Brands", Brand);
+			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/Brands/{Brand.Id}", Brand);
 		}
 	}
 
@@ -151,7 +151,7 @@ namespace View.Servicecs
 
 		public async Task Update(Category Category)
 		{
-			await _httpClient.PutAsJsonAsync("https://localhost:7170/api/Categories", Category);
+			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/Categories/{Category.Id}", Category);
 		}
 	}
 
@@ -189,7 +189,7 @@ namespace View.Servicecs
 
 		public async Task Update(Material Material)
 		{
-			await _httpClient.PutAsJsonAsync("https://localhost:7170/api/Materials", Material);
+			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/Materials/{Material.Id}", Material);
 		}
 	}
 }
