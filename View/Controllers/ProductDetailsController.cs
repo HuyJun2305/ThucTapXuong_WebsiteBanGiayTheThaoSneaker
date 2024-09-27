@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DataProcessing.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using View.IServices;
 
 namespace View.Controllers
@@ -17,9 +19,11 @@ namespace View.Controllers
 
 
         // GET: ProductDetailsController
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var viewContext = _productDetailService.GetAllProductDetail().Result;
+            if (viewContext == null) return View("'ProductDetail is null!'");
+            return View(viewContext.ToList());
         }
 
         // GET: ProductDetailsController/Details/5
@@ -31,22 +35,33 @@ namespace View.Controllers
         // GET: ProductDetailsController/Create
         public ActionResult Create()
         {
+            ViewData["BrandId"] = new SelectList(_brandServices.GetAllBrands().Result.Where(x => x.Status == true), "Id", "Name");
+            ViewData["CategoryId"] = new SelectList(_categoryServices.GetAllCategories().Result.Where(x => x.Status == true), "Id", "Name");
+            ViewData["MaterialId"] = new SelectList(_materialServices.GetAllMaterials().Result.Where(x => x.Status == true), "Id", "Name");
+            ViewData["SoleId"] = new SelectList(_soleServices.GetAllSoles().Result.Where(x => x.Status == true), "Id", "TypeName");
+            ViewData["SizeId"] = new SelectList(_sizeServices.GetAllSizes().Result.Where(x => x.Status == true), "Id", "Value");
+            ViewData["ColorId"] = new SelectList(_colorServices.GetAllColors().Result.Where(x => x.Status == true), "Id", "HEX");
             return View();
         }
 
         // POST: ProductDetailsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create([Bind("Price,Stock,Weight,PromotionId,CategoryId,SoleId,BrandId,MaterialId,SizeId,ColorId")] ProductDetail productDetail)
         {
-            try
+            if (productDetail != null)
             {
+                await _productDetailService.Create(productDetail);
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            ViewData["BrandId"] = new SelectList(_brandServices.GetAllBrands().Result.Where(x => x.Status == true), "Id", "Name");
+            ViewData["CategoryId"] = new SelectList(_categoryServices.GetAllCategories().Result.Where(x => x.Status == true), "Id", "Name");
+            ViewData["MaterialId"] = new SelectList(_materialServices.GetAllMaterials().Result.Where(x => x.Status == true), "Id", "Name");
+            ViewData["SoleId"] = new SelectList(_soleServices.GetAllSoles().Result.Where(x => x.Status == true), "Id", "TypeName");
+            ViewData["SizeId"] = new SelectList(_sizeServices.GetAllSizes().Result.Where(x => x.Status == true), "Id", "Value");
+            ViewData["ColorId"] = new SelectList(_colorServices.GetAllColors().Result.Where(x => x.Status == true), "Id", "HEX");
+            return View(productDetail);
+
         }
 
         // GET: ProductDetailsController/Edit/5
