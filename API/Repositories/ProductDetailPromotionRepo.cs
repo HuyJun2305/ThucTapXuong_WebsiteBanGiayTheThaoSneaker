@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories
 {
-    public class ProductDetailPromotionRepo : IProductDetailPromotion
+    public class ProductDetailPromotionRepo : IProductDetailPromotionRepos
     {
         private readonly ApplicationDbContext _context;
 

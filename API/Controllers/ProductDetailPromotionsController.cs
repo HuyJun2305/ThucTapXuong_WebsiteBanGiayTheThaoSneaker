@@ -12,9 +12,9 @@ namespace API.Controllers
     [ApiController]
     public class ProductDetailPromotionsController : ControllerBase
     {
-        private readonly IProductDetailPromotion _productDetailPromotionRepository;
+        private readonly IProductDetailPromotionRepos _productDetailPromotionRepository;
 
-        public ProductDetailPromotionsController(IProductDetailPromotion productDetailPromotionRepository)
+        public ProductDetailPromotionsController(IProductDetailPromotionRepos productDetailPromotionRepository)
         {
             _productDetailPromotionRepository = productDetailPromotionRepository;
         }

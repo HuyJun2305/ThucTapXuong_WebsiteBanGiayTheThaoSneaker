@@ -71,6 +71,7 @@ namespace API.Controllers
             try
             {
                 await _PromorionRepos.Update(promotion);
+                await _PromorionRepos.SaveChanges();
             }
             catch (KeyNotFoundException)
             {
@@ -91,7 +92,9 @@ namespace API.Controllers
             try
             {
                 await _PromorionRepos.Create(promotion);
+                await _PromorionRepos.SaveChanges();
                 return CreatedAtAction(nameof(GetPromotion), new { id = promotion.Id }, promotion);
+
             }
             catch (Exception ex)
             {
@@ -106,6 +109,7 @@ namespace API.Controllers
             try
             {
                 await _PromorionRepos.Delete(id);
+                await _PromorionRepos.SaveChanges();
                 return NoContent();
             }
             catch (KeyNotFoundException)
