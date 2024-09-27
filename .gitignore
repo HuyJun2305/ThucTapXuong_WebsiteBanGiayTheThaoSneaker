@@ -368,3 +368,4 @@ appsettings.*.json
 /API/appsettings.json
 /API/appsettings.Development.json
 /View/appsettings.json
+API/appsettings.json
