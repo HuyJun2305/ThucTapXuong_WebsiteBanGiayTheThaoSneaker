@@ -50,7 +50,7 @@ namespace API.Controllers
 
 		}
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutMaterial(Material Material)
         {
             try
