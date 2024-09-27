@@ -51,10 +51,10 @@ namespace API.Data
             modelBuilder.Entity<ProductDetailPromotion>()
             .HasKey(pd => new { pd.ProductDetailId, pd.PromotionId });
 
-            modelBuilder.Entity<ProductDetailPromotion>()
-                .HasOne(pd => pd.ProductDetail)
-                .WithMany(p => p.ProductDetailPromotions)
-                .HasForeignKey(pd => pd.ProductDetailId);
+            //modelBuilder.Entity<ProductDetailPromotion>()
+            //    .HasOne(pd => pd.ProductDetail)
+            //    .WithMany(p => p.ProductDetailPromotions)
+            //    .HasForeignKey(pd => pd.ProductDetailId);
 
             modelBuilder.Entity<ProductDetailPromotion>()
                 .HasOne(pd => pd.Promotion)

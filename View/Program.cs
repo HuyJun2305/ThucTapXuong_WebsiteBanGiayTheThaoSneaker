@@ -22,8 +22,8 @@ builder.Services.AddHttpClient<IColorServices, ColorServices>();
 builder.Services.AddHttpClient<IImageServices, ImageServices>();
 builder.Services.AddHttpClient<ISelectedImageServices, SelectedImageServices>();
 
-//
-builder.Services.AddHttpClient<IProductDetailService, ProductDetailServices>();
+
+builder.Services.AddHttpClient<IProductDetailService, ProductDetailService>();
 
 
 var app = builder.Build();

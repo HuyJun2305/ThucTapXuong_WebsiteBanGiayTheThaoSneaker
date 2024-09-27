@@ -15,7 +15,8 @@ namespace API.Repositories
 
         public async Task Create(ProductDetail productDetail)
         {
-            if(await GetProductDetailById(productDetail.Id) != null ) throw new DuplicateWaitObjectException($"Product Detail : {productDetail.Id} is existed!");
+            if(await GetProductDetailById(productDetail.Id) != null )
+            throw new DuplicateWaitObjectException($"Product Detail : {productDetail.Id} is existed!");
             await _context.ProductDetails.AddAsync(productDetail);
         }
 
@@ -28,12 +29,18 @@ namespace API.Repositories
 
         public async Task<List<ProductDetail>> GetAllProductDetail()
         {
-            return await _context.ProductDetails.ToListAsync();
+            return await _context.ProductDetails
+                .Include(p => p.Color)
+                .Include(p => p.Size).
+                Include(p => p.Product).ToListAsync();
         }
 
         public async Task<ProductDetail> GetProductDetailById(string id)
         {
-            return await _context.ProductDetails.FindAsync(id);
+            return await _context.ProductDetails.Where(p => p.Id == id).Include(p => p.Color)
+                .Include(p => p.Size)
+                .Include(p => p.Product)
+                .FirstOrDefaultAsync();
         }
 
         public async Task SaveChanges()

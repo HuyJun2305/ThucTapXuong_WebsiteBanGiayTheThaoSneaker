@@ -17,7 +17,7 @@ namespace View.Servicecs
             await _httpClient.PostAsJsonAsync("https://localhost:7170/api/ProductDetail", productDetail);
         }
 
-        public async Task Delete(Guid id)
+        public async Task Delete(string id)
         {
             await _httpClient.DeleteAsync($"https://localhost:7170/api/ProductDetail/{id}");
         }
@@ -29,7 +29,7 @@ namespace View.Servicecs
             return productDetails;
         }
 
-        public async Task<ProductDetail?> GetProductDetailById(Guid id)
+        public async Task<ProductDetail?> GetProductDetailById(string id)
         {
             var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/ProductDetail/{id}");
             var productDetails = JsonConvert.DeserializeObject<ProductDetail>(response);

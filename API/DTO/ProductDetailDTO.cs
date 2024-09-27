@@ -1,4 +1,5 @@
-﻿using DataProcessing.Models;
+﻿using Data.Models;
+using DataProcessing.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace API.DTO
@@ -19,5 +20,6 @@ namespace API.DTO
         public virtual Color Color { get; set; }
         public Guid SizeId { get; set; }
         public virtual Size Size { get; set; }
+
     }
 }

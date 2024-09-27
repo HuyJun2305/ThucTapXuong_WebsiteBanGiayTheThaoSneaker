@@ -26,14 +26,14 @@ namespace API.Controllers
 
         // GET: api/ProductDetail
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDetail>>> GetProductDetailDTO()
+        public async Task<ActionResult<IEnumerable<ProductDetail>>> GetProductDetailsDTO()
         {
                 return await  _productDetailRepos.GetAllProductDetail();
         }
 
         // GET: api/ProductDetail/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductDetail>> GetProductDetailDTO(string id)
+        public async Task<ActionResult<ProductDetail>> GetProductDetail(string id)
         {
                 return await _productDetailRepos.GetProductDetailById(id);  
         }
@@ -41,7 +41,7 @@ namespace API.Controllers
         // PUT: api/ProductDetail/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProductDetailDTO(string id, ProductDetailDTO productDetailDTO)
+        public async Task<IActionResult> PutProductDetail(string id, ProductDetailDTO productDetailDTO)
         {
             try
             {
@@ -57,8 +57,8 @@ namespace API.Controllers
                     SizeId = productDetailDTO.SizeId
 
                 };
-                _productDetailRepos.Update(productDetail);
-                _productDetailRepos.SaveChanges();
+                await _productDetailRepos.Update(productDetail);
+                await _productDetailRepos.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -71,7 +71,7 @@ namespace API.Controllers
         // POST: api/ProductDetail
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ProductDetailDTO>> PostProductDetailDTO(ProductDetailDTO productDetailDTO)
+        public async Task<ActionResult<ProductDetailDTO>> PostProductDetail(ProductDetailDTO productDetailDTO)
         {
             try
             {
@@ -87,8 +87,8 @@ namespace API.Controllers
                     SizeId = productDetailDTO.SizeId
 
                 };
-                _productDetailRepos.Create(productDetail);
-                _productDetailRepos.SaveChanges();
+                await _productDetailRepos.Create(productDetail);
+                await _productDetailRepos.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -100,7 +100,7 @@ namespace API.Controllers
 
         // DELETE: api/ProductDetail/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProductDetailDTO(string id)
+        public async Task<IActionResult> DeleteProductDetail(string id)
         {
             try
             {

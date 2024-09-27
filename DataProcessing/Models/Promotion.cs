@@ -76,6 +76,6 @@ namespace DataProcessing.Models
 
         // Trạng thái của chương trình khuyến mãi (true/false)
         public bool Status { get; set; }
-        public ICollection<ProductDetailPromotion> ProductDetailPromotions { get; set; }
+        public virtual ICollection<ProductDetailPromotion> ProductDetailPromotions { get; set; }
     }
 }
