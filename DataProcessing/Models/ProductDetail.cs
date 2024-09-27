@@ -9,7 +9,7 @@ namespace DataProcessing.Models
 {
     public class ProductDetail
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         [Required]
         public decimal Price { get; set; }
         [Required]
@@ -17,7 +17,10 @@ namespace DataProcessing.Models
         [Required]
         public float Weight { get; set; }
 
-        public Guid ProductId { get; set; }
+
+		public Guid? PromotionId { get; set; }
+		public virtual Promotion Promotion { get; set; }
+		public Guid ProductId { get; set; }
         public virtual Product Product { get; set; }
         public Guid ColorId { get; set; }
         public virtual Color Color { get; set; }
