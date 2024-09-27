@@ -24,19 +24,21 @@ namespace View.Servicecs
 
 		public async Task<IEnumerable<Size>?> GetAllSizes()
 		{
-			var sizes = JsonConvert.DeserializeObject<IEnumerable<Size>>("https://localhost:7170/api/Sizes");
+			var response = await _httpClient.GetStringAsync("https://localhost:7170/api/Sizes");
+			var sizes = JsonConvert.DeserializeObject<IEnumerable<Size>>(response);
 			return sizes;
 		}
 
 		public async Task<Size?> GetSizeById(Guid id)
 		{
-			var size = JsonConvert.DeserializeObject<Size>($"https://localhost:7170/api/Sizes/{id}");
+			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/Sizes/{id}");
+			var size = JsonConvert.DeserializeObject<Size>(response);
 			return size;			
 		}
 
 		public async Task Update(Size size)
 		{
-			await _httpClient.PutAsJsonAsync("https://localhost:7170/api/Sizes", size);
+			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/Sizes/{size.Id}", size);
 		}
 	}
 }
