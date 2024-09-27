@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -75,5 +76,6 @@ namespace DataProcessing.Models
 
         // Trạng thái của chương trình khuyến mãi (true/false)
         public bool Status { get; set; }
+        public ICollection<ProductDetailPromotion> ProductDetailPromotions { get; set; }
     }
 }
