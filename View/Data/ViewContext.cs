@@ -17,5 +17,7 @@ namespace View.Data
         public DbSet<DataProcessing.Models.Sole> Sole { get; set; } = default!;
 
         public DbSet<DataProcessing.Models.Product>? Product { get; set; }
+
+        public DbSet<DataProcessing.Models.Color>? Color { get; set; }
     }
 }
