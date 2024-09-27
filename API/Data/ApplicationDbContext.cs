@@ -1,4 +1,5 @@
-﻿using DataProcessing.Models;
+﻿using Data.Models;
+using DataProcessing.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,7 @@ namespace API.Data
         public DbSet<Sole> Soles { get; set; }
         public DbSet<Voucher> Vouchers { get; set; }
         public DbSet<SelectedImage> SelectedImages { get; set; }
+        public DbSet<ProductDetailPromotion> ProductDetailPromotions { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -45,6 +47,19 @@ namespace API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ProductDetailPromotion>()
+            .HasKey(pd => new { pd.ProductDetailId, pd.PromotionId });
+
+            modelBuilder.Entity<ProductDetailPromotion>()
+                .HasOne(pd => pd.ProductDetail)
+                .WithMany(p => p.ProductDetailPromotions)
+                .HasForeignKey(pd => pd.ProductDetailId);
+
+            modelBuilder.Entity<ProductDetailPromotion>()
+                .HasOne(pd => pd.Promotion)
+                .WithMany(p => p.ProductDetailPromotions)
+                .HasForeignKey(pd => pd.PromotionId);
+
             base.OnModelCreating(modelBuilder);
             // SeedData for Account
             var adminRoleId = Guid.NewGuid();
@@ -113,7 +128,7 @@ namespace API.Data
                     LockoutEnabled = true,
                     AccessFailedCount = 0,
                     PasswordHash = passwordHasher.HashPassword(null, "UserPass123!"),
-                    SecurityStamp = Guid.NewGuid().ToString()
+                    SecurityStamp = Guid.NewGuid().ToString()   
                 }
           
             );
