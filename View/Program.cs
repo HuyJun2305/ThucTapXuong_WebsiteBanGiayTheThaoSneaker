@@ -23,7 +23,7 @@ builder.Services.AddHttpClient<IImageServices, ImageServices>();
 builder.Services.AddHttpClient<ISelectedImageServices, SelectedImageServices>();
 
 //
-builder.Services.AddHttpClient<IProductDetailService, ProductDetailService>();
+builder.Services.AddHttpClient<IProductDetailService, ProductDetailServices>();
 
 
 var app = builder.Build();
