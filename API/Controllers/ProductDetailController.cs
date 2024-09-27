@@ -33,7 +33,7 @@ namespace API.Controllers
 
         // GET: api/ProductDetail/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductDetail>> GetProductDetailDTO(Guid id)
+        public async Task<ActionResult<ProductDetail>> GetProductDetailDTO(string id)
         {
                 return await _productDetailRepos.GetProductDetailById(id);  
         }
@@ -41,7 +41,7 @@ namespace API.Controllers
         // PUT: api/ProductDetail/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProductDetailDTO(Guid id, ProductDetailDTO productDetailDTO)
+        public async Task<IActionResult> PutProductDetailDTO(string id, ProductDetailDTO productDetailDTO)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace API.Controllers
 
         // DELETE: api/ProductDetail/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProductDetailDTO(Guid id)
+        public async Task<IActionResult> DeleteProductDetailDTO(string id)
         {
             try
             {

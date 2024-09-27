@@ -19,7 +19,7 @@ namespace API.Repositories
             await _context.ProductDetails.AddAsync(productDetail);
         }
 
-        public async Task Delete(Guid id)
+        public async Task Delete(string id)
         {
             var productDetail = await GetProductDetailById(id);
             if (productDetail == null) throw new KeyNotFoundException("Not found this Id!");
@@ -31,7 +31,7 @@ namespace API.Repositories
             return await _context.ProductDetails.ToListAsync();
         }
 
-        public async Task<ProductDetail> GetProductDetailById(Guid id)
+        public async Task<ProductDetail> GetProductDetailById(string id)
         {
             return await _context.ProductDetails.FindAsync(id);
         }

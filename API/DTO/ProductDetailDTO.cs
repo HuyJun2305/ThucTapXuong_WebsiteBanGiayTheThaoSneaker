@@ -5,7 +5,7 @@ namespace API.DTO
 {
     public class ProductDetailDTO
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         [Required]
         public decimal Price { get; set; }
         [Required]
