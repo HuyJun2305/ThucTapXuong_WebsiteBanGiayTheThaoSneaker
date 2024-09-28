@@ -19,13 +19,14 @@ namespace DataProcessing.Models
         public float Weight { get; set; }
 
 
-        public Guid ProductId { get; set; }
+		//public Guid? PromotionId { get; set; }
+		//public virtual Promotion Promotion { get; set; }
+		public Guid ProductId { get; set; }
         public virtual Product Product { get; set; }
         public Guid ColorId { get; set; }
         public virtual Color Color { get; set; }
         public Guid SizeId { get; set; }
         public virtual Size Size { get; set; }
-
-        //public virtual ICollection<ProductDetailPromotion>? ProductDetailPromotions { get; set; }
+        public ICollection<ProductDetailPromotion> ProductDetailPromotions { get; set; }
     }
 }

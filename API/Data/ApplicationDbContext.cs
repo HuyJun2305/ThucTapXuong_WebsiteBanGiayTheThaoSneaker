@@ -42,24 +42,29 @@ namespace API.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder.UseSqlServer("Data Source=HUYJUN\\SQLEXPRESS;Initial Catalog=DUANTHUCTAP;Integrated Security=True;Trust Server Certificate=True");
+           //optionsBuilder.UseSqlServer("Data Source=THANHTONG\\SQLEXPRESS01;Initial Catalog=DUANTHUCTAP;Integrated Security=True;Trust Server Certificate=True");
 
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Khai báo Entity cho ProductDetailPromotion
             modelBuilder.Entity<ProductDetailPromotion>()
-            .HasKey(pd => new { pd.ProductDetailId, pd.PromotionId });
+                .HasKey(pd => pd.Id); // Khóa chính là Id
 
-            //modelBuilder.Entity<ProductDetailPromotion>()
-            //    .HasOne(pd => pd.ProductDetail)
-            //    .WithMany(p => p.ProductDetailPromotions)
-            //    .HasForeignKey(pd => pd.ProductDetailId);
+            // Khóa ngoại cho ProductDetail
+            modelBuilder.Entity<ProductDetailPromotion>()
+                .HasOne(pd => pd.ProductDetail)
+                .WithMany(p => p.ProductDetailPromotions)
+                .HasForeignKey(pd => pd.ProductDetailId)
+                .OnDelete(DeleteBehavior.Cascade); // Thay đổi hành vi khi xóa (nếu cần)
 
+            // Khóa ngoại cho Promotion
             modelBuilder.Entity<ProductDetailPromotion>()
                 .HasOne(pd => pd.Promotion)
                 .WithMany(p => p.ProductDetailPromotions)
-                .HasForeignKey(pd => pd.PromotionId);
+                .HasForeignKey(pd => pd.PromotionId)
+                .OnDelete(DeleteBehavior.Cascade); // Thay đổi hành vi khi xóa (nếu cần)
 
             base.OnModelCreating(modelBuilder);
             // SeedData for Account
@@ -148,7 +153,7 @@ namespace API.Data
             //);
         }
 
-        //public DbSet<API.DTO.ProductDetailDTO>? ProductDetailDTO { get; set; }
+   
 
     }
 }

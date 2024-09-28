@@ -1,5 +1,4 @@
 ﻿using Data.Models;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -69,6 +68,7 @@ namespace DataProcessing.Models
         [DataType(DataType.Date)]
         [CustomStartDateValidation(ErrorMessage = "Start date cannot be in the past.")]
         public DateTime StartDate { get; set; }
+
         // Ngày kết thúc khuyến mãi, phải sau ngày bắt đầu
         [Required(ErrorMessage = "End date is required")]
         [DataType(DataType.Date)]
@@ -77,6 +77,7 @@ namespace DataProcessing.Models
 
         // Trạng thái của chương trình khuyến mãi (true/false)
         public bool Status { get; set; }
-        public virtual ICollection<ProductDetailPromotion> ProductDetailPromotions { get; set; }
+        [JsonIgnore]
+        public ICollection<ProductDetailPromotion>? ProductDetailPromotions { get; set; }
     }
 }
