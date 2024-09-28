@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-    public partial class Fix_ProductDetail : Migration
+    public partial class New_Db_Huy : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -579,10 +579,10 @@ namespace API.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("36f74521-9f83-4da6-bef6-ad09908be592"), "f4647275-4c3f-488f-94e6-05a7b67eaf70", "Guest", "GUEST" },
-                    { new Guid("47e20861-7a2c-41f2-b6ca-15c75e30358c"), "4776d8d1-364f-4d39-bed2-8f129c2c14f4", "Employee", "EMPLOYEE" },
-                    { new Guid("61ca560e-6a34-42f5-aa14-cd62d583cce0"), "2cbe73ad-661a-49f7-b4f7-f89b2d7dcd3d", "Customer", "CUSTOMER" },
-                    { new Guid("fbb19357-70c3-4401-b5ed-9f1ca4efb853"), "a99176ab-3ae5-4d6f-895c-27a81b081da1", "Admin", "ADMIN" }
+                    { new Guid("7078785b-7807-444f-a586-7c686e2e1325"), "c6992587-b558-4bd5-9f62-080d212a3811", "Guest", "GUEST" },
+                    { new Guid("9d7606b3-037c-4617-b496-058413eca49a"), "8fc6e7ea-2aa5-464b-b677-eb536dca3bef", "Admin", "ADMIN" },
+                    { new Guid("e0988fc3-989a-4316-a5ef-200a1914730b"), "7ef3f4df-40bb-4fb6-a1ef-efa8b87d3ec9", "Customer", "CUSTOMER" },
+                    { new Guid("f54d1bde-245e-4c28-b8dd-973319bebe5b"), "2e1a9081-4c52-4f9c-aa61-9e0d54220aa0", "Employee", "EMPLOYEE" }
                 });
 
             migrationBuilder.InsertData(
@@ -590,19 +590,19 @@ namespace API.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "Birthday", "CIC", "ConcurrencyStamp", "Email", "EmailConfirmed", "ImageURL", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("12a305d5-64ac-462e-91ca-3b1017b68905"), 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "002204004364", "d2808c50-f744-49ac-adb9-a8a780b6f7ec", "admin@example.com", false, null, true, null, "Admin User", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAEAACcQAAAAEJ6NYWbQRvXzp5UMIPk6HOcPX/3zXxHvJkorx/z4jZOwaHMyHkF91Tg8QFnpnB9iPQ==", "0123456789", false, "168d148b-83f6-4a37-ba11-3a04ab4000a1", false, "admin@example.com" },
-                    { new Guid("877c76c6-99f3-467f-a54e-0f4b4989a6a7"), 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "004204004364", "ce87327c-281e-4bf9-9b08-25f499b2d5f9", "user@example.com", false, null, true, null, "Regular User", "USER@EXAMPLE.COM", "USER@EXAMPLE.COM", "AQAAAAEAACcQAAAAEBKpylH6ARBxdL85t0jsNitvhlf2x8/0QH0ZJnmzo1jpEJNtC6tcunftGgDKPT0mLA==", "0987654321", false, "e541d53c-89cc-4fe3-b282-8ee1b0d19f4d", false, "user@example.com" }
+                    { new Guid("2ecf6c21-3395-494b-aaa8-58013db81ba6"), 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "004204004364", "9a2d31d7-8ea5-45a0-9c1f-945c0da1278c", "user@example.com", false, null, true, null, "Regular User", "USER@EXAMPLE.COM", "USER@EXAMPLE.COM", "AQAAAAEAACcQAAAAEPgB6Sn4PW3cxG1AcxD1YddXPfP+Jf+LUUJR2vCUqbCu9oHCFPOzeG0ioLZFnIadqQ==", "0987654321", false, "187c34dc-7722-4f85-8bec-4c1984dda600", false, "user@example.com" },
+                    { new Guid("381dbc5a-70fc-4a8d-a39c-5824ed042dad"), 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "002204004364", "8f0ead4f-b15a-4398-aa19-d5bf2bde7e31", "admin@example.com", false, null, true, null, "Admin User", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAEAACcQAAAAEMCW722v4/rmFuoXzr5txwzGojqKn9hZh+Ep6oL6oCM8s/uJVOguFUMkH+cOAi3ZFg==", "0123456789", false, "d4ac1773-762a-4d11-8c7e-d33a3902d6fa", false, "admin@example.com" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { new Guid("fbb19357-70c3-4401-b5ed-9f1ca4efb853"), new Guid("12a305d5-64ac-462e-91ca-3b1017b68905") });
+                values: new object[] { new Guid("e0988fc3-989a-4316-a5ef-200a1914730b"), new Guid("2ecf6c21-3395-494b-aaa8-58013db81ba6") });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { new Guid("61ca560e-6a34-42f5-aa14-cd62d583cce0"), new Guid("877c76c6-99f3-467f-a54e-0f4b4989a6a7") });
+                values: new object[] { new Guid("9d7606b3-037c-4617-b496-058413eca49a"), new Guid("381dbc5a-70fc-4a8d-a39c-5824ed042dad") });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
