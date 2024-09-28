@@ -35,7 +35,7 @@ namespace API.Repositories
 				.ToListAsync();
 		}
 
-		public async Task<Product> GetProductById(Guid id)
+		public async Task<Product?> GetProductById(Guid id)
 		{
 			return await _context.Products.Where(p=>p.Id == id).Include(p => p.Brand)
 				.Include(p => p.Category)
