@@ -58,7 +58,7 @@ namespace View.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Price,Stock,Weight,ProductId,ColorId,SizeId")] ProductDetail productDetail)
         {
-            if (productDetail.Product != null)
+            if (productDetail.ProductId != null)
             {
                 await _productDetailService.Create(productDetail);
                 return RedirectToAction(nameof(Index));

@@ -148,7 +148,7 @@ namespace API.Data
             );
         }
 
-        public DbSet<API.DTO.ProductDetailDTO>? ProductDetailDTO { get; set; }
+        //public DbSet<API.DTO.ProductDetailDTO>? ProductDetailDTO { get; set; }
 
     }
 }
