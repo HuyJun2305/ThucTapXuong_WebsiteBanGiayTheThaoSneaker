@@ -109,6 +109,7 @@ namespace API.Data
                     NormalizedEmail = "ADMIN@EXAMPLE.COM",
                     Name = "Admin User",
                     CIC = "002204004364",
+                    Birthday = new DateTime(1990, 1, 1),
                     PhoneNumber = "0123456789",
                     LockoutEnabled = true,
                     AccessFailedCount = 0,
@@ -124,7 +125,7 @@ namespace API.Data
                     NormalizedEmail = "USER@EXAMPLE.COM",
                     Name = "Regular User",
                     CIC = "004204004364",
-
+                    Birthday = new DateTime(1990, 1, 1),
                     PhoneNumber = "0987654321",
                     LockoutEnabled = true,
                     AccessFailedCount = 0,

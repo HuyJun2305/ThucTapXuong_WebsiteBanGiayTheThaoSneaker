@@ -4,6 +4,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240925063457_updatedata")]
+    partial class updatedata
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,58 +23,6 @@ namespace API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("API.DTO.ProductDetailDTO", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<Guid>("ColorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("SizeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Stock")
-                        .HasColumnType("int");
-
-                    b.Property<float>("Weight")
-                        .HasColumnType("real");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ColorId");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("SizeId");
-
-                    b.ToTable("ProductDetailDTO");
-                });
-
-            modelBuilder.Entity("Data.Models.ProductDetailPromotion", b =>
-                {
-                    b.Property<string>("ProductDetailId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<Guid>("PromotionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ProductDetailId", "PromotionId");
-
-                    b.HasIndex("PromotionId");
-
-                    b.ToTable("ProductDetailPromotions");
-                });
 
             modelBuilder.Entity("DataProcessing.Models.ApplicationUser", b =>
                 {
@@ -159,7 +109,6 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-
                             Id = new Guid("6a276dff-cffa-4616-8475-81397a3b9540"),
                             AccessFailedCount = 0,
                             Birthday = new DateTime(1990, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -247,9 +196,8 @@ namespace API.Migrations
                     b.Property<Guid>("CartId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ProductDetailId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("ProductDetailId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("Quanlity")
                         .HasColumnType("int");
@@ -391,9 +339,8 @@ namespace API.Migrations
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ProductDetailId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("ProductDetailId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -463,6 +410,9 @@ namespace API.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<Guid?>("PromotionId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("SoleId")
                         .HasColumnType("uniqueidentifier");
 
@@ -474,6 +424,8 @@ namespace API.Migrations
 
                     b.HasIndex("MaterialId");
 
+                    b.HasIndex("PromotionId");
+
                     b.HasIndex("SoleId");
 
                     b.ToTable("Products");
@@ -481,8 +433,9 @@ namespace API.Migrations
 
             modelBuilder.Entity("DataProcessing.Models.ProductDetail", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ColorId")
                         .HasColumnType("uniqueidentifier");
@@ -822,52 +775,6 @@ namespace API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("API.DTO.ProductDetailDTO", b =>
-                {
-                    b.HasOne("DataProcessing.Models.Color", "Color")
-                        .WithMany()
-                        .HasForeignKey("ColorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataProcessing.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataProcessing.Models.Size", "Size")
-                        .WithMany()
-                        .HasForeignKey("SizeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Color");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Size");
-                });
-
-            modelBuilder.Entity("Data.Models.ProductDetailPromotion", b =>
-                {
-                    b.HasOne("DataProcessing.Models.ProductDetail", "ProductDetail")
-                        .WithMany()
-                        .HasForeignKey("ProductDetailId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataProcessing.Models.Promotion", "Promotion")
-                        .WithMany("ProductDetailPromotions")
-                        .HasForeignKey("PromotionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProductDetail");
-
-                    b.Navigation("Promotion");
-                });
-
             modelBuilder.Entity("DataProcessing.Models.Cart", b =>
                 {
                     b.HasOne("DataProcessing.Models.ApplicationUser", "Account")
@@ -978,6 +885,10 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DataProcessing.Models.Promotion", "Promotion")
+                        .WithMany()
+                        .HasForeignKey("PromotionId");
+
                     b.HasOne("DataProcessing.Models.Sole", "Sole")
                         .WithMany()
                         .HasForeignKey("SoleId")
@@ -989,6 +900,8 @@ namespace API.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Material");
+
+                    b.Navigation("Promotion");
 
                     b.Navigation("Sole");
                 });
@@ -1080,11 +993,6 @@ namespace API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("DataProcessing.Models.Promotion", b =>
-                {
-                    b.Navigation("ProductDetailPromotions");
                 });
 #pragma warning restore 612, 618
         }
