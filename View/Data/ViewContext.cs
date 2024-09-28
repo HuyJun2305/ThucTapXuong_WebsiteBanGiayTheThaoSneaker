@@ -28,6 +28,6 @@ namespace View.Data
 
         public DbSet<DataProcessing.Models.Material>? Material { get; set; }
 
-        public DbSet<DataProcessing.Models.ProductDetail>? ProductDetail { get; set; }
+        public DbSet<DataProcessing.Models.Image>? Image { get; set; }
     }
 }
