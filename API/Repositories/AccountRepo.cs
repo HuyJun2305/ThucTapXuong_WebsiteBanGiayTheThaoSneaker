@@ -107,6 +107,28 @@ namespace API.Repositories
         {
             try
             {
+                var existingUserByEmail = await _userManager.FindByEmailAsync(models.Email);
+                if (existingUserByEmail != null)
+                {
+                    var errors = new List<IdentityError>
+            {
+                new IdentityError { Description = "Email already exists." }
+            };
+                    return IdentityResult.Failed(errors.ToArray());
+                }
+
+                // Kiểm tra xem số điện thoại đã tồn tại chưa
+                var existingUserByPhone = await _userManager.Users
+                    .FirstOrDefaultAsync(u => u.PhoneNumber == models.PhoneNumber);
+                if (existingUserByPhone != null)
+                {
+                    var errors = new List<IdentityError>
+            {
+                new IdentityError { Description = "Phone number already exists." }
+            };
+                    return IdentityResult.Failed(errors.ToArray());
+                }
+
                 var account = new ApplicationUser
                 {
                     Id = Guid.NewGuid(),
