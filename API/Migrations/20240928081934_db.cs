@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-    public partial class thanh : Migration
+    public partial class db : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -515,58 +515,29 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductDetailPromotion",
+                name: "ProductDetailPromotions",
                 columns: table => new
                 {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductDetailId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PromotionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductDetailPromotion", x => new { x.ProductDetailId, x.PromotionId });
+                    table.PrimaryKey("PK_ProductDetailPromotions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductDetailPromotion_ProductDetails_ProductDetailId",
+                        name: "FK_ProductDetailPromotions_ProductDetails_ProductDetailId",
                         column: x => x.ProductDetailId,
                         principalTable: "ProductDetails",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProductDetailPromotion_Promotions_PromotionId",
+                        name: "FK_ProductDetailPromotions_Promotions_PromotionId",
                         column: x => x.PromotionId,
                         principalTable: "Promotions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[,]
-                {
-                    { new Guid("1bdda496-a934-4835-825f-188816859d44"), "a9fe86f9-64ce-4b3a-b2ea-d37a28e263c2", "Guest", "GUEST" },
-                    { new Guid("5e97789e-946b-4018-9791-a2e5c6093a0e"), "5042fef7-922f-4289-9867-d9d43d296ac3", "Admin", "ADMIN" },
-                    { new Guid("6aeee130-15aa-41c0-a9de-2ea98385e88a"), "8122d6ee-a8dc-4a1b-90e6-1646309d06dd", "Employee", "EMPLOYEE" },
-                    { new Guid("a81c0ccc-b1d3-4077-b225-afc5c06122bd"), "775cff15-3242-4a14-a141-00bb5f26192c", "Customer", "CUSTOMER" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "Birthday", "CIC", "ConcurrencyStamp", "Email", "EmailConfirmed", "ImageURL", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[,]
-                {
-                    { new Guid("09a5b961-fc41-4ce7-baca-a04d207441e9"), 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "002204004364", "aeb89c8e-b134-4206-9f33-acf67cdb042b", "admin@example.com", false, null, true, null, "Admin User", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAEAACcQAAAAENXyhFhmw6Rq9SYqOrifGDic10lU7++HRofEtua9R/nCUkeIuebCRrEiQAq5bn2Sqg==", "0123456789", false, "f8f5e05a-8a94-4b44-aee4-ee70e56d199d", false, "admin@example.com" },
-                    { new Guid("703141ae-4488-4a7e-aa22-7596a48d6b0c"), 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "004204004364", "2af8bebf-4a10-4ad3-b28b-131d49f8afc5", "user@example.com", false, null, true, null, "Regular User", "USER@EXAMPLE.COM", "USER@EXAMPLE.COM", "AQAAAAEAACcQAAAAEAaCvMpjidCycV2XuOJvXTjg+mXTZBXMq5oxnRY3pLMsRNkqACeZTjqPHi7MB2V4RA==", "0987654321", false, "a9195600-af33-4498-9662-41b56d7c645e", false, "user@example.com" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "AspNetUserRoles",
-                columns: new[] { "RoleId", "UserId" },
-                values: new object[] { new Guid("5e97789e-946b-4018-9791-a2e5c6093a0e"), new Guid("09a5b961-fc41-4ce7-baca-a04d207441e9") });
-
-            migrationBuilder.InsertData(
-                table: "AspNetUserRoles",
-                columns: new[] { "RoleId", "UserId" },
-                values: new object[] { new Guid("a81c0ccc-b1d3-4077-b225-afc5c06122bd"), new Guid("703141ae-4488-4a7e-aa22-7596a48d6b0c") });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -653,8 +624,13 @@ namespace API.Migrations
                 column: "VoucherId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductDetailPromotion_PromotionId",
-                table: "ProductDetailPromotion",
+                name: "IX_ProductDetailPromotions_ProductDetailId",
+                table: "ProductDetailPromotions",
+                column: "ProductDetailId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDetailPromotions_PromotionId",
+                table: "ProductDetailPromotions",
                 column: "PromotionId");
 
             migrationBuilder.CreateIndex(
@@ -728,7 +704,7 @@ namespace API.Migrations
                 name: "OrderHistories");
 
             migrationBuilder.DropTable(
-                name: "ProductDetailPromotion");
+                name: "ProductDetailPromotions");
 
             migrationBuilder.DropTable(
                 name: "SelectedImages");
