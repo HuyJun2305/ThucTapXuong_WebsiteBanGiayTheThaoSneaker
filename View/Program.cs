@@ -1,8 +1,8 @@
+using API.Data;
+using DataProcessing.Models;
+using Microsoft.AspNetCore.Identity;
 using View.IServices;
 using View.Servicecs;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using View.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ViewContext>(options =>
