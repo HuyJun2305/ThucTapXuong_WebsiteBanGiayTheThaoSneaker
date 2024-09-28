@@ -105,7 +105,7 @@ namespace API.Controllers
             try
             {
                 await _productDetailRepos.Delete(id);
-                _productDetailRepos.SaveChanges();
+                await _productDetailRepos.SaveChanges();
             }
             catch (Exception ex)
             {
