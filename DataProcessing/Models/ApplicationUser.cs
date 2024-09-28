@@ -13,22 +13,21 @@ namespace DataProcessing.Models
 
         [Required(ErrorMessage = "Name is required")]
         [StringLength(100, ErrorMessage = "Name cannot be longer than 100 characters")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [Required(ErrorMessage = "Birthday is required")]
         [DataType(DataType.Date)]
         [Display(Name = "Date of Birth")]
-        public DateTime Birthday { get; set; }
+        public DateTime? Birthday { get; set; }
 
         [Required(ErrorMessage = "Phone Number is required")]
         [RegularExpression(@"^(03|05|07|08|09)\d{8}$", ErrorMessage = "Invalid Vietnamese phone number format")]
         [Display(Name = "Phone Number")]
-        public string PhoneNumber { get; set; }
-        [Required(ErrorMessage = "CIC is required")]
+        public string? PhoneNumber { get; set; }
+        //[Required(ErrorMessage = "CIC is required")]
         [RegularExpression(@"^\d{12}$", ErrorMessage = "CIC must be exactly 12 digits")]
         [Display(Name = "CIC")]
-
-        public string CIC { get; set; }
+        public string? CIC { get; set; }
         public string? ImageURL { get; set; }
     }
 }

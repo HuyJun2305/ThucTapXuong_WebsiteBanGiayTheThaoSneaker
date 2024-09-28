@@ -9,6 +9,7 @@ namespace Data.Models
 {
     public class ProductDetailPromotion
     {
+        public Guid Id { get; set; }
         public string ProductDetailId { get; set; }
         public ProductDetail ProductDetail { get; set; }
 

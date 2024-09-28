@@ -1,14 +1,10 @@
 ﻿using Data.Models;
-using System;
-using System.Collections.Generic;
+using DataProcessing.Models;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DataProcessing.Models
+namespace API.DTO
 {
-    public class ProductDetail
+    public class ProductDetailDTO
     {
         public string Id { get; set; }
         [Required]
@@ -18,7 +14,6 @@ namespace DataProcessing.Models
         [Required]
         public float Weight { get; set; }
 
-
         public Guid ProductId { get; set; }
         public virtual Product Product { get; set; }
         public Guid ColorId { get; set; }
@@ -26,6 +21,5 @@ namespace DataProcessing.Models
         public Guid SizeId { get; set; }
         public virtual Size Size { get; set; }
 
-        //public virtual ICollection<ProductDetailPromotion>? ProductDetailPromotions { get; set; }
     }
 }

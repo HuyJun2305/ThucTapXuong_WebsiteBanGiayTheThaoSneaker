@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Data.ViewModels
 {
-    public class SignUpModel
+    public class CreateAccountModelcs
     {
         [Required]
         public string Name { get; set; } = null!;
