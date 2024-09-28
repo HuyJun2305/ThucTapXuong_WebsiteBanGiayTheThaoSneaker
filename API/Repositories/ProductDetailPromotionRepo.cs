@@ -1,7 +1,6 @@
 ﻿using API.Data;
 using API.IRepositories;
 using Data.Models;
-using DataProcessing.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories
@@ -15,36 +14,42 @@ namespace API.Repositories
             _context = context;
         }
 
-        public async  Task AddAsync(ProductDetailPromotion productDetailPromotion)
+        public async Task  AddAsync(ProductDetailPromotion productDetailPromotion)
         {
-            if (await GetByIdAsync(productDetailPromotion.Id) != null) throw new DuplicateWaitObjectException($"productDetailPromotion : {productDetailPromotion.Id} is existed!");
             await _context.ProductDetailPromotions.AddAsync(productDetailPromotion);
+            await _context.SaveChangesAsync();
         }
 
-        public Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(string productDetailId, Guid promotionId)
         {
-            throw new NotImplementedException();
+            var productDetailPromotion = await GetByIdAsync(productDetailId, promotionId);
+            if (productDetailPromotion != null)
+            {
+                _context.ProductDetailPromotions.Remove(productDetailPromotion);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task<IEnumerable<ProductDetailPromotion>> GetAllAsync()
         {
-            return await _context.ProductDetailPromotions.ToListAsync();
+            return await _context.ProductDetailPromotions
+           .Include(pd => pd.ProductDetail)
+           .Include(pd => pd.Promotion)
+           .ToListAsync();
         }
 
-        public async Task<ProductDetailPromotion> GetByIdAsync(Guid id)
+        public async Task<ProductDetailPromotion> GetByIdAsync(string productDetailId, Guid promotionId)
         {
-           return await _context.ProductDetailPromotions.FindAsync(id);
-        }
-
-        public async Task SaveChanges()
-        {
-            await _context.SaveChangesAsync();
+            return await _context.ProductDetailPromotions
+              .Include(pd => pd.ProductDetail)
+              .Include(pd => pd.Promotion)
+              .FirstOrDefaultAsync(pd => pd.ProductDetailId == productDetailId && pd.PromotionId == promotionId);
         }
 
         public async Task UpdateAsync(ProductDetailPromotion productDetailPromotion)
         {
-            if (await GetByIdAsync(productDetailPromotion.Id) == null) throw new KeyNotFoundException("Not found this Id!");
-            _context.Entry(productDetailPromotion).State = EntityState.Modified;
+            _context.ProductDetailPromotions.Update(productDetailPromotion);
+            await _context.SaveChangesAsync();
         }
     }
 }

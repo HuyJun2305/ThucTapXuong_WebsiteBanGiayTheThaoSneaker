@@ -14,12 +14,11 @@ namespace API.IRepositories
     }
     public interface IProductDetailPromotionRepos
     {
-        Task<ProductDetailPromotion> GetByIdAsync( Guid id);
+        Task<ProductDetailPromotion> GetByIdAsync(string productDetailId, Guid promotionId);
         Task<IEnumerable<ProductDetailPromotion>> GetAllAsync();
         Task AddAsync(ProductDetailPromotion productDetailPromotion);
         Task UpdateAsync(ProductDetailPromotion productDetailPromotion);
-        Task DeleteAsync(Guid id);
-        Task SaveChanges();
+        Task DeleteAsync(string productDetailId, Guid promotionId);
 
     }
 }

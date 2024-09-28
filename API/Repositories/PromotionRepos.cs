@@ -16,9 +16,9 @@ namespace API.Repositories
 
         public async Task Create(Promotion promotion)
         {
-           if(await GetPromotionById(promotion.Id) != null)
+           if(await GetPromotionById(promotion.Id) == null)
             {
-                throw new DuplicateWaitObjectException($"promotion : {promotion.Id} is existed!");
+                throw new DuplicateWaitObjectException($"Product : {promotion.Id} is existed!");
             }
            await _context.Promotions .AddAsync(promotion);
         }
@@ -30,7 +30,7 @@ namespace API.Repositories
             {
                 throw new KeyNotFoundException("Not found this Id!");
             }
-              _context.Promotions.Remove (deleteItem);
+             _context.Promotions.Remove (deleteItem);
         }
 
         public async Task<List<Promotion>> GetAllPromotion()

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DataProcessing.Models
@@ -77,7 +76,6 @@ namespace DataProcessing.Models
 
         // Trạng thái của chương trình khuyến mãi (true/false)
         public bool Status { get; set; }
-        [JsonIgnore]
-        public ICollection<ProductDetailPromotion>? ProductDetailPromotions { get; set; }
+        public ICollection<ProductDetailPromotion> ProductDetailPromotions { get; set; }
     }
 }

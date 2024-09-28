@@ -27,7 +27,5 @@ namespace View.Data
         public DbSet<DataProcessing.Models.Brand>? Brand { get; set; }
 
         public DbSet<DataProcessing.Models.Material>? Material { get; set; }
-
-        public DbSet<DataProcessing.Models.Promotion>? Promotion {  get; set; }
     }
 }

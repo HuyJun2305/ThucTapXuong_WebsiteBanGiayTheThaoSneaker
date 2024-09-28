@@ -36,11 +36,11 @@ namespace API.Controllers
 
         // GET: api/ProductDetailPromotions/{productDetailId}/{promotionId}
         [HttpGet("{productDetailId}/{promotionId}")]
-        public async Task<ActionResult<ProductDetailPromotion>> GetProductDetailPromotion(Guid id)
+        public async Task<ActionResult<ProductDetailPromotion>> GetProductDetailPromotion(string productDetailId, Guid promotionId)
         {
             try
             {
-                var productDetailPromotion = await _productDetailPromotionRepository.GetByIdAsync(id);
+                var productDetailPromotion = await _productDetailPromotionRepository.GetByIdAsync(productDetailId, promotionId);
                 if (productDetailPromotion == null)
                 {
                     return NotFound();
@@ -66,7 +66,6 @@ namespace API.Controllers
             try
             {
                 await _productDetailPromotionRepository.UpdateAsync(productDetailPromotion);
-                await _productDetailPromotionRepository.SaveChanges();
             }
             catch (KeyNotFoundException)
             {
@@ -86,9 +85,10 @@ namespace API.Controllers
         {
             try
             {
-               await _productDetailPromotionRepository.AddAsync(productDetailPromotion);
-                await _productDetailPromotionRepository.SaveChanges();
-                return Ok(productDetailPromotion);
+                await _productDetailPromotionRepository.AddAsync(productDetailPromotion);
+                return CreatedAtAction(nameof(GetProductDetailPromotion),
+                    new { productDetailId = productDetailPromotion.ProductDetailId, promotionId = productDetailPromotion.PromotionId },
+                    productDetailPromotion);
             }
             catch (Exception ex)
             {
@@ -98,12 +98,11 @@ namespace API.Controllers
 
         // DELETE: api/ProductDetailPromotions/{productDetailId}/{promotionId}
         [HttpDelete("{productDetailId}/{promotionId}")]
-        public async Task<IActionResult> DeleteProductDetailPromotion(Guid id)
+        public async Task<IActionResult> DeleteProductDetailPromotion(string productDetailId, Guid promotionId)
         {
             try
             {
-                await _productDetailPromotionRepository.DeleteAsync(id);
-                await _productDetailPromotionRepository.SaveChanges();
+                await _productDetailPromotionRepository.DeleteAsync(productDetailId, promotionId);
                 return NoContent();
             }
             catch (KeyNotFoundException)
