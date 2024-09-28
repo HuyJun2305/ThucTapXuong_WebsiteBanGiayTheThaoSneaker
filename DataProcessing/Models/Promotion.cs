@@ -1,9 +1,11 @@
 ﻿using Data.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DataProcessing.Models
@@ -67,7 +69,6 @@ namespace DataProcessing.Models
         [DataType(DataType.Date)]
         [CustomStartDateValidation(ErrorMessage = "Start date cannot be in the past.")]
         public DateTime StartDate { get; set; }
-
         // Ngày kết thúc khuyến mãi, phải sau ngày bắt đầu
         [Required(ErrorMessage = "End date is required")]
         [DataType(DataType.Date)]

@@ -1,11 +1,12 @@
+using API.Data;
+using DataProcessing.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using View.IServices;
 using View.Servicecs;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using View.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<ViewContext>(options =>
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ViewContext' not found.")));
 
 // Add services to the container.
@@ -16,7 +17,7 @@ builder.Services.AddHttpClient<ISoleServices, SoleServices>();
 builder.Services.AddHttpClient<IBrandServices, BrandServices>();
 builder.Services.AddHttpClient<ICategoryServices, CategoryServices>();
 builder.Services.AddHttpClient<IMaterialServices, MaterialServices>();
-
+builder.Services.AddHttpClient<IAccountService, AccountService>();
 builder.Services.AddHttpClient<ISizeServices, SizeServices>();
 builder.Services.AddHttpClient<IColorServices, ColorServices>();
 builder.Services.AddHttpClient<IImageServices, ImageServices>();

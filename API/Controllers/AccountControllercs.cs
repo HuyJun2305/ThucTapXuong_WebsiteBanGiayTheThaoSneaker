@@ -75,12 +75,12 @@ namespace API.Controllers
                 return BadRequest($"{ex.Message}");
             }
         }
-        [HttpGet("GetById-Employee")]
-        public async Task<IActionResult> GetEmployeeById(Guid idEmployee)
+        [HttpGet("GetById")]
+        public async Task<IActionResult> GetById(Guid idAccount)
         {
             try
             {
-                var result = await _repo.GetEmployeeById(idEmployee);
+                var result = await _repo.GetById(idAccount);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -88,25 +88,30 @@ namespace API.Controllers
                 return BadRequest($"{ex.Message}");
             }
         }
-        [HttpPut("Update-Employee")]
-        public async Task<IActionResult> UpdateEmployee(ApplicationUser employee)
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] ApplicationUser user)
         {
+            if (id != user.Id)
+            {
+                return BadRequest("User ID mismatch.");
+            }
+
             try
             {
-                var result = await _repo.UpdateEmployee(employee);
-                return Ok(result);
+                var updatedUser = await _repo.Update(user);
+                return Ok(updatedUser);
             }
             catch (Exception ex)
             {
-                return BadRequest($"{ex.Message}");
+                return BadRequest(ex.Message);
             }
         }
-        [HttpDelete("Delete-Employee")]
-        public async Task<IActionResult> DeleteEmployee(Guid idEmployee)
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> Delete(Guid idAccount)
         {
             try
             {
-                var result = await _repo.DeleteEmployee(idEmployee);
+                var result = await _repo.Delete(idAccount);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -127,45 +132,7 @@ namespace API.Controllers
                 return BadRequest($"{ex.Message}");
             }
         }
-        [HttpPut("Update-Customer")]
-        public async Task<IActionResult> UpdateCustomer(ApplicationUser customer)
-        {
-            try
-            {
-                var result = await _repo.UpdateCustomer(customer);
-                return Ok(result);
-            }
-            catch(Exception ex)
-            {
-                return BadRequest($"{ex.Message}");
-            }
-        }
-        [HttpDelete("Delete-Customer")]
-        public async Task<IActionResult> DeleteCustomer(Guid idCustomer)
-        {
-            try
-            {
-                var result = await _repo.DeleteCustomer(idCustomer);
-                return Ok(result);
-            }
-            catch(Exception ex)
-            {
-                return BadRequest($"{ex.Message}");
-            }
-        }
-        [HttpGet("GetById-Customer")]
-        public async Task<IActionResult> GetCustomerById( Guid idCustomer)
-        {
-            try
-            {
-                var result = await _repo.GetCustomerById(idCustomer);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"{ex.Message}");
-            }
-        }
+ 
         [HttpGet("Get-All-Customer")]
         public async Task<IActionResult> GetAllCustomer()
         {
