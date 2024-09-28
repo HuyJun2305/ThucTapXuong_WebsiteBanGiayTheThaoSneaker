@@ -133,9 +133,9 @@
                 @Html.DisplayFor(modelItem => item.AccessFailedCount)
             </td> *@
             <td>
-                    @Html.ActionLink("Update", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                    @Html.ActionLink("Update", "Edit", new { idAccount = item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { idAccount = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { idAccount = item.Id })
             </td>
         </tr>
 }

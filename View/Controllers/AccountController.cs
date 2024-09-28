@@ -1,8 +1,10 @@
-﻿using Data.ViewModels;
+﻿using API.Data;
+using Data.ViewModels;
 using DataProcessing.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using View.IServices;
 
 namespace View.Controllers
@@ -11,9 +13,10 @@ namespace View.Controllers
     {
         private readonly IAccountService _accountService;
 
-        public AccountController(IAccountService accountService)
+        public AccountController(IAccountService accountService  )
         {
             _accountService = accountService;
+
         }
         public async Task<IActionResult> ListCustomer()
         {
@@ -28,6 +31,10 @@ namespace View.Controllers
         public async Task<IActionResult> Details(Guid idAccount)
         {
             var account = await _accountService.GetById(idAccount);
+            if (account == null)
+            {
+                return NotFound(); 
+            }
             return View(account);
         }
             
@@ -56,6 +63,8 @@ namespace View.Controllers
                 return View();
             }
         }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateEmployee(CreateAccountModelcs account)
@@ -65,8 +74,9 @@ namespace View.Controllers
                 if (ModelState.IsValid)
                 {
                     await _accountService.CreateEmployee(account);
+                    return RedirectToAction("ListEmployee", "Account");
                 }
-                return RedirectToAction("ListEmployee", "Account");
+                return View(account);
             }
             catch
             {
