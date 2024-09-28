@@ -45,7 +45,7 @@ namespace View.Controllers
         // GET: ProductDetails/Create
         public IActionResult Create()
         {
-            ViewData["ColorId"] = new SelectList(_colorServices.GetAllColors().Result.Where(x => x.Status), "Id", "HEX"); ;
+            ViewData["ColorId"] = new SelectList(_colorServices.GetAllColors().Result.Where(x => x.Status), "Id", "Name"); ;
             ViewData["SizeId"] = new SelectList(_sizeServices.GetAllSizes().Result.Where(x => x.Status), "Id", "Value");
             ViewData["ProductId"] = new SelectList(_productServices.GetAllProducts().Result, "Id", "Name");
             return View();
@@ -63,7 +63,7 @@ namespace View.Controllers
                 await _productDetailService.Create(productDetail);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ColorId"] = new SelectList(_colorServices.GetAllColors().Result.Where(x => x.Status), "Id", "HEX"); ;
+            ViewData["ColorId"] = new SelectList(_colorServices.GetAllColors().Result.Where(x => x.Status), "Id", "Name"); ;
             ViewData["SizeId"] = new SelectList(_sizeServices.GetAllSizes().Result.Where(x => x.Status), "Id", "Value");
             ViewData["ProductId"] = new SelectList(_productServices.GetAllProducts().Result, "Id", "Name");
             return View(productDetail);
@@ -82,7 +82,7 @@ namespace View.Controllers
             {
                 return NotFound();
             }
-            ViewData["ColorId"] = new SelectList(_colorServices.GetAllColors().Result.Where(x => x.Status), "Id", "HEX"); ;
+            ViewData["ColorId"] = new SelectList(_colorServices.GetAllColors().Result.Where(x => x.Status), "Id", "Name"); ;
             ViewData["SizeId"] = new SelectList(_sizeServices.GetAllSizes().Result.Where(x => x.Status), "Id", "Value");
             ViewData["ProductId"] = new SelectList(_productServices.GetAllProducts().Result, "Id", "Name");
             return View(product);
@@ -112,7 +112,7 @@ namespace View.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ColorId"] = new SelectList(_colorServices.GetAllColors().Result.Where(x => x.Status), "Id", "HEX"); ;
+            ViewData["ColorId"] = new SelectList(_colorServices.GetAllColors().Result.Where(x => x.Status), "Id", "Name"); ;
             ViewData["SizeId"] = new SelectList(_sizeServices.GetAllSizes().Result.Where(x => x.Status), "Id", "Value");
             ViewData["ProductId"] = new SelectList(_productServices.GetAllProducts().Result, "Id", "Name");
             return View(productDetail);
