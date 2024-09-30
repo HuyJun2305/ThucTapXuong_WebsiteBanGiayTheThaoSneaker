@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240927031312_thanh")]
-    partial class thanh
+    [Migration("20240927181405_New_Db_Huy")]
+    partial class New_Db_Huy
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,6 +24,40 @@ namespace API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("API.DTO.ProductDetailDTO", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("ColorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SizeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Stock")
+                        .HasColumnType("int");
+
+                    b.Property<float>("Weight")
+                        .HasColumnType("real");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ColorId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SizeId");
+
+                    b.ToTable("ProductDetailDTO");
+                });
+
             modelBuilder.Entity("Data.Models.ProductDetailPromotion", b =>
                 {
                     b.Property<string>("ProductDetailId")
@@ -32,11 +66,14 @@ namespace API.Migrations
                     b.Property<Guid>("PromotionId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("ProductDetailId", "PromotionId");
 
                     b.HasIndex("PromotionId");
 
-                    b.ToTable("ProductDetailPromotion");
+                    b.ToTable("ProductDetailPromotions");
                 });
 
             modelBuilder.Entity("DataProcessing.Models.ApplicationUser", b =>
@@ -123,41 +160,41 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("09a5b961-fc41-4ce7-baca-a04d207441e9"),
+                            Id = new Guid("381dbc5a-70fc-4a8d-a39c-5824ed042dad"),
                             AccessFailedCount = 0,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CIC = "002204004364",
-                            ConcurrencyStamp = "aeb89c8e-b134-4206-9f33-acf67cdb042b",
+                            ConcurrencyStamp = "8f0ead4f-b15a-4398-aa19-d5bf2bde7e31",
                             Email = "admin@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             Name = "Admin User",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAENXyhFhmw6Rq9SYqOrifGDic10lU7++HRofEtua9R/nCUkeIuebCRrEiQAq5bn2Sqg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMCW722v4/rmFuoXzr5txwzGojqKn9hZh+Ep6oL6oCM8s/uJVOguFUMkH+cOAi3ZFg==",
                             PhoneNumber = "0123456789",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f8f5e05a-8a94-4b44-aee4-ee70e56d199d",
+                            SecurityStamp = "d4ac1773-762a-4d11-8c7e-d33a3902d6fa",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
                         new
                         {
-                            Id = new Guid("703141ae-4488-4a7e-aa22-7596a48d6b0c"),
+                            Id = new Guid("2ecf6c21-3395-494b-aaa8-58013db81ba6"),
                             AccessFailedCount = 0,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CIC = "004204004364",
-                            ConcurrencyStamp = "2af8bebf-4a10-4ad3-b28b-131d49f8afc5",
+                            ConcurrencyStamp = "9a2d31d7-8ea5-45a0-9c1f-945c0da1278c",
                             Email = "user@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             Name = "Regular User",
                             NormalizedEmail = "USER@EXAMPLE.COM",
                             NormalizedUserName = "USER@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEAaCvMpjidCycV2XuOJvXTjg+mXTZBXMq5oxnRY3pLMsRNkqACeZTjqPHi7MB2V4RA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEPgB6Sn4PW3cxG1AcxD1YddXPfP+Jf+LUUJR2vCUqbCu9oHCFPOzeG0ioLZFnIadqQ==",
                             PhoneNumber = "0987654321",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a9195600-af33-4498-9662-41b56d7c645e",
+                            SecurityStamp = "187c34dc-7722-4f85-8bec-4c1984dda600",
                             TwoFactorEnabled = false,
                             UserName = "user@example.com"
                         });
@@ -642,29 +679,29 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5e97789e-946b-4018-9791-a2e5c6093a0e"),
-                            ConcurrencyStamp = "5042fef7-922f-4289-9867-d9d43d296ac3",
+                            Id = new Guid("9d7606b3-037c-4617-b496-058413eca49a"),
+                            ConcurrencyStamp = "8fc6e7ea-2aa5-464b-b677-eb536dca3bef",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("a81c0ccc-b1d3-4077-b225-afc5c06122bd"),
-                            ConcurrencyStamp = "775cff15-3242-4a14-a141-00bb5f26192c",
+                            Id = new Guid("e0988fc3-989a-4316-a5ef-200a1914730b"),
+                            ConcurrencyStamp = "7ef3f4df-40bb-4fb6-a1ef-efa8b87d3ec9",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = new Guid("6aeee130-15aa-41c0-a9de-2ea98385e88a"),
-                            ConcurrencyStamp = "8122d6ee-a8dc-4a1b-90e6-1646309d06dd",
+                            Id = new Guid("f54d1bde-245e-4c28-b8dd-973319bebe5b"),
+                            ConcurrencyStamp = "2e1a9081-4c52-4f9c-aa61-9e0d54220aa0",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = new Guid("1bdda496-a934-4835-825f-188816859d44"),
-                            ConcurrencyStamp = "a9fe86f9-64ce-4b3a-b2ea-d37a28e263c2",
+                            Id = new Guid("7078785b-7807-444f-a586-7c686e2e1325"),
+                            ConcurrencyStamp = "c6992587-b558-4bd5-9f62-080d212a3811",
                             Name = "Guest",
                             NormalizedName = "GUEST"
                         });
@@ -756,13 +793,13 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("09a5b961-fc41-4ce7-baca-a04d207441e9"),
-                            RoleId = new Guid("5e97789e-946b-4018-9791-a2e5c6093a0e")
+                            UserId = new Guid("381dbc5a-70fc-4a8d-a39c-5824ed042dad"),
+                            RoleId = new Guid("9d7606b3-037c-4617-b496-058413eca49a")
                         },
                         new
                         {
-                            UserId = new Guid("703141ae-4488-4a7e-aa22-7596a48d6b0c"),
-                            RoleId = new Guid("a81c0ccc-b1d3-4077-b225-afc5c06122bd")
+                            UserId = new Guid("2ecf6c21-3395-494b-aaa8-58013db81ba6"),
+                            RoleId = new Guid("e0988fc3-989a-4316-a5ef-200a1914730b")
                         });
                 });
 
@@ -785,10 +822,37 @@ namespace API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("API.DTO.ProductDetailDTO", b =>
+                {
+                    b.HasOne("DataProcessing.Models.Color", "Color")
+                        .WithMany()
+                        .HasForeignKey("ColorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataProcessing.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataProcessing.Models.Size", "Size")
+                        .WithMany()
+                        .HasForeignKey("SizeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Color");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Size");
+                });
+
             modelBuilder.Entity("Data.Models.ProductDetailPromotion", b =>
                 {
                     b.HasOne("DataProcessing.Models.ProductDetail", "ProductDetail")
-                        .WithMany("ProductDetailPromotions")
+                        .WithMany()
                         .HasForeignKey("ProductDetailId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1016,11 +1080,6 @@ namespace API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("DataProcessing.Models.ProductDetail", b =>
-                {
-                    b.Navigation("ProductDetailPromotions");
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Promotion", b =>

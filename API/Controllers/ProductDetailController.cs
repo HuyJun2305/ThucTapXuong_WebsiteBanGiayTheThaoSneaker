@@ -65,7 +65,7 @@ namespace API.Controllers
                 return Problem(ex.Message);
             }
 
-            return CreatedAtAction("GetProductDetailDTO", new { id = productDetailDTO.Id }, productDetailDTO);
+            return CreatedAtAction("GetProductDetail", new { id = productDetailDTO.Id }, productDetailDTO);
         }
 
         // POST: api/ProductDetail
@@ -95,7 +95,7 @@ namespace API.Controllers
                 return Problem(ex.Message);
             }
 
-            return CreatedAtAction("GetProductDetailDTO", new { id = productDetailDTO.Id }, productDetailDTO);
+            return CreatedAtAction("GetProductDetail", new { id = productDetailDTO.Id }, productDetailDTO);
         }
 
         // DELETE: api/ProductDetail/5
@@ -105,7 +105,7 @@ namespace API.Controllers
             try
             {
                 await _productDetailRepos.Delete(id);
-                _productDetailRepos.SaveChanges();
+                await _productDetailRepos.SaveChanges();
             }
             catch (Exception ex)
             {

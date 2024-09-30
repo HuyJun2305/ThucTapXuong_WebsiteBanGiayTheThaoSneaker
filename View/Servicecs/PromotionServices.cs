@@ -1,4 +1,5 @@
 ﻿using DataProcessing.Models;
+using Newtonsoft.Json;
 using View.IServices;
 
 namespace View.Servicecs
@@ -14,27 +15,31 @@ namespace View.Servicecs
 
         public async Task Create(Promotion promotion)
         {
-            await _httpClient.PostAsJsonAsync("https://localhost:7170/api/", promotion);
+            await _httpClient.PostAsJsonAsync("https://localhost:44351/api/Promotions", promotion);
         }
 
-        public Task Delete(Guid id)
+        public async Task Delete(Guid id)
         {
-            throw new NotImplementedException();
+            await _httpClient.DeleteAsync($"https://localhost:44351/api/Promotions/{id}");
         }
 
-        public Task<List<Promotion>> GetAllPromotion()
+        public async Task<List<Promotion>?> GetAllPromotion()
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.GetStringAsync("https://localhost:44351/api/Promotions");
+            var listPromotion = JsonConvert.DeserializeObject<List<Promotion>>(response);
+            return listPromotion;
         }
 
-        public Task<Promotion> GetPromotionById(Guid id)
+        public async Task<Promotion?> GetPromotionById(Guid? id)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.GetStringAsync($"https://localhost:44351/api/Promotions/{id}");
+            var PromotionItem = JsonConvert.DeserializeObject<Promotion>(response);
+            return PromotionItem;
         }
 
-        public Task Update(Promotion promotion)
+        public async Task Update(Promotion promotion)
         {
-            throw new NotImplementedException();
+            await _httpClient.PutAsJsonAsync($"https://localhost:44351/api/Promotions/{promotion.Id}", promotion);
         }
     }
 }

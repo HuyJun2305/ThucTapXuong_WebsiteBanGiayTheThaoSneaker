@@ -77,12 +77,12 @@ namespace API.Repositories
 
 		public async Task<List<Image>> GetAllImage()
 		{
-			return await _context.Images.ToListAsync();
+			return await _context.Images.Include(i => i.Color).ToListAsync();
 		}
 
-		public async Task<Image> GetImageById(Guid id)
+		public async Task<Image?> GetImageById(Guid id)
 		{
-			return await _context.Images.FindAsync(id);
+			return await _context.Images.Include(i => i.Color).Where(i => i.Id == id).FirstOrDefaultAsync();
 		}
 
 		public async Task SaveChanges()
