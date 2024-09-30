@@ -224,8 +224,13 @@ namespace API.Repositories
                 var deleteItem = await _userManager.FindByIdAsync(idAccount.ToString());
                 if (deleteItem == null)
                 {
-                    throw new Exception("Nhân viên không tồn tại");
+                    throw new Exception("Not Found");
                 }
+                var hasOrders = _context.Orders.Any(o=>o.UserId == idAccount);
+                if(hasOrders)
+                {
+                    throw new Exception("Tài khoản đã có hóa đơn, không thể xóa");
+                }    
                 return await _userManager.DeleteAsync(deleteItem);
             }
             catch(Exception ex)
