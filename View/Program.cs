@@ -16,6 +16,7 @@ builder.Services.AddHttpClient<ISoleServices, SoleServices>();
 builder.Services.AddHttpClient<IBrandServices, BrandServices>();
 builder.Services.AddHttpClient<ICategoryServices, CategoryServices>();
 builder.Services.AddHttpClient<IMaterialServices, MaterialServices>();
+builder.Services.AddHttpClient<IVoucherServices, VoucherServices>();
 
 builder.Services.AddHttpClient<ISizeServices, SizeServices>();
 builder.Services.AddHttpClient<IColorServices, ColorServices>();
@@ -45,6 +46,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Voucher}/{action=Index}/{id?}");
 
 app.Run();

@@ -2,6 +2,7 @@
 using API.IRepositories;
 using DataProcessing.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing;
 
 namespace API.Repositories
 {
@@ -14,9 +15,9 @@ namespace API.Repositories
         }
         public async Task create(Voucher voucher)
         {
-            if (voucher == null) throw new ArgumentNullException(nameof(voucher));
-
+            if (await GetById(voucher.Id) != null) throw new DuplicateWaitObjectException($"Voucher : {voucher.Id} is existed!");
             await _context.Vouchers.AddAsync(voucher);
+            await _context.SaveChangesAsync();
         }
 
         public async Task delete(Guid id)
@@ -26,11 +27,12 @@ namespace API.Repositories
             if (_context.Orders.Any(o => o.VoucherId == id))
                 throw new Exception("This voucher is applied to one or more invoices and cannot be deleted!");
             _context.Vouchers.Remove(voucher);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<List<Voucher>> GetAll()
         {
-            return await _context.Vouchers.ToListAsync();
+            return _context.Vouchers.ToList();
         }
 
         public async Task<Voucher> GetById(Guid id)
@@ -47,6 +49,7 @@ namespace API.Repositories
             if(await  GetById(voucher.Id) == null)
                 throw new KeyNotFoundException("Not found this voucher!");
             _context.Entry(voucher).State = EntityState.Modified;   
+            await _context.SaveChangesAsync();
         }
     }
 }
