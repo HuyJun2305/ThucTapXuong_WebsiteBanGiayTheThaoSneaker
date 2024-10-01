@@ -112,7 +112,7 @@ namespace API.Controllers
                     .CountAsync(pd => pd.Id.StartsWith(baseId)); // Đếm số bản ghi có cùng tiền tố Id
 
                 // Tạo Id hoàn chỉnh với số tự sinh (bắt đầu từ 1)
-                string productDetailId = $"{baseId}0{count + 1}";
+                string productDetailId = $"{baseId}{count + 1}";
 
                 ProductDetail productDetail = new ProductDetail()
                 {
