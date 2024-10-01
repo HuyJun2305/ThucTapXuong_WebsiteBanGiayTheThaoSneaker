@@ -43,6 +43,8 @@ namespace API.Repositories
                 .FirstOrDefaultAsync();
         }
 
+
+
         public async Task SaveChanges()
         {
              await _context.SaveChangesAsync();
@@ -54,5 +56,8 @@ namespace API.Repositories
             _context.Entry(productDetail).State = EntityState.Modified;
 
         }
+
+
+
     }
 }
