@@ -107,25 +107,23 @@ namespace API.Repositories
         {
             try
             {
-                var existingUserByEmail = await _userManager.FindByEmailAsync(models.Email);
-                if (existingUserByEmail != null)
+                var existingUser = await _userManager.Users
+                           .FirstOrDefaultAsync(u => u.Email == models.Email ||
+                                                     u.PhoneNumber == models.PhoneNumber ||
+                                                     u.CIC == models.CIC);
+                if (existingUser != null)
                 {
-                    var errors = new List<IdentityError>
-            {
-                new IdentityError { Description = "Email already exists." }
-            };
-                    return IdentityResult.Failed(errors.ToArray());
-                }
+                    var errors = new List<IdentityError>();
 
-                // Kiểm tra xem số điện thoại đã tồn tại chưa
-                var existingUserByPhone = await _userManager.Users
-                    .FirstOrDefaultAsync(u => u.PhoneNumber == models.PhoneNumber);
-                if (existingUserByPhone != null)
-                {
-                    var errors = new List<IdentityError>
-            {
-                new IdentityError { Description = "Phone number already exists." }
-            };
+                    if (existingUser.Email == models.Email)
+                        errors.Add(new IdentityError { Description = "Email đã tồn tại." });
+
+                    if (existingUser.PhoneNumber == models.PhoneNumber)
+                        errors.Add(new IdentityError { Description = "Số điện thoại đã tồn tại." });
+
+                    if (existingUser.CIC == models.CIC)
+                        errors.Add(new IdentityError { Description = "CIC đã tồn tại." });
+
                     return IdentityResult.Failed(errors.ToArray());
                 }
 
@@ -244,6 +242,27 @@ namespace API.Repositories
         {
             try
             {
+                var existingUser = await _userManager.Users
+                    .FirstOrDefaultAsync(u => u.Email == models.Email ||
+                                              u.PhoneNumber == models.PhoneNumber ||
+                                              u.CIC == models.CIC);
+
+                if (existingUser != null)
+                {
+                    var errors = new List<IdentityError>();
+
+                    if (existingUser.Email == models.Email)
+                        errors.Add(new IdentityError { Description = "Email đã tồn tại." });
+
+                    if (existingUser.PhoneNumber == models.PhoneNumber)
+                        errors.Add(new IdentityError { Description = "Số điện thoại đã tồn tại." });
+
+                    if (existingUser.CIC == models.CIC)
+                        errors.Add(new IdentityError { Description = "CIC đã tồn tại." });
+
+                    return IdentityResult.Failed(errors.ToArray());
+                }
+
                 var account = new ApplicationUser
                 {
                     Id = Guid.NewGuid(),
@@ -253,14 +272,15 @@ namespace API.Repositories
                     UserName = models.Email,
                     Email = models.Email,
                     CIC = models.CIC
-
                 };
+
                 var result = await _userManager.CreateAsync(account, models.Password);
                 if (result.Succeeded)
                 {
                     await CreateCartForUser(account.Id);
-                    var roleResult = await _userManager.AddToRoleAsync(account, "Customer");
+                    await _userManager.AddToRoleAsync(account, "Customer");
                 }
+
                 return result;
             }
             catch (Exception ex)
