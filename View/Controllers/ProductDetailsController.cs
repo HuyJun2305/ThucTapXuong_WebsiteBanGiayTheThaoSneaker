@@ -60,7 +60,7 @@ namespace View.Controllers
         {
             if (productDetail.ProductId != null)
             {
-                await _productDetailService.Create(productDetail);
+                 await _productDetailService.Create(productDetail);
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ColorId"] = new SelectList(_colorServices.GetAllColors().Result.Where(x => x.Status), "Id", "HEX"); ;
