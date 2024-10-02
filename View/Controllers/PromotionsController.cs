@@ -28,7 +28,7 @@ namespace View.Controllers
         public async Task<IActionResult> Index()
         {
             var viewContext = _PromotionSer.GetAllPromotion().Result;
-            if (viewContext == null) return View("'Product is null!'");
+            if (viewContext == null) return View("'Promotion is null!'");
             return View(viewContext.ToList());
         }
 
@@ -123,9 +123,6 @@ namespace View.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //private bool PromotionExists(Guid id)
-        //{
-        //  return (_context.Promotion?.Any(e => e.Id == id)).GetValueOrDefault();
-        //}
+
     }
 }

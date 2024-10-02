@@ -35,6 +35,7 @@ builder.Services.AddScoped<IColorRepo, ColorRepo>();
 builder.Services.AddScoped<ISizeRepo, SizeRepo>();
 builder.Services.AddScoped<IImageRepo, ImageRepo>();
 builder.Services.AddScoped<ISelectedImageRepo, SelectedImageRepo>();
+builder.Services.AddScoped<IShippingUnitRepos, ShippingUnitRepos>();
 
 builder.Services.AddAuthentication(options =>
 {

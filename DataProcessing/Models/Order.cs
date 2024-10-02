@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -35,10 +36,12 @@ namespace DataProcessing.Models
         [Required]
         public string PaymentMethod { get; set; }
         public string Status { get; set; }
-
+        
         public Guid UserId { get; set; }
         public virtual ApplicationUser User { get; set; }
         public Guid VoucherId { get; set; }
         public virtual Voucher Voucher { get; set; }
+        public Guid ShippingUnitID { get; set; }
+        public virtual ShippingUnit ShippingUnit { get; set; }
     }
 }
