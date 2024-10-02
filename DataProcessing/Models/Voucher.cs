@@ -33,7 +33,7 @@ namespace DataProcessing.Models
         public decimal DiscountPercent { get; set; }
 
         // Điều kiện áp dụng voucher (không bắt buộc nhưng có thể có độ dài giới hạn)
-        [StringLength(500, ErrorMessage = "Condition cannot be longer than 500 characters")]
+        //[StringLength(500, ErrorMessage = "Condition cannot be longer than 500 characters")]
         public string Condittion { get; set; }
 
         // Số lượng tồn kho phải là số nguyên dương hoặc bằng 0
