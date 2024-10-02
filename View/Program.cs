@@ -21,7 +21,7 @@ builder.Services.AddHttpClient<ISizeServices, SizeServices>();
 builder.Services.AddHttpClient<IColorServices, ColorServices>();
 builder.Services.AddHttpClient<IImageServices, ImageServices>();
 builder.Services.AddHttpClient<ISelectedImageServices, SelectedImageServices>();
-
+builder.Services.AddHttpClient<IShippingUnitServices, ShippingUnitServices>();
 //
 builder.Services.AddHttpClient<IProductDetailService, ProductDetailService>();
 
@@ -45,6 +45,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Promotions}/{action=Index}/{id?}");
+    pattern: "{controller=ShippingUnits}/{action=Index}/{id?}");
 
 app.Run();

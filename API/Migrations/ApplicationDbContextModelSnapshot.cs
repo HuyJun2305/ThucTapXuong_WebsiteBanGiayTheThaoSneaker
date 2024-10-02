@@ -44,6 +44,43 @@ namespace API.Migrations
                     b.ToTable("ProductDetailPromotions");
                 });
 
+            modelBuilder.Entity("Data.Models.ShippingUnit", b =>
+                {
+                    b.Property<Guid>("ShippingUnitID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Website")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ShippingUnitID");
+
+                    b.ToTable("ShippingUnits");
+                });
+
             modelBuilder.Entity("DataProcessing.Models.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
@@ -286,6 +323,9 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("ShippingUnitID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -300,6 +340,8 @@ namespace API.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ShippingUnitID");
 
                     b.HasIndex("UserId");
 
@@ -768,6 +810,12 @@ namespace API.Migrations
 
             modelBuilder.Entity("DataProcessing.Models.Order", b =>
                 {
+                    b.HasOne("Data.Models.ShippingUnit", "ShippingUnit")
+                        .WithMany("Orders")
+                        .HasForeignKey("ShippingUnitID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DataProcessing.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -779,6 +827,8 @@ namespace API.Migrations
                         .HasForeignKey("VoucherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ShippingUnit");
 
                     b.Navigation("User");
 
@@ -937,6 +987,11 @@ namespace API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Data.Models.ShippingUnit", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("DataProcessing.Models.ProductDetail", b =>
