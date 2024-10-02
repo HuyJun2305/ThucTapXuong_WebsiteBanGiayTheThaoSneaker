@@ -5,9 +5,10 @@ namespace API.IRepositories
     public interface IVoucherRepos
     {
         Task<List<Voucher>> GetAll();
-        Task<Voucher> GetById(int id);
+        Task<Voucher> GetById(Guid id);
         Task create(Voucher voucher);
         Task update(Voucher voucher);
-        Task delete(int id);
+        Task delete(Guid id);
+        Task SaveChanges();
     }
 }
