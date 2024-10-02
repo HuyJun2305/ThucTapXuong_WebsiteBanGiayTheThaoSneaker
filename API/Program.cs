@@ -31,6 +31,9 @@ builder.Services.AddScoped<IBrandRepo, BrandRepos>();
 builder.Services.AddScoped<IMaterialRepo, MaterialRepos>();
 builder.Services.AddScoped<IPromotionRepos, PromotionRepos>();
 builder.Services.AddScoped<IProductDetailPromotionRepos, ProductDetailPromotionRepo>();
+
+builder.Services.AddScoped<IVoucherRepos, VoucherRepos>();
+
 builder.Services.AddScoped<IColorRepo, ColorRepo>();
 builder.Services.AddScoped<ISizeRepo, SizeRepo>();
 builder.Services.AddScoped<IImageRepo, ImageRepo>();
