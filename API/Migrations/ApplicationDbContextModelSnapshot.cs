@@ -53,7 +53,7 @@ namespace API.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Birthday")
+                    b.Property<DateTime?>("Birthday")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CIC")
@@ -72,6 +72,9 @@ namespace API.Migrations
 
                     b.Property<string>("ImageURL")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsSubscribedToNews")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -123,48 +126,6 @@ namespace API.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("994cf7f9-6fff-46c7-923b-afad2ed825ea"),
-                            AccessFailedCount = 0,
-                            Birthday = new DateTime(1990, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CIC = "002204004364",
-                            ConcurrencyStamp = "6ac353d0-a7f3-46d4-b11c-f8f2172a650e",
-                            Email = "admin@example.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = true,
-                            Name = "Admin User",
-                            NormalizedEmail = "ADMIN@EXAMPLE.COM",
-                            NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGJH556wVrT+boDXJBNKm6HZvz6faC5Icko9GmFj5kxNb/D19bWLAy0JpJQjXmVqyg==",
-                            PhoneNumber = "0123456789",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "cf5a7359-66f9-4a86-9bbb-ff0b76530438",
-                            TwoFactorEnabled = false,
-                            UserName = "admin@example.com"
-                        },
-                        new
-                        {
-                            Id = new Guid("227fdace-e3fb-4d7d-88df-eee6f66e6cc1"),
-                            AccessFailedCount = 0,
-                            Birthday = new DateTime(1990, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CIC = "004204004364",
-                            ConcurrencyStamp = "a2a9539c-140c-4e24-b4c3-2ee426c4c4f7",
-                            Email = "user@example.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = true,
-                            Name = "Regular User",
-                            NormalizedEmail = "USER@EXAMPLE.COM",
-                            NormalizedUserName = "USER@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGaO8veYyMsFpk7X3tBZgwSMsX1zDfpBwtnlC0qCe/CiHQ9vv0ektp1mzuX7RjdFsw==",
-                            PhoneNumber = "0987654321",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "a63ddff6-243c-4a36-b8ed-3dfd76b6f496",
-                            TwoFactorEnabled = false,
-                            UserName = "user@example.com"
-                        });
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Brand", b =>
@@ -577,8 +538,7 @@ namespace API.Migrations
 
                     b.Property<string>("Condittion")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("DiscountAmount")
                         .HasColumnType("decimal(18,2)");
@@ -642,36 +602,6 @@ namespace API.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("1c199a9c-bca9-42f3-ba7a-a8e43092f7a5"),
-                            ConcurrencyStamp = "db88786e-5f50-4516-8709-fca8b5d5fc76",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = new Guid("209af651-c1c2-438f-99e2-dcf6638f8500"),
-                            ConcurrencyStamp = "c813228e-3616-481d-828e-7396f3594af6",
-                            Name = "Customer",
-                            NormalizedName = "CUSTOMER"
-                        },
-                        new
-                        {
-                            Id = new Guid("a8550598-9865-4ff8-acdd-43f132ba63c7"),
-                            ConcurrencyStamp = "22f0aa7e-16d6-4372-9e7b-83753a85321d",
-                            Name = "Employee",
-                            NormalizedName = "EMPLOYEE"
-                        },
-                        new
-                        {
-                            Id = new Guid("d823bded-f661-4ee8-99e1-e604ae8f8547"),
-                            ConcurrencyStamp = "dd169d26-3fc1-4bdc-bd61-9652e1bdc888",
-                            Name = "Guest",
-                            NormalizedName = "GUEST"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -756,18 +686,6 @@ namespace API.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = new Guid("994cf7f9-6fff-46c7-923b-afad2ed825ea"),
-                            RoleId = new Guid("1c199a9c-bca9-42f3-ba7a-a8e43092f7a5")
-                        },
-                        new
-                        {
-                            UserId = new Guid("227fdace-e3fb-4d7d-88df-eee6f66e6cc1"),
-                            RoleId = new Guid("209af651-c1c2-438f-99e2-dcf6638f8500")
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>

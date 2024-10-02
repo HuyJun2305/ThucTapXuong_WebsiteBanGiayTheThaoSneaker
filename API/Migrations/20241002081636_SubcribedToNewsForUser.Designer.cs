@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240928081934_db")]
-    partial class db
+    [Migration("20241002081636_SubcribedToNewsForUser")]
+    partial class SubcribedToNewsForUser
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,40 +23,6 @@ namespace API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("API.DTO.ProductDetailDTO", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<Guid>("ColorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("SizeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Stock")
-                        .HasColumnType("int");
-
-                    b.Property<float>("Weight")
-                        .HasColumnType("real");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ColorId");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("SizeId");
-
-                    b.ToTable("ProductDetailDTO");
-                });
 
             modelBuilder.Entity("Data.Models.ProductDetailPromotion", b =>
                 {
@@ -89,11 +55,10 @@ namespace API.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Birthday")
+                    b.Property<DateTime?>("Birthday")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CIC")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -109,6 +74,9 @@ namespace API.Migrations
 
                     b.Property<string>("ImageURL")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsSubscribedToNews")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -572,8 +540,7 @@ namespace API.Migrations
 
                     b.Property<string>("Condittion")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("DiscountAmount")
                         .HasColumnType("decimal(18,2)");
@@ -742,37 +709,10 @@ namespace API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("API.DTO.ProductDetailDTO", b =>
-                {
-                    b.HasOne("DataProcessing.Models.Color", "Color")
-                        .WithMany()
-                        .HasForeignKey("ColorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataProcessing.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataProcessing.Models.Size", "Size")
-                        .WithMany()
-                        .HasForeignKey("SizeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Color");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Size");
-                });
-
             modelBuilder.Entity("Data.Models.ProductDetailPromotion", b =>
                 {
                     b.HasOne("DataProcessing.Models.ProductDetail", "ProductDetail")
-                        .WithMany()
+                        .WithMany("ProductDetailPromotions")
                         .HasForeignKey("ProductDetailId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1000,6 +940,11 @@ namespace API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.ProductDetail", b =>
+                {
+                    b.Navigation("ProductDetailPromotions");
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Promotion", b =>
