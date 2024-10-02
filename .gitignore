@@ -1,2 +1,4 @@
 
 /.vs
+/API/appsettings.json
+/View/appsettings.json

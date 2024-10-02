@@ -3,6 +3,7 @@ using View.Servicecs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using View.Data;
+using API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ViewContext>(options =>
@@ -22,6 +23,7 @@ builder.Services.AddHttpClient<IColorServices, ColorServices>();
 builder.Services.AddHttpClient<IImageServices, ImageServices>();
 builder.Services.AddHttpClient<ISelectedImageServices, SelectedImageServices>();
 builder.Services.AddHttpClient<IAccountService, AccountService>();
+builder.Services.AddHttpClient<IShippingUnitServices, ShippingUnitServices>();
 //
 builder.Services.AddHttpClient<IProductDetailService, ProductDetailService>();
 
