@@ -9,35 +9,31 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = API
 build_property.RootNamespace = API
-build_property.ProjectDir = C:\Users\tongv\OneDrive\Documents\GitHub\ThucTapXuong_WebsiteBanGiayTheThaoSneaker\API\
+build_property.ProjectDir = C:\Users\giapt\OneDrive\Documents\GitHub\ThucTapXuong_WebsiteBanGiayTheThaoSneaker\API\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\tongv\OneDrive\Documents\GitHub\ThucTapXuong_WebsiteBanGiayTheThaoSneaker\API
+build_property.MSBuildProjectDirectory = C:\Users\giapt\OneDrive\Documents\GitHub\ThucTapXuong_WebsiteBanGiayTheThaoSneaker\API
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/tongv/OneDrive/Documents/GitHub/ThucTapXuong_WebsiteBanGiayTheThaoSneaker/API/Views/ProductDetailDTOes/Create.cshtml]
+[C:/Users/giapt/OneDrive/Documents/GitHub/ThucTapXuong_WebsiteBanGiayTheThaoSneaker/API/Views/ProductDetailDTOes/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdERldGFpbERUT2VzXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tongv/OneDrive/Documents/GitHub/ThucTapXuong_WebsiteBanGiayTheThaoSneaker/API/Views/ProductDetailDTOes/Delete.cshtml]
+[C:/Users/giapt/OneDrive/Documents/GitHub/ThucTapXuong_WebsiteBanGiayTheThaoSneaker/API/Views/ProductDetailDTOes/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdERldGFpbERUT2VzXERlbGV0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tongv/OneDrive/Documents/GitHub/ThucTapXuong_WebsiteBanGiayTheThaoSneaker/API/Views/ProductDetailDTOes/Details.cshtml]
+[C:/Users/giapt/OneDrive/Documents/GitHub/ThucTapXuong_WebsiteBanGiayTheThaoSneaker/API/Views/ProductDetailDTOes/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdERldGFpbERUT2VzXERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tongv/OneDrive/Documents/GitHub/ThucTapXuong_WebsiteBanGiayTheThaoSneaker/API/Views/ProductDetailDTOes/Edit.cshtml]
+[C:/Users/giapt/OneDrive/Documents/GitHub/ThucTapXuong_WebsiteBanGiayTheThaoSneaker/API/Views/ProductDetailDTOes/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdERldGFpbERUT2VzXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tongv/OneDrive/Documents/GitHub/ThucTapXuong_WebsiteBanGiayTheThaoSneaker/API/Views/ProductDetailDTOes/Index.cshtml]
+[C:/Users/giapt/OneDrive/Documents/GitHub/ThucTapXuong_WebsiteBanGiayTheThaoSneaker/API/Views/ProductDetailDTOes/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdERldGFpbERUT2VzXEluZGV4LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/tongv/OneDrive/Documents/GitHub/ThucTapXuong_WebsiteBanGiayTheThaoSneaker/API/Views/Shared/_ValidationScriptsPartial.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
