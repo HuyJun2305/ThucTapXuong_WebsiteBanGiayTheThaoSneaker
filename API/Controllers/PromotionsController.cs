@@ -61,16 +61,20 @@ namespace API.Controllers
 
         // PUT: api/Promotions/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPromotion(Guid id, Promotion promotion)
+        public async Task<IActionResult> PutPromotion( Promotion promotion)
         {
-            if (id != promotion.Id)
-            {
-                return BadRequest(new { message = "Promotion ID mismatch." });
-            }
-
+           
             try
             {
-                await _PromorionRepos.Update(promotion);
+                var promotionupdate = await _PromorionRepos.GetPromotionById(promotion.Id);
+                promotionupdate.Name = promotion.Name;
+                promotionupdate.ProductDetailPromotions = promotion.ProductDetailPromotions;
+                promotionupdate.StartDate = promotion.StartDate;
+                promotionupdate.EndDate = promotion.EndDate;
+                promotionupdate.DiscountValue = promotion.DiscountValue;
+                promotionupdate.Status = promotion.Status;
+
+                await _PromorionRepos.Update(promotionupdate);
                 await _PromorionRepos.SaveChanges();
             }
             catch (KeyNotFoundException)
@@ -91,9 +95,9 @@ namespace API.Controllers
         {
             try
             {
-                await _PromorionRepos.Create(promotion);
+               await _PromorionRepos.Create(promotion);
                 await _PromorionRepos.SaveChanges();
-                return CreatedAtAction(nameof(GetPromotion), new { id = promotion.Id }, promotion);
+                return Ok(promotion);
 
             }
             catch (Exception ex)

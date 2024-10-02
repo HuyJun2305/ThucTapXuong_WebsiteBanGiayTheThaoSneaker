@@ -15,7 +15,7 @@ namespace DataProcessing.Models
         [StringLength(100, ErrorMessage = "Name cannot be longer than 100 characters")]
         public string? Name { get; set; }
 
-        [Required(ErrorMessage = "Birthday is required")]
+        //[Required(ErrorMessage = "Birthday is required")]
         [DataType(DataType.Date)]
         [Display(Name = "Date of Birth")]
         public DateTime? Birthday { get; set; }

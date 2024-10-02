@@ -107,6 +107,28 @@ namespace API.Repositories
         {
             try
             {
+                var existingUserByEmail = await _userManager.FindByEmailAsync(models.Email);
+                if (existingUserByEmail != null)
+                {
+                    var errors = new List<IdentityError>
+            {
+                new IdentityError { Description = "Email already exists." }
+            };
+                    return IdentityResult.Failed(errors.ToArray());
+                }
+
+                // Kiểm tra xem số điện thoại đã tồn tại chưa
+                var existingUserByPhone = await _userManager.Users
+                    .FirstOrDefaultAsync(u => u.PhoneNumber == models.PhoneNumber);
+                if (existingUserByPhone != null)
+                {
+                    var errors = new List<IdentityError>
+            {
+                new IdentityError { Description = "Phone number already exists." }
+            };
+                    return IdentityResult.Failed(errors.ToArray());
+                }
+
                 var account = new ApplicationUser
                 {
                     Id = Guid.NewGuid(),
@@ -121,7 +143,7 @@ namespace API.Repositories
                 var result = await _userManager.CreateAsync(account, models.Password);
                 if (result.Succeeded)
                 {
-                    await CreateCartForUser(account.Id);
+                    //await CreateCartForUser(account.Id);
                     var roleResult = await _userManager.AddToRoleAsync(account, "Employee");
                 }
                 return result;
@@ -158,55 +180,58 @@ namespace API.Repositories
             }
         }
 
-        public async Task<ApplicationUser> GetEmployeeById(Guid idEmployee)
+        public async Task<ApplicationUser> GetById(Guid idAccount)
         {
             try
             {
-                return await _userManager.FindByIdAsync(idEmployee.ToString());
+                return await _userManager.FindByIdAsync(idAccount.ToString());
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Lỗi khi lấy thông tin nhân viên: {ex.Message}");
+                Console.WriteLine($"Lỗi khi lấy thông tin {ex.Message}");
                 throw;
             }
         }
 
-        public async Task<IdentityResult> UpdateEmployee(ApplicationUser employee)
+        public async Task<ApplicationUser> Update(ApplicationUser account )
         {
-            try
+            var existingUser = await _userManager.FindByIdAsync(account.Id.ToString());
+            if (existingUser == null)
             {
-                var existingEmployee = await _userManager.FindByIdAsync(employee.Id.ToString());
-                if(existingEmployee == null)
-                {
-                    throw new Exception("Nhân viên không tồn tại");
-                }
-                existingEmployee.Name = employee.Name;
-                existingEmployee.Email = employee.Email;
-                existingEmployee.PhoneNumber= employee.PhoneNumber;
-                existingEmployee.UserName = employee.UserName;
-                existingEmployee.CIC=employee.CIC;
-                existingEmployee.Birthday=employee.Birthday;
-                existingEmployee.PasswordHash=employee.PasswordHash;
+                throw new Exception("User not found");
+            }
 
-                return await _userManager.UpdateAsync(existingEmployee);
-            }
-            catch(Exception ex)
+            existingUser.Name = account.Name;
+            existingUser.Birthday = account.Birthday;
+            existingUser.PhoneNumber = account.PhoneNumber;
+            existingUser.CIC = account.CIC;
+            existingUser.ImageURL = account.ImageURL;
+
+            var result = await _userManager.UpdateAsync(existingUser);
+            if (result.Succeeded)
             {
-                Console.WriteLine($"Error : {ex.Message}"); 
-                throw;
+                return existingUser; // Trả về user đã cập nhật
             }
+
+            // Xử lý lỗi nếu cần
+            throw new Exception("Update failed: " + string.Join(", ", result.Errors.Select(e => e.Description)));
         }
 
-        public async Task<IdentityResult> DeleteEmployee(Guid idEmployee)
+        public async Task<IdentityResult> Delete(Guid idAccount)
         {
             try
             {
-                var deleteEmployee = await _userManager.FindByIdAsync(idEmployee.ToString());
-                if (deleteEmployee == null)
+                var deleteItem = await _userManager.FindByIdAsync(idAccount.ToString());
+                if (deleteItem == null)
                 {
-                    throw new Exception("Nhân viên không tồn tại");
+                    throw new Exception("Not Found");
                 }
-                return await _userManager.DeleteAsync(deleteEmployee);
+                var hasOrders = _context.Orders.Any(o=>o.UserId == idAccount);
+                if(hasOrders)
+                {
+                    throw new Exception("Tài khoản đã có hóa đơn, không thể xóa");
+                }    
+                return await _userManager.DeleteAsync(deleteItem);
             }
             catch(Exception ex)
             {
@@ -245,62 +270,62 @@ namespace API.Repositories
             }
         }
 
-        public async Task<IdentityResult> UpdateCustomer(ApplicationUser customer)
-        {
-            try
-            {
-                var existingCustomer = await _userManager.FindByIdAsync(customer.Id.ToString());
-                if (existingCustomer == null)
-                {
-                    throw new Exception("Nhân viên không tồn tại");
-                }
-                existingCustomer.Name = customer.Name;
-                existingCustomer.Email = customer.Email;
-                existingCustomer.PhoneNumber = customer.PhoneNumber;
-                existingCustomer.UserName = customer.UserName;
-                existingCustomer.CIC = customer.CIC;
-                existingCustomer.Birthday = customer.Birthday;
-                existingCustomer.PasswordHash = customer.PasswordHash;
+        //public async Task<IdentityResult> UpdateCustomer(ApplicationUser customer)
+        //{
+        //    try
+        //    {
+        //        var existingCustomer = await _userManager.FindByIdAsync(customer.Id.ToString());
+        //        if (existingCustomer == null)
+        //        {
+        //            throw new Exception("Nhân viên không tồn tại");
+        //        }
+        //        existingCustomer.Name = customer.Name;
+        //        existingCustomer.Email = customer.Email;
+        //        existingCustomer.PhoneNumber = customer.PhoneNumber;
+        //        existingCustomer.UserName = customer.UserName;
+        //        existingCustomer.CIC = customer.CIC;
+        //        existingCustomer.Birthday = customer.Birthday;
+        //        existingCustomer.PasswordHash = customer.PasswordHash;
 
-                return await _userManager.UpdateAsync(existingCustomer);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error : {ex.Message}");
-                throw;
-            }
-        }
+        //        return await _userManager.UpdateAsync(existingCustomer);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"Error : {ex.Message}");
+        //        throw;
+        //    }
+        //}
 
-        public async Task<IdentityResult> DeleteCustomer(Guid idCustomer)
-        {
-            try
-            {
-                var deleteCustomer = await _userManager.FindByIdAsync(idCustomer.ToString());
-                if (deleteCustomer == null)
-                {
-                    throw new Exception("Khách hàng không tồn tại");
-                }
-                return await _userManager.DeleteAsync(deleteCustomer);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"{ex.Message}");
-                throw;
-            }
-        }
+        //public async Task<IdentityResult> DeleteCustomer(Guid idCustomer)
+        //{
+        //    try
+        //    {
+        //        var deleteCustomer = await _userManager.FindByIdAsync(idCustomer.ToString());
+        //        if (deleteCustomer == null)
+        //        {
+        //            throw new Exception("Khách hàng không tồn tại");
+        //        }
+        //        return await _userManager.DeleteAsync(deleteCustomer);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"{ex.Message}");
+        //        throw;
+        //    }
+        //}
 
-        public async Task<ApplicationUser> GetCustomerById(Guid idCustomer)
-        {
-            try
-            {
-                return await _userManager.FindByIdAsync(idCustomer.ToString());
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"{ex.Message}");
-                throw;
-            }
-        }
+        //public async Task<ApplicationUser> GetCustomerById(Guid idCustomer)
+        //{
+        //    try
+        //    {
+        //        return await _userManager.FindByIdAsync(idCustomer.ToString());
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"{ex.Message}");
+        //        throw;
+        //    }
+        //}
 
         public async Task<List<ApplicationUser>> GetAllCustomer()
         {

@@ -16,14 +16,14 @@ builder.Services.AddHttpClient<ISoleServices, SoleServices>();
 builder.Services.AddHttpClient<IBrandServices, BrandServices>();
 builder.Services.AddHttpClient<ICategoryServices, CategoryServices>();
 builder.Services.AddHttpClient<IMaterialServices, MaterialServices>();
+builder.Services.AddHttpClient<IPromotionServices, PromotionServices>();
 builder.Services.AddHttpClient<IVoucherServices, VoucherServices>();
-
 builder.Services.AddHttpClient<ISizeServices, SizeServices>();
 builder.Services.AddHttpClient<IColorServices, ColorServices>();
 builder.Services.AddHttpClient<IImageServices, ImageServices>();
 builder.Services.AddHttpClient<ISelectedImageServices, SelectedImageServices>();
-
-
+builder.Services.AddHttpClient<IAccountService, AccountService>();
+//
 builder.Services.AddHttpClient<IProductDetailService, ProductDetailService>();
 
 

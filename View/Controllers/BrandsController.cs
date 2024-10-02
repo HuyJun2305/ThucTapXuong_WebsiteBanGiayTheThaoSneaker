@@ -136,7 +136,6 @@ namespace View.Controllers
 
         // POST: Brands/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             if (_brandServices.GetAllBrands() == null)
@@ -146,7 +145,7 @@ namespace View.Controllers
 
             await _brandServices.Delete(id);
 
-            return RedirectToAction(nameof(Index));
+			return RedirectToAction(nameof(Index));
         }
     }
 }
