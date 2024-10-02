@@ -34,11 +34,15 @@ namespace API.Repositories
         public async Task<string> SignInAsync(SignInModel signInModel)
         {
             var user = await _userManager.FindByEmailAsync(signInModel.Email);
-            var passwordValid = await _userManager.CheckPasswordAsync(user, signInModel.Password);
-
-            if (user == null || !passwordValid)
+            if (user == null) 
             {
-                return string.Empty;
+                return null; 
+            }
+
+            var passwordValid = await _userManager.CheckPasswordAsync(user, signInModel.Password);
+            if (!passwordValid)
+            {
+                return null;
             }
 
             var authClaim = new List<Claim>
@@ -92,6 +96,10 @@ namespace API.Repositories
                 throw;
                 
             }
+        }
+        public async Task SignOutAsync()
+        {
+            await _signInManager.SignOutAsync();
         }
         private async Task CreateCartForUser(Guid userId)
         {
@@ -154,7 +162,6 @@ namespace API.Repositories
 
             }
         }
-
         public async Task<List<ApplicationUser>> GetAllEmployee()
         {
             try
@@ -208,13 +215,10 @@ namespace API.Repositories
             var result = await _userManager.UpdateAsync(existingUser);
             if (result.Succeeded)
             {
-                return existingUser; // Trả về user đã cập nhật
+                return existingUser;
             }
-
-            // Xử lý lỗi nếu cần
             throw new Exception("Update failed: " + string.Join(", ", result.Errors.Select(e => e.Description)));
         }
-
         public async Task<IdentityResult> Delete(Guid idAccount)
         {
             try
@@ -237,7 +241,6 @@ namespace API.Repositories
                 throw;
             }
         }
-
         public async Task<IdentityResult> CreateCustomer(CreateAccountModelcs models)
         {
             try
@@ -289,64 +292,6 @@ namespace API.Repositories
                 throw;
             }
         }
-
-        //public async Task<IdentityResult> UpdateCustomer(ApplicationUser customer)
-        //{
-        //    try
-        //    {
-        //        var existingCustomer = await _userManager.FindByIdAsync(customer.Id.ToString());
-        //        if (existingCustomer == null)
-        //        {
-        //            throw new Exception("Nhân viên không tồn tại");
-        //        }
-        //        existingCustomer.Name = customer.Name;
-        //        existingCustomer.Email = customer.Email;
-        //        existingCustomer.PhoneNumber = customer.PhoneNumber;
-        //        existingCustomer.UserName = customer.UserName;
-        //        existingCustomer.CIC = customer.CIC;
-        //        existingCustomer.Birthday = customer.Birthday;
-        //        existingCustomer.PasswordHash = customer.PasswordHash;
-
-        //        return await _userManager.UpdateAsync(existingCustomer);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"Error : {ex.Message}");
-        //        throw;
-        //    }
-        //}
-
-        //public async Task<IdentityResult> DeleteCustomer(Guid idCustomer)
-        //{
-        //    try
-        //    {
-        //        var deleteCustomer = await _userManager.FindByIdAsync(idCustomer.ToString());
-        //        if (deleteCustomer == null)
-        //        {
-        //            throw new Exception("Khách hàng không tồn tại");
-        //        }
-        //        return await _userManager.DeleteAsync(deleteCustomer);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"{ex.Message}");
-        //        throw;
-        //    }
-        //}
-
-        //public async Task<ApplicationUser> GetCustomerById(Guid idCustomer)
-        //{
-        //    try
-        //    {
-        //        return await _userManager.FindByIdAsync(idCustomer.ToString());
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"{ex.Message}");
-        //        throw;
-        //    }
-        //}
-
         public async Task<List<ApplicationUser>> GetAllCustomer()
         {
             try

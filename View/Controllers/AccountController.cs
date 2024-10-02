@@ -18,6 +18,55 @@ namespace View.Controllers
             _accountService = accountService;
 
         }
+        public async Task<IActionResult> Login()
+        {
+            return View();
+        }
+
+        // POST: /Account/Login
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(SignInModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var token = await _accountService.SignInAsync(model);
+                    if (!string.IsNullOrEmpty(token)) 
+                    {
+                        HttpContext.Session.SetString("AuthToken", token);
+                        return RedirectToAction("Index", "Home");                   
+                    }
+                    else
+                    {
+                        ViewData["LoginError"] = "Tên đăng nhập hoặc mật khẩu không đúng.";
+                        return View(model);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }       
+            }
+            return View(model); 
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LogOut()
+        {
+            try
+            {
+                await _accountService.SignOutAsync();
+                HttpContext.Session.Clear();
+                return RedirectToAction("Login", "Account");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return RedirectToAction("Index", "Home"); 
+            }
+        }
         public async Task<IActionResult> ListCustomer()
         {
             var lstCustomer = await _accountService.GetAllCustomer();
