@@ -2,3 +2,5 @@
 /.vs
 /API/appsettings.json
 /View/appsettings.json
+bin/
+obj/
