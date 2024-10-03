@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DataProcessing.Models
@@ -15,6 +16,7 @@ namespace DataProcessing.Models
 
         public Guid UpdatedByUserId { get; set; }
         public Guid OrderId { get; set; }
+        [JsonIgnore]
         public virtual Order Order { get; set; }
     }
 }
