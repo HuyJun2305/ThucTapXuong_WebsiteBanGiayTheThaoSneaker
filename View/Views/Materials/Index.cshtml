@@ -8,12 +8,12 @@
 <div class="container-fluid">
     <div class="card shadow-sm rounded">
         <div class="card-body">
-            <h5 class="card-title fw-semibold mb-4">Đế giày</h5>
+            <h5 class="card-title fw-semibold mb-4">Chất liệu</h5>
 
             <!-- Search Bar & Add Button -->
             <div class="mb-4 d-flex justify-content-between align-items-center">
                 <form method="get" class="input-group searchbar w-50">
-                    <input class="search_input form-control" type="text" name="searchQuery" id="searchInput" placeholder="Tìm đế giày">
+                    <input class="search_input form-control" type="text" name="searchQuery" id="searchInput" placeholder="Tìm chất liệu">
                     <button class="btn btn-outline-secondary search_icon" type="submit">
                         <i class="ti ti-search"></i>
                     </button>
@@ -24,7 +24,7 @@
                 </div>
             </div>
 
-            <!-- Table Danh sách Đế giày -->
+            <!-- Table Danh sách chất liệu -->
             <div class="table-responsive">
                 <table class="table table-striped styled-table">
                     <thead class="table-light">
@@ -76,12 +76,12 @@
                 </table>
             </div>
 
-            <!-- Modal Thêm mới đế giày -->
+            <!-- Modal Thêm mới chất liệu -->
             <div class="modal fade" id="addSoleModal" tabindex="-1" aria-labelledby="addSoleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="addSoleModalLabel">Thêm mới đế giày</h5>
+                            <h5 class="modal-title" id="addSoleModalLabel">Thêm mới chất liệu</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -89,8 +89,8 @@
                                 <input type="hidden" asp-for="Materials" />
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                 <div class="mb-3">
-                                    <label asp-for="NewMaterial.Name" class="form-label">Tên đế giày <span class="text-danger">*</span></label>
-                                    <input asp-for="NewMaterial.Name" type="text" class="form-control" placeholder="Nhập tên đế giày" required>
+                                    <label asp-for="NewMaterial.Name" class="form-label">Tên chất liệu <span class="text-danger">*</span></label>
+                                    <input asp-for="NewMaterial.Name" type="text" class="form-control" placeholder="Nhập tên chất liệu" required>
                                     <span asp-validation-for="NewMaterial.Name" class="text-danger"></span>
                                 </div>
                                 <div class="form-group form-check">
@@ -108,12 +108,12 @@
                 </div>
             </div>
 
-            <!-- Modal Chỉnh sửa đế giày -->
+            <!-- Modal Chỉnh sửa chất liệu -->
             <div class="modal fade" id="editSoleModal" tabindex="-1" aria-labelledby="editSoleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="editSoleModalLabel">Chỉnh sửa đế giày</h5>
+                            <h5 class="modal-title" id="editSoleModalLabel">Chỉnh sửa chất liệu</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -122,8 +122,8 @@
                                 <input type="hidden" asp-for="Materials" />
                                 <input type="hidden" asp-for="NewMaterial.Id" id="editMaterialId" />
                                 <div class="mb-3">
-                                    <label asp-for="NewMaterial.Name" class="form-label">Tên đế giày <span class="text-danger">*</span></label>
-                                    <input asp-for="NewMaterial.Name" type="text" class="form-control" placeholder="Nhập tên đế giày" id="editMaterialName" required>
+                                    <label asp-for="NewMaterial.Name" class="form-label">Tên chất liệu <span class="text-danger">*</span></label>
+                                    <input asp-for="NewMaterial.Name" type="text" class="form-control" placeholder="Nhập tên chất liệu" id="editMaterialName" required>
                                     <span asp-validation-for="NewMaterial.Name" class="text-danger"></span>
                                 </div>
                                 <div class="form-group form-check">

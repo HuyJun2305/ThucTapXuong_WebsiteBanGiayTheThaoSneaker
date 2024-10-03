@@ -18,13 +18,12 @@
                         <i class="ti ti-search"></i>
                     </button>
                 </form>
-
-                <div class="mb-4">
-                    <button class="btn btn-success add_button" data-bs-toggle="modal" data-bs-target="#addSoleModal">+ Thêm mới</button>
+                <div>
+                    <button class="btn btn-success add_button" data-bs-toggle="modal" data-bs-target="#addBrandModal">+ Thêm mới</button>
                 </div>
             </div>
 
-            <!-- Table Danh sách Thương hiệu  -->
+            <!-- Brand Table -->
             <div class="table-responsive">
                 <table class="table table-striped styled-table">
                     <thead class="table-light">
@@ -35,14 +34,13 @@
                             <th>Chức năng</th>
                         </tr>
                     </thead>
-                    <tbody id="materialsTableBody">
+                    <tbody id="brandTableBody">
                         @if (Model.brands != null && Model.brands.Any())
                         {
-                            // Không cần tính toán số thứ tự ở đây nữa
                             foreach (var item in Model.brands)
                             {
                                 <tr>
-                                    <td></td> <!-- STT sẽ được tính bằng JavaScript -->
+                                    <td></td> <!-- Serial number will be set by JavaScript -->
                                     <td>@item.Name</td>
                                     <td>
                                         <span class="badge @((item.Status ? "bg-success" : "bg-danger"))">
@@ -56,11 +54,9 @@
                                                 @(item.Status ? "Deactivate" : "Activate")
                                             </button>
                                         </form>
-                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editSoleModal" data-id="@item.Id" data-name="@item.Name" data-status="@item.Status">Sửa</button>
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editBrandModal" data-id="@item.Id" data-name="@item.Name" data-status="@item.Status">Sửa</button>
                                         <form asp-action="DeleteConfirmed" asp-route-id="@item.Id" method="post" style="display:inline;">
-                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa mục này không?');">
-                                                Xóa
-                                            </button>
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa mục này không?');">Xóa</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -76,17 +72,16 @@
                 </table>
             </div>
 
-            <!-- Modal Thêm mới thương hiệu -->
-            <div class="modal fade" id="addSoleModal" tabindex="-1" aria-labelledby="addSoleModalLabel" aria-hidden="true">
+            <!-- Add Brand Modal -->
+            <div class="modal fade" id="addBrandModal" tabindex="-1" aria-labelledby="addBrandModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="addSoleModalLabel">Thêm mới</h5>
+                            <h5 class="modal-title" id="addBrandModalLabel">Thêm mới</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <form asp-action="Create" method="post">
-                                <input type="hidden" asp-for="brands" />
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                 <div class="mb-3">
                                     <label asp-for="Brand.Name" class="form-label">Tên thương hiệu <span class="text-danger">*</span></label>
@@ -108,27 +103,26 @@
                 </div>
             </div>
 
-            <!-- Modal Chỉnh sửa thương hiệu -->
-            <div class="modal fade" id="editSoleModal" tabindex="-1" aria-labelledby="editSoleModalLabel" aria-hidden="true">
+            <!-- Edit Brand Modal -->
+            <div class="modal fade" id="editBrandModal" tabindex="-1" aria-labelledby="editBrandModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="editSoleModalLabel">Chỉnh sửa thương hiệu</h5>
+                            <h5 class="modal-title" id="editBrandModalLabel">Chỉnh sửa thương hiệu</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <form asp-action="Edit" method="post">
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                <input type="hidden" asp-for="brands" />
-                                <input type="hidden" asp-for="Brand.Id" id="editMaterialId" />
+                                <input type="hidden" asp-for="Brand.Id" id="editBrandId" />
                                 <div class="mb-3">
                                     <label asp-for="Brand.Name" class="form-label">Tên thương hiệu <span class="text-danger">*</span></label>
-                                    <input asp-for="Brand.Name" type="text" class="form-control" placeholder="Nhập tên thương hiệu" id="editMaterialName" required>
+                                    <input asp-for="Brand.Name" type="text" class="form-control" id="editBrandName" required>
                                     <span asp-validation-for="Brand.Name" class="text-danger"></span>
                                 </div>
                                 <div class="form-group form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" asp-for="Brand.Status" id="editMaterialStatus" /> @Html.DisplayNameFor(model => model.Brand.Status)
+                                        <input class="form-check-input" asp-for="Brand.Status" id="editBrandStatus" /> @Html.DisplayNameFor(model => model.Brand.Status)
                                     </label>
                                 </div>
                                 <div class="modal-footer">
@@ -169,43 +163,40 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+
     <style>
         .btn-custom {
-            width: 120px; /* Chiều rộng cố định */
-            text-align: center; /* Căn giữa văn bản */
-            transition: background-color 0.3s, color 0.3s; /* Hiệu ứng chuyển màu */
+            width: 120px;
+            text-align: center;
+            transition: background-color 0.3s, color 0.3s;
         }
 
             .btn-custom:hover {
-                background-color: #f8f9fa; /* Màu nền khi hover */
-                color: #495057; /* Màu chữ khi hover */
+                background-color: #f8f9fa;
+                color: #495057;
             }
     </style>
+
     <script>
-        // JavaScript để xử lý sự kiện khi mở modal chỉnh sửa
-        var editModal = document.getElementById('editSoleModal');
+        // Edit Modal Data Population
+        var editModal = document.getElementById('editBrandModal');
         editModal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
             var id = button.getAttribute('data-id');
             var name = button.getAttribute('data-name');
-            var status = button.getAttribute('data-status');
+            var status = button.getAttribute('data-status') === "True";
 
-            var editMaterialId = editModal.querySelector('#editMaterialId');
-            var editMaterialName = editModal.querySelector('#editMaterialName');
-            var editMaterialStatus = editModal.querySelector('#editMaterialStatus');
-
-            editMaterialId.value = id;
-            editMaterialName.value = name;
-            editMaterialStatus.checked = (status === "True");
+            document.getElementById('editBrandId').value = id;
+            document.getElementById('editBrandName').value = name;
+            document.getElementById('editBrandStatus').checked = status;
         });
+
+        // Auto-generate serial numbers based on pagination
         document.addEventListener("DOMContentLoaded", function () {
             const rowsPerPage = @ViewBag.RowsPerPage;
             const currentPage = @ViewBag.CurrentPage;
 
-            const rows = document.querySelectorAll("#materialsTableBody tr");
+            const rows = document.querySelectorAll("#brandTableBody tr");
 
             rows.forEach((row, index) => {
                 const serialNumberCell = row.cells[0];
