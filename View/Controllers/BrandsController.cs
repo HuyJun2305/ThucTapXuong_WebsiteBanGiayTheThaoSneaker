@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using DataProcessing.Models;
 using View.Data;
 using View.IServices;
+using View.Servicecs;
+using View.ViewModel;
 
 namespace View.Controllers
 {
@@ -21,11 +23,26 @@ namespace View.Controllers
         }
 
         // GET: Brands
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int currentPage = 1, int rowsPerPage = 10)
         {
-              return _brandServices.GetAllBrands() != null ? 
-                          View(await _brandServices.GetAllBrands()) :
-                          Problem("Entity set 'ViewContext.Brand'  is null.");
+            var materials = await _brandServices.GetAllBrands();
+
+            // Phân trang
+            var totalMaterials = materials.Count();
+            var totalPages = (int)Math.Ceiling((double)totalMaterials / rowsPerPage);
+            var pagedMaterials = materials.Skip((currentPage - 1) * rowsPerPage).Take(rowsPerPage).ToList();
+
+            var viewModel = new BrandViewModel
+            {
+                brands = pagedMaterials,
+                Brand = new Brand(),
+            };
+
+            ViewBag.CurrentPage = currentPage;
+            ViewBag.RowsPerPage = rowsPerPage;
+            ViewBag.TotalPages = totalPages;
+
+            return View(viewModel);
         }
 
         // GET: Brands/Details/5
@@ -56,15 +73,15 @@ namespace View.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Status")] Brand brand)
+        public async Task<IActionResult> Create(Guid id, BrandViewModel brandViewModel)
         {
             if (ModelState.IsValid)
             {
-                brand.Id = Guid.NewGuid();
-                await _brandServices.Create(brand);
+                brandViewModel.Brand.Id = Guid.NewGuid();
+                await _brandServices.Create(brandViewModel.Brand);
                 return RedirectToAction(nameof(Index));
             }
-            return View(brand);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Brands/Edit/5
@@ -88,22 +105,18 @@ namespace View.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Status")] Brand brand)
+        public async Task<IActionResult> Edit(Guid id, BrandViewModel brandViewModel)
         {
-            if (id != brand.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _brandServices.Update(brand);
+                    await _brandServices.Update(brandViewModel.Brand);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (_brandServices.GetAllBrands() == null)
+                    var existingMaterial = await _brandServices.GetBrandById(brandViewModel.Brand.Id);
+                    if (existingMaterial == null)
                     {
                         return NotFound();
                     }
@@ -112,9 +125,10 @@ namespace View.Controllers
                         throw;
                     }
                 }
+                brandViewModel.brands = await _brandServices.GetAllBrands();
                 return RedirectToAction(nameof(Index));
             }
-            return View(brand);
+            return BadRequest("Lỗi không sửa được");
         }
 
         // GET: Brands/Delete/5
@@ -135,7 +149,7 @@ namespace View.Controllers
         }
 
         // POST: Brands/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             if (_brandServices.GetAllBrands() == null)
