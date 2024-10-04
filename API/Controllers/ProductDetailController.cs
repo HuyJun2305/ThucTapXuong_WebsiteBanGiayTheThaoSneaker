@@ -105,7 +105,7 @@ namespace API.Controllers
                 string sizeValue = size.Value.ToString(); // Hoặc bạn có thể sử dụng size.Value.ToString() nếu size là Nullable<int>
 
                 // Tạo Id theo định dạng "chữ cái đầu tiên của Brand - chữ cái đầu tiên của Product - chữ cái đầu tiên của Color - kích cỡ"
-                string baseId = $"{GetFirstChar(product.Brand.Name)}{GetFirstChar(product.Name)}{GetFirstChar(color.Name)}{sizeValue}";
+                string baseId = $"{GetFirstChar(product.Brand.Name)}-{GetFirstChar(product.Name)}-{GetFirstChar(color.Name)}-{sizeValue}";
 
                 // Lấy số lượng bản ghi hiện tại để tạo số tự sinh
                 int count = await _context.ProductDetails
