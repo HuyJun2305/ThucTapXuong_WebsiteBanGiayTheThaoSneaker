@@ -53,11 +53,10 @@ namespace API.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Birthday")
+                    b.Property<DateTime?>("Birthday")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CIC")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -296,7 +295,7 @@ namespace API.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("VoucherId")
+                    b.Property<Guid?>("VoucherId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -536,8 +535,7 @@ namespace API.Migrations
 
                     b.Property<string>("Condittion")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("DiscountAmount")
                         .HasColumnType("decimal(18,2)");
@@ -776,9 +774,7 @@ namespace API.Migrations
 
                     b.HasOne("DataProcessing.Models.Voucher", "Voucher")
                         .WithMany()
-                        .HasForeignKey("VoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("VoucherId");
 
                     b.Navigation("User");
 
