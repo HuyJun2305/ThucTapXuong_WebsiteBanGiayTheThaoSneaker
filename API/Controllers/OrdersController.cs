@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using API.Data;
 using DataProcessing.Models;
 using API.IRepositories;
+using API.DTO;
 
 namespace API.Controllers
 {
@@ -75,16 +76,25 @@ namespace API.Controllers
 		// POST: api/Orders
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 		[HttpPost]
-		public async Task<ActionResult<Order>> PostOrder(Order order)
+		public async Task<ActionResult<Order>> PostOrder(OrderDTO order)
 		{
 			try
 			{
-				await _orderRepo.Create(order);
+				var data = new Order { 
+					Id = order.Id,
+					CreatedDate = DateTime.Now,
+					TotalPrice = order.TotalPrice,
+					PaymentMethod = order.PaymentMethod,
+					Status = order.Status,
+					UserId = order.UserId,
+					VoucherId = order.VoucherId
+				};	
+				await _orderRepo.Create(data);
 				await _orderRepo.SaveChanges();
 			}
 			catch (Exception ex)
 			{
-				return Problem(ex.Message);
+				return Problem(ex.InnerException.Message);
 			}
 
 			return CreatedAtAction("GetOrder", new { id = order.Id }, order);
