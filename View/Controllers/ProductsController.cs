@@ -9,6 +9,7 @@ using DataProcessing.Models;
 using View.Data;
 using View.IServices;
 using View.Servicecs;
+using Microsoft.AspNetCore.Identity;
 
 namespace View.Controllers
 {
@@ -20,8 +21,9 @@ namespace View.Controllers
         private readonly ICategoryServices _categoryServices;
         private readonly IBrandServices _brandServices;
         private readonly IMaterialServices _materialServices;
+        private readonly IAccountService _accountService;
 
-        public ProductsController(IProductServices productService, ISoleServices soleServices, ICategoryServices categoryServices, IBrandServices brandServices, IMaterialServices materialServices, IEmailSender emailSender)
+        public ProductsController(IProductServices productService, ISoleServices soleServices, ICategoryServices categoryServices, IBrandServices brandServices, IMaterialServices materialServices, IEmailSender emailSender , IAccountService accountService)
         {
             _emailSender = emailSender;
             _productServices = productService;
@@ -29,6 +31,7 @@ namespace View.Controllers
             _categoryServices = categoryServices;
             _brandServices = brandServices;
             _materialServices = materialServices;
+            _accountService = accountService;
         }
 
         // GET: Products
@@ -62,23 +65,21 @@ namespace View.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Name,Description,CategoryId,SoleId,BrandId,MaterialId")] Product product)
         {
-			if (product.Name != null)
+            if (product.Name != null)
             {
-                // Tạo sản phẩm mới
                 await _productServices.Create(product);
-
-                // Chuẩn bị nội dung email
-                string emailSubject = "Sản phẩm mới đã được tạo!";
+                var subscribedUsers = (await _accountService.GetAllCustomer())
+                        .Where(u => u.IsSubscribedToNews)
+                        .ToList();
+                string emailSubject = "SẢN PHẨM MỚI HÓT HÒN HỌT ĐÂY !!!";
                 string emailMessage = $"Sản phẩm '{product.Name}' đã được thêm thành công vào hệ thống.";
+                foreach (var user in subscribedUsers)
+                {
+                    await _emailSender.SendEmailAsync(user.Email, emailSubject, emailMessage);
+                }
 
-                // Gửi email đến địa chỉ cố định
-                await _emailSender.SendEmailAsync(emailSubject, emailMessage);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BrandId"] = new SelectList(_brandServices.GetAllBrands().Result.Where(x => x.Status == true), "Id", "Name", product.BrandId);
-            ViewData["CategoryId"] = new SelectList(_categoryServices.GetAllCategories().Result.Where(x => x.Status == true), "Id", "Name", product.CategoryId);
-            ViewData["MaterialId"] = new SelectList(_materialServices.GetAllMaterials().Result.Where(x => x.Status == true), "Id", "Name", product.MaterialId);
-            ViewData["SoleId"] = new SelectList(_soleServices.GetAllSoles().Result.Where(x => x.Status == true), "Id", "TypeName", product.SoleId);
             return View(product);
         }
 
