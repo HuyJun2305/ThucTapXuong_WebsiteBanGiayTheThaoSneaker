@@ -76,9 +76,17 @@ namespace View.Servicecs
         {
             string requestURL = "https://localhost:7170/api/AccountControllercs/Login";
             var response = await _client.PostAsJsonAsync(requestURL, signInModel);
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                return null; 
+            }
             return await response.Content.ReadAsStringAsync();
         }
-
+        public async Task SignOutAsync()
+        {
+            string requestURL = "https://localhost:7170/api/AccountControllercs/LogOut";
+            var response = await _client.PostAsync(requestURL, null);
+        }
         public async Task<IdentityResult> SignUpAsync(SignUpModel signUpModel)
         {
             string requestURL = "https://localhost:7170/api/AccountControllercs/Register";
@@ -98,7 +106,7 @@ namespace View.Servicecs
         public async Task<ApplicationUser> Update(ApplicationUser account, Guid idAccount)
         {
             string requestURL = $"https://localhost:7170/api/AccountControllercs/Update/{idAccount}";
-            var jsonContent = JsonConvert.SerializeObject(account); // Serialize account thay vì idAccount
+            var jsonContent = JsonConvert.SerializeObject(account); 
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
             var response = await _client.PutAsync(requestURL, content);
