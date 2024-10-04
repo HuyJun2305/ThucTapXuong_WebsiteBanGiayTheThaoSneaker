@@ -49,6 +49,7 @@ namespace API.Repositories
             updateItem.Email = shippingUnit.Email;
             updateItem.Phone = shippingUnit.Phone;
             updateItem.Website = shippingUnit.Website;
+            updateItem.Name = shippingUnit.Name;
 
             _context.ShippingUnits.Update(updateItem);
         }

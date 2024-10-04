@@ -34,6 +34,6 @@ namespace DataProcessing.Models
 
         public bool Status { get; set; }         // Trạng thái (true: hoạt động, false: ngừng)
 
-       
+        public ICollection<Order>? Orders { get; set; }
     }
 }
