@@ -39,6 +39,7 @@ namespace API.Data
         public DbSet<Voucher> Vouchers { get; set; }
         public DbSet<SelectedImage> SelectedImages { get; set; }
         public DbSet<ProductDetailPromotion> ProductDetailPromotions { get; set; }
+        public DbSet<ShippingUnit> ShippingUnits { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -68,92 +69,92 @@ namespace API.Data
 
             base.OnModelCreating(modelBuilder);
             // SeedData for Account
-            //var adminRoleId = Guid.NewGuid();
-            //var customerRoleId = Guid.NewGuid();
-            //var employeeRoleId = Guid.NewGuid();
-            //var guestRoleId = Guid.NewGuid();
+        //    var adminRoleId = Guid.NewGuid();
+        //    var customerRoleId = Guid.NewGuid();
+        //    var employeeRoleId = Guid.NewGuid();
+        //    var guestRoleId = Guid.NewGuid();
 
-            //modelBuilder.Entity<IdentityRole<Guid>>().HasData
-            //    (
-            //        new IdentityRole<Guid>
-            //        {
-            //            Id = adminRoleId,
-            //            Name = "Admin",
-            //            NormalizedName = "ADMIN"
-            //        },new IdentityRole<Guid>
-            //        {
-            //            Id = customerRoleId,
-            //            Name = "Customer",
-            //            NormalizedName = "CUSTOMER"
-            //        },new IdentityRole<Guid>
-            //        {
-            //            Id = employeeRoleId,
-            //            Name = "Employee",
-            //            NormalizedName = "EMPLOYEE"
-            //        },new IdentityRole<Guid>
-            //        {
-            //            Id = guestRoleId,
-            //            Name = "Guest",
-            //            NormalizedName = "GUEST"
-            //        }
-            //    );
-            //var adminUserId = Guid.NewGuid();
-            //var CustomerUserId = Guid.NewGuid();
-            //var EmployeeUserId = Guid.NewGuid();
-            //var GuestUserId = Guid.NewGuid();
+        //    modelBuilder.Entity<IdentityRole<Guid>>().HasData
+        //        (
+        //            new IdentityRole<Guid>
+        //            {
+        //                Id = adminRoleId,
+        //                Name = "Admin",
+        //                NormalizedName = "ADMIN"
+        //            }, new IdentityRole<Guid>
+        //            {
+        //                Id = customerRoleId,
+        //                Name = "Customer",
+        //                NormalizedName = "CUSTOMER"
+        //            }, new IdentityRole<Guid>
+        //            {
+        //                Id = employeeRoleId,
+        //                Name = "Employee",
+        //                NormalizedName = "EMPLOYEE"
+        //            }, new IdentityRole<Guid>
+        //            {
+        //                Id = guestRoleId,
+        //                Name = "Guest",
+        //                NormalizedName = "GUEST"
+        //            }
+        //        );
+        //    var adminUserId = Guid.NewGuid();
+        //    var CustomerUserId = Guid.NewGuid();
+        //    var EmployeeUserId = Guid.NewGuid();
+        //    var GuestUserId = Guid.NewGuid();
 
-            //var passwordHasher = new PasswordHasher<ApplicationUser>();
+        //    var passwordHasher = new PasswordHasher<ApplicationUser>();
 
-            //modelBuilder.Entity<ApplicationUser>().HasData(
-            //    new ApplicationUser
-            //    {
-            //        Id = adminUserId,
-            //        UserName = "admin@example.com",
-            //        NormalizedUserName = "ADMIN@EXAMPLE.COM",
-            //        Email = "admin@example.com",
-            //        NormalizedEmail = "ADMIN@EXAMPLE.COM",
-            //        Name = "Admin User",
-            //        CIC = "002204004364",
-            //        PhoneNumber = "0123456789",
-            //        LockoutEnabled = true,
-            //        AccessFailedCount = 0,
-            //        PasswordHash = passwordHasher.HashPassword(null, "AdminPass123!"),
-            //        SecurityStamp = Guid.NewGuid().ToString()
-            //    },
-            //    new ApplicationUser
-            //    {
-            //        Id = CustomerUserId,
-            //        UserName = "user@example.com",
-            //        NormalizedUserName = "USER@EXAMPLE.COM",
-            //        Email = "user@example.com",
-            //        NormalizedEmail = "USER@EXAMPLE.COM",
-            //        Name = "Regular User",
-            //        CIC = "004204004364",
+        //    modelBuilder.Entity<ApplicationUser>().HasData(
+        //        new ApplicationUser
+        //        {
+        //            Id = adminUserId,
+        //            UserName = "admin@example.com",
+        //            NormalizedUserName = "ADMIN@EXAMPLE.COM",
+        //            Email = "admin@example.com",
+        //            NormalizedEmail = "ADMIN@EXAMPLE.COM",
+        //            Name = "Admin User",
+        //            CIC = "002204004364",
+        //            PhoneNumber = "0123456789",
+        //            LockoutEnabled = true,
+        //            AccessFailedCount = 0,
+        //            PasswordHash = passwordHasher.HashPassword(null, "AdminPass123!"),
+        //            SecurityStamp = Guid.NewGuid().ToString()
+        //        },
+        //        new ApplicationUser
+        //        {
+        //            Id = CustomerUserId,
+        //            UserName = "user@example.com",
+        //            NormalizedUserName = "USER@EXAMPLE.COM",
+        //            Email = "user@example.com",
+        //            NormalizedEmail = "USER@EXAMPLE.COM",
+        //            Name = "Regular User",
+        //            CIC = "004204004364",
 
-            //        PhoneNumber = "0987654321",
-            //        LockoutEnabled = true,
-            //        AccessFailedCount = 0,
-            //        PasswordHash = passwordHasher.HashPassword(null, "UserPass123!"),
-            //        SecurityStamp = Guid.NewGuid().ToString()   
-            //    }
-          
-            //);
+        //            PhoneNumber = "0987654321",
+        //            LockoutEnabled = true,
+        //            AccessFailedCount = 0,
+        //            PasswordHash = passwordHasher.HashPassword(null, "UserPass123!"),
+        //            SecurityStamp = Guid.NewGuid().ToString()
+        //        }
 
-            //modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
-            //    new IdentityUserRole<Guid>
-            //    {
-            //        UserId = adminUserId,
-            //        RoleId = adminRoleId
-            //    },
-            //    new IdentityUserRole<Guid>
-            //    {
-            //        UserId = CustomerUserId,
-            //        RoleId = customerRoleId
-            //    }
-            //);
+        //    );
+
+        //    modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
+        //        new IdentityUserRole<Guid>
+        //        {
+        //            UserId = adminUserId,
+        //            RoleId = adminRoleId
+        //        },
+        //        new IdentityUserRole<Guid>
+        //        {
+        //            UserId = CustomerUserId,
+        //            RoleId = customerRoleId
+        //        }
+        //    );
         }
 
-   
+
 
     }
 }

@@ -25,8 +25,8 @@ builder.Services.AddHttpClient<ISelectedImageServices, SelectedImageServices>();
 builder.Services.AddHttpClient<IAccountService, AccountService>();
 //
 builder.Services.AddHttpClient<IProductDetailService, ProductDetailService>();
-
-
+builder.Services.AddHttpClient<IShippingUnitServices,ShippingUnitServices>();
+builder.Services.AddHttpClient<IProductDetailPromotionServices, ProductDetailPromotionServices>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
