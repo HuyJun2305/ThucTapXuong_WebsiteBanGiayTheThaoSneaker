@@ -39,6 +39,7 @@ namespace API.Data
         public DbSet<Voucher> Vouchers { get; set; }
         public DbSet<SelectedImage> SelectedImages { get; set; }
         public DbSet<ProductDetailPromotion> ProductDetailPromotions { get; set; }
+        public DbSet<ShippingUnit> ShippingUnits { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -153,7 +154,7 @@ namespace API.Data
             );
         }
 
-   
+
 
     }
 }
