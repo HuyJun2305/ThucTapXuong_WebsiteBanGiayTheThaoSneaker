@@ -24,7 +24,7 @@ builder.Services.AddHttpClient<ISelectedImageServices, SelectedImageServices>();
 builder.Services.AddHttpClient<IAccountService, AccountService>();
 //
 builder.Services.AddHttpClient<IProductDetailService, ProductDetailService>();
-
+builder.Services.AddHttpClient<IShippingUnitServices,ShippingUnitServices>();
 
 var app = builder.Build();
 
