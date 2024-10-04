@@ -1,4 +1,5 @@
-﻿using DataProcessing.Models;
+﻿using Data.Models;
+using DataProcessing.Models;
 using Newtonsoft.Json;
 using View.IServices;
 
@@ -40,6 +41,44 @@ namespace View.Servicecs
         public async Task Update(Promotion promotion)
         {
             await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/Promotions/{promotion.Id}", promotion);
+        }
+    }
+    public class ProductDetailPromotionServices : IProductDetailPromotionServices
+    {
+        private readonly HttpClient _httpClient;
+
+        public ProductDetailPromotionServices(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+
+        public async Task AddAsync(ProductDetailPromotion productDetailPromotion)
+        {
+            await _httpClient.PostAsJsonAsync("https://localhost:7170/api/ProductDetailPromotions", productDetailPromotion);
+        }
+
+        public async Task DeleteAsync(Guid? id)
+        {
+            await _httpClient.DeleteAsync($"https://localhost:7170/api/ProductDetailPromotions{id}");
+        }
+
+        public async Task<IEnumerable<ProductDetailPromotion>?> GetAllAsync()
+        {
+            var response = await _httpClient.GetStringAsync("https://localhost:7170/api/ProductDetailPromotions");
+            var list = JsonConvert.DeserializeObject<IEnumerable<ProductDetailPromotion>>(response);
+            return list;
+        }
+
+        public async Task<ProductDetailPromotion> GetByIdAsync(Guid? id)
+        {
+            var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/ProductDetailPromotions/{id}");
+            var item = JsonConvert.DeserializeObject<ProductDetailPromotion>(response);
+            return item;
+        }
+
+        public async Task UpdateAsync(ProductDetailPromotion productDetailPromotion)
+        {
+            await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/ProductDetailPromotions/{productDetailPromotion.Id}", productDetailPromotion);
         }
     }
 }
