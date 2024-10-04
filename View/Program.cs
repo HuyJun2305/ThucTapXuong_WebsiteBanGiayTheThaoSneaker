@@ -29,7 +29,7 @@ builder.Services.AddHttpClient<IColorServices, ColorServices>();
 builder.Services.AddHttpClient<IImageServices, ImageServices>();
 builder.Services.AddHttpClient<ISelectedImageServices, SelectedImageServices>();
 builder.Services.AddHttpClient<IAccountService, AccountService>();
-//
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddHttpClient<IProductDetailService, ProductDetailService>();
 
 

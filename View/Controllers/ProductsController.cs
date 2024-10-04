@@ -8,19 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using DataProcessing.Models;
 using View.Data;
 using View.IServices;
+using View.Servicecs;
 
 namespace View.Controllers
 {
     public class ProductsController : Controller
     {
+        private readonly IEmailSender _emailSender;
         private readonly IProductServices _productServices;
         private readonly ISoleServices _soleServices;
         private readonly ICategoryServices _categoryServices;
         private readonly IBrandServices _brandServices;
         private readonly IMaterialServices _materialServices;
 
-        public ProductsController(IProductServices productService, ISoleServices soleServices, ICategoryServices categoryServices, IBrandServices brandServices, IMaterialServices materialServices)
+        public ProductsController(IProductServices productService, ISoleServices soleServices, ICategoryServices categoryServices, IBrandServices brandServices, IMaterialServices materialServices, IEmailSender emailSender)
         {
+            _emailSender = emailSender;
             _productServices = productService;
             _soleServices = soleServices;
             _categoryServices = categoryServices;
@@ -61,8 +64,15 @@ namespace View.Controllers
         {
 			if (product.Name != null)
             {
+                // Tạo sản phẩm mới
                 await _productServices.Create(product);
 
+                // Chuẩn bị nội dung email
+                string emailSubject = "Sản phẩm mới đã được tạo!";
+                string emailMessage = $"Sản phẩm '{product.Name}' đã được thêm thành công vào hệ thống.";
+
+                // Gửi email đến địa chỉ cố định
+                await _emailSender.SendEmailAsync(emailSubject, emailMessage);
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BrandId"] = new SelectList(_brandServices.GetAllBrands().Result.Where(x => x.Status == true), "Id", "Name", product.BrandId);

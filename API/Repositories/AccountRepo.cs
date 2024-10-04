@@ -78,7 +78,7 @@ namespace API.Repositories
                     PhoneNumber = model.PhoneNumber,
                     UserName = model.Email,
                     Email = model.Email,
-                    CIC = model.CIC // Gán giá trị cho CIC
+                    CIC = model.CIC 
 
                 };
                 var result = await _userManager.CreateAsync(account, model.Password);

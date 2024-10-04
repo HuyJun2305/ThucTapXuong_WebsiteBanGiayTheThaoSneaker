@@ -4,6 +4,7 @@ using API.Repositories;
 using DataProcessing.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis.Emit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -25,10 +26,9 @@ internal class Program
         builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
-
         builder.Services.AddScoped<IProductRepo, ProductRepos>();
         builder.Services.AddScoped<IProductDetailRepos, ProductDetailRepos>();
-        builder.Services.AddScoped<ISoleRepo, SoleRepos>();
+        builder.Services.AddScoped<ISoleRepo, SoleRepos>();  
         builder.Services.AddScoped<ICategoryRepo, CategoryRepos>();
         builder.Services.AddScoped<IBrandRepo, BrandRepos>();
         builder.Services.AddScoped<IMaterialRepo, MaterialRepos>();
