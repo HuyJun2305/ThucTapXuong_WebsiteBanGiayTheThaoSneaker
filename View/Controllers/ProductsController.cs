@@ -69,7 +69,7 @@ namespace View.Controllers
 
                 // Chuẩn bị nội dung email
                 string emailSubject = "Sản phẩm mới đã được tạo!";
-                string emailMessage = $"Sản phẩm {product.Name} vừa được nhập về đây nhanh tay mua nào";
+                string emailMessage = $"Sản phẩm '{product.Name}' đã được thêm thành công vào hệ thống.";
 
                 // Gửi email đến địa chỉ cố định
                 await _emailSender.SendEmailAsync(emailSubject, emailMessage);

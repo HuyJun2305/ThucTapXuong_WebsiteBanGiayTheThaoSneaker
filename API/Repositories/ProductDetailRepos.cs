@@ -35,7 +35,7 @@ namespace API.Repositories
                 Include(p => p.Product).ToListAsync();
         }
 
-        public async Task<ProductDetail?> GetProductDetailById(string id)
+        public async Task<ProductDetail> GetProductDetailById(string id)
         {
             return await _context.ProductDetails.Where(p => p.Id == id).Include(p => p.Color)
                 .Include(p => p.Size)

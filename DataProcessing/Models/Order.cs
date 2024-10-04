@@ -1,10 +1,8 @@
-﻿using Data.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DataProcessing.Models
@@ -37,16 +35,10 @@ namespace DataProcessing.Models
         [Required]
         public string PaymentMethod { get; set; }
         public string Status { get; set; }
-       
 
         public Guid UserId { get; set; }
-        [JsonIgnore]
         public virtual ApplicationUser User { get; set; }
-        public Guid? VoucherId { get; set; }
-        [JsonIgnore]
+        public Guid VoucherId { get; set; }
         public virtual Voucher Voucher { get; set; }
-
-        public Guid ShippingUnitID { get; set; }
-        public virtual ShippingUnit ShippingUnit { get; set; }
     }
 }

@@ -13,10 +13,10 @@ namespace View.IServices
     }
     public interface IProductDetailPromotionServices
     {
-        Task<ProductDetailPromotion> GetByIdAsync(Guid? id);
-        Task<IEnumerable<ProductDetailPromotion>?> GetAllAsync();
+        Task<ProductDetailPromotion> GetByIdAsync(string productDetailId, Guid promotionId);
+        Task<IEnumerable<ProductDetailPromotion>> GetAllAsync();
         Task AddAsync(ProductDetailPromotion productDetailPromotion);
         Task UpdateAsync(ProductDetailPromotion productDetailPromotion);
-        Task DeleteAsync(Guid? id);
+        Task DeleteAsync(string productDetailId, Guid promotionId);
     }
 }

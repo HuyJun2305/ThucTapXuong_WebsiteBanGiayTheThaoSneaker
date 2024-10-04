@@ -38,7 +38,7 @@ namespace View.Controllers
         // GET: ProductDetails/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            var product = _productDetailService.GetProductDetailById(id).Result;
+            var product = _productDetailService.GetProductDetailById(id);
             return View(product);
         }
 
