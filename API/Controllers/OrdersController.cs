@@ -30,11 +30,17 @@ namespace API.Controllers
 			return await _orderRepo.GetAllOrders();
 		}
 
+		[HttpGet("UserId/{id}")]
+		public async Task<ActionResult<IEnumerable<Order>>> GetOrdersByUserId(Guid id)
+		{
+			return await _orderRepo.GetAllOrderByUser(id);
+		}
+
 		// GET: api/Orders/5
 		[HttpGet("{id}")]
 		public async Task<ActionResult<Order>> GetOrder(Guid id)
 		{
-			if (_orderRepo.GetAllOrders() == null)
+			if (await _orderRepo.GetAllOrders() == null)
 			{
 				return NotFound();
 			}
@@ -51,11 +57,22 @@ namespace API.Controllers
 		// PUT: api/Orders/5
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 		[HttpPut("{id}")]
-		public async Task<IActionResult> PutOrder(Guid id, Order order)
+		public async Task<IActionResult> PutOrder(Guid id, OrderDTO order)
 		{
 			try
 			{
-				await _orderRepo.Update(order);
+				var data = new Order
+				{
+					Id = order.Id,
+					CreatedDate = DateTime.Now,
+					TotalPrice = order.TotalPrice,
+					PaymentMethod = order.PaymentMethod,
+					Status = order.Status,
+					UserId = order.UserId,
+					VoucherId = order.VoucherId,
+					ShippingUnitID = order.ShippingUnitID,
+				};
+				await _orderRepo.Update(data);
 				await _orderRepo.SaveChanges();
 			}
 			catch (DbUpdateConcurrencyException)
@@ -87,7 +104,8 @@ namespace API.Controllers
 					PaymentMethod = order.PaymentMethod,
 					Status = order.Status,
 					UserId = order.UserId,
-					VoucherId = order.VoucherId
+					VoucherId = order.VoucherId,
+					ShippingUnitID = order.ShippingUnitID,
 				};	
 				await _orderRepo.Create(data);
 				await _orderRepo.SaveChanges();
