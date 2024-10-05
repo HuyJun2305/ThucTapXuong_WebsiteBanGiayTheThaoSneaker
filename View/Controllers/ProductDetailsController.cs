@@ -28,17 +28,33 @@ namespace View.Controllers
            
         }
 
+        public async Task<IActionResult> SearchProductDetails(string searchString)
+        {
+            var viewSearch = await _productDetailService.SearchProductDetails(searchString);
+            return View("Index",viewSearch);
+        }
+
+        public async Task<IActionResult> FilterProductDetails(Guid? selectedColorId, Guid? selectedCategoryId,
+            Guid? selectedBrandId, Guid? selectedSoleId, Guid? selectedSizeId)
+        {
+
+            var viewSearch =  _productDetailService.FilterProductDetails(selectedColorId,  selectedCategoryId,
+            selectedBrandId, selectedSoleId, selectedSizeId).Result;
+            return View("Index", viewSearch);
+        }
+
+
         // GET: ProductDetails
         public async Task<IActionResult> Index()
         {
             var viewContext = _productDetailService.GetAllProductDetail().Result;
-            return View(viewContext.ToList());
+            return  View(viewContext.ToList());
         }
 
         // GET: ProductDetails/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            var product = _productDetailService.GetProductDetailById(id);
+            var product = _productDetailService.GetProductDetailById(id).Result;
             return View(product);
         }
 
@@ -60,7 +76,7 @@ namespace View.Controllers
         {
             if (productDetail.ProductId != null)
             {
-                await _productDetailService.Create(productDetail);
+                 await _productDetailService.Create(productDetail);
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ColorId"] = new SelectList(_colorServices.GetAllColors().Result.Where(x => x.Status), "Id", "Name"); ;

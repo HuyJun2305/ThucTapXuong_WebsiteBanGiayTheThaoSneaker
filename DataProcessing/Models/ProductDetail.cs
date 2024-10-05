@@ -10,7 +10,7 @@ namespace DataProcessing.Models
 {
     public class ProductDetail
     {
-        public string Id { get; set; }
+        public string? Id { get; set; }
         [Required]
         public decimal Price { get; set; }
         [Required]
@@ -28,5 +28,6 @@ namespace DataProcessing.Models
         public Guid SizeId { get; set; }
         public virtual Size Size { get; set; }
         public ICollection<ProductDetailPromotion> ProductDetailPromotions { get; set; }
+
     }
 }

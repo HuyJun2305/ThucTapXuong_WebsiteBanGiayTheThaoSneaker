@@ -44,6 +44,11 @@ namespace API.Controllers
                 return BadRequest( $"{ex.Message}");
             }
         }
+        [HttpPost("LogOut")]
+        public async Task Logout()
+        {
+            await _repo.SignOutAsync();
+        }
         [HttpPost("Create-Employee")]
         public async Task<IActionResult> CreateEmployee(CreateAccountModelcs models)
 

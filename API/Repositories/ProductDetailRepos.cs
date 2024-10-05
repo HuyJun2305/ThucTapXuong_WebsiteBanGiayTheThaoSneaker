@@ -32,16 +32,26 @@ namespace API.Repositories
             return await _context.ProductDetails
                 .Include(p => p.Color)
                 .Include(p => p.Size).
-                Include(p => p.Product).ToListAsync();
+                Include(p => p.Product)
+                .ThenInclude(p => p.Material).
+                Include(p => p.Product)
+                .ThenInclude(p => p.Sole).
+                Include(p => p.Product)
+                .ThenInclude(p => p.Brand).
+                Include(p => p.Product)
+                .ThenInclude(p => p.Category)
+                 .ToListAsync();
         }
 
-        public async Task<ProductDetail> GetProductDetailById(string id)
+        public async Task<ProductDetail?> GetProductDetailById(string id)
         {
             return await _context.ProductDetails.Where(p => p.Id == id).Include(p => p.Color)
                 .Include(p => p.Size)
                 .Include(p => p.Product)
                 .FirstOrDefaultAsync();
         }
+
+
 
         public async Task SaveChanges()
         {
@@ -54,5 +64,8 @@ namespace API.Repositories
             _context.Entry(productDetail).State = EntityState.Modified;
 
         }
+
+
+
     }
 }
