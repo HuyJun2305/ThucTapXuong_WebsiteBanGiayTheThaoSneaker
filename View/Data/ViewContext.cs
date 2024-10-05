@@ -30,6 +30,7 @@ namespace View.Data
         public DbSet<DataProcessing.Models.Promotion>? Promotion {  get; set; }
         public DbSet<DataProcessing.Models.ProductDetail>? ProductDetail { get; set; }
         public DbSet<DataProcessing.Models.Voucher>? Voucher { get; set; }
+
         public DbSet<DataProcessing.Models.ShippingUnit>? shippingUnits { get; set; }
     }
 }
