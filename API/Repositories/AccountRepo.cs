@@ -85,8 +85,9 @@ namespace API.Repositories
                     PhoneNumber = model.PhoneNumber,
                     UserName = model.Email,
                     Email = model.Email,
-                    CIC = model.CIC 
-
+                    CIC = model.CIC,
+                    IsSubscribedToNews = false
+                    
                 };
                 var result = await _userManager.CreateAsync(account, model.Password);
                 if (result.Succeeded)
@@ -150,7 +151,8 @@ namespace API.Repositories
                     PhoneNumber = models.PhoneNumber,
                     UserName = models.Email,
                     Email = models.Email,
-                    CIC = models.CIC 
+                    CIC = models.CIC ,
+                    IsSubscribedToNews=false
 
                 };
                 var result = await _userManager.CreateAsync(account, models.Password);
@@ -218,7 +220,7 @@ namespace API.Repositories
             existingUser.PhoneNumber = account.PhoneNumber;
             existingUser.CIC = account.CIC;
             existingUser.ImageURL = account.ImageURL;
-
+            existingUser.IsSubscribedToNews = account.IsSubscribedToNews;
             var result = await _userManager.UpdateAsync(existingUser);
             if (result.Succeeded)
             {
@@ -281,7 +283,8 @@ namespace API.Repositories
                     PhoneNumber = models.PhoneNumber,
                     UserName = models.Email,
                     Email = models.Email,
-                    CIC = models.CIC
+                    CIC = models.CIC,
+                    IsSubscribedToNews=false
                 };
 
                 var result = await _userManager.CreateAsync(account, models.Password);

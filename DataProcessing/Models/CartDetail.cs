@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DataProcessing.Models
@@ -13,6 +14,7 @@ namespace DataProcessing.Models
         public int? Quanlity { get; set; }
 
         public Guid CartId { get; set; }
+        [JsonIgnore]
         public virtual Cart Cart { get; set; }
         //test
         public string ProductDetailId { get; set; }
