@@ -14,6 +14,7 @@ namespace View.Servicecs
         }
         public async Task Create(ProductDetail productDetail)
         {
+
             await _httpClient.PostAsJsonAsync("https://localhost:7170/api/ProductDetail", productDetail);
         }
 
