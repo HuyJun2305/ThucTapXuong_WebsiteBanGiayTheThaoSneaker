@@ -47,8 +47,15 @@ namespace API.Repositories
 
             var authClaim = new List<Claim>
             {
-                new Claim(ClaimTypes.Email, signInModel.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                // lưu thông tin người dùng vào claim token
+                new Claim(ClaimTypes.Email, user.Email), 
+                new Claim("Name", user.Name ?? ""),
+                new Claim("Birthday", user.Birthday?.ToString("yyyy-MM-dd") ?? ""), 
+                new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? ""), 
+                new Claim("CIC", user.CIC ?? ""), 
+                new Claim("ImageURL", user.ImageURL ?? ""), 
+                new Claim("IsSubscribedToNews", user.IsSubscribedToNews.ToString()), 
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) // JTI (JWT ID)
             };
             var userRoles = await _userManager.GetRolesAsync(user);
             foreach (var role in userRoles)
@@ -60,7 +67,7 @@ namespace API.Repositories
                 issuer: _configuration["JWT:ValidIssuer"],
                 audience: _configuration["JWT:ValidAudience"],
                 expires: DateTime.Now.AddMinutes(10), // time hết hạn token 
-                claims: authClaim,
+                claims: authClaim, // danh sách claim
                 signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha512) // MÃ HÓA
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);

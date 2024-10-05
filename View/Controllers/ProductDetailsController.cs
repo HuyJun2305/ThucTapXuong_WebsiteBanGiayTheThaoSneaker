@@ -18,14 +18,17 @@ namespace View.Controllers
         private readonly ISizeServices _sizeServices;
         private readonly IColorServices _colorServices;
         private readonly IProductServices _productServices;
+        private readonly HttpClient _client;
 
-        public ProductDetailsController(IProductDetailService productDetailService, ISizeServices sizeServices, IColorServices colorServices, IProductServices productServices)
+        public ProductDetailsController(IProductDetailService productDetailService, ISizeServices sizeServices, IColorServices colorServices, IProductServices productServices , HttpClient client)
         {
             _productDetailService = productDetailService;
             _sizeServices = sizeServices;
             _colorServices = colorServices;
             _productServices = productServices;
-           
+            _client = client;
+
+
         }
 
         // GET: ProductDetails
@@ -149,7 +152,6 @@ namespace View.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
     }
 
 }
