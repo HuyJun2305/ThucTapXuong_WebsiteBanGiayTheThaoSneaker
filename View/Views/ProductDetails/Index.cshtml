@@ -1,71 +1,117 @@
-﻿@model IEnumerable<DataProcessing.Models.ProductDetail>
+﻿@model Data.ViewModels.FilterProductViewModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Lọc sản phẩm";
 }
 
-<h1>Index</h1>
+<h2>Lọc sản phẩm</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<!-- Form lọc sản phẩm -->
+<form asp-action="FilterProductDetails" method="get">
+    <div>
+        <label for="colorSelect">Chọn màu sắc:</label>
+        <select id="colorSelect" name="selectedColorId" class="form-control">
+            <option value="">-- Tất cả --</option>
+            @foreach (var color in Model.Colors)
+            {
+                <option value="@color.Id">@color.Name</option>
+            }
+        </select>
+    </div>
+
+    <div>
+        <label for="categorySelect">Chọn danh mục:</label>
+        <select id="categorySelect" name="selectedCategoryId" class="form-control">
+            <option value="">-- Tất cả --</option>
+            @foreach (var category in Model.Categories)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        </select>
+    </div>
+
+    <div>
+        <label for="brandSelect">Chọn thương hiệu:</label>
+        <select id="brandSelect" name="selectedBrandId" class="form-control">
+            <option value="">-- Tất cả --</option>
+            @foreach (var brand in Model.Brands)
+            {
+                <option value="@brand.Id">@brand.Name</option>
+            }
+        </select>
+    </div>
+
+    <div>
+        <label for="soleSelect">Chọn đế giày:</label>
+        <select id="soleSelect" name="selectedSoleId" class="form-control">
+            <option value="">-- Tất cả --</option>
+            @foreach (var sole in Model.Soles)
+            {
+                <option value="@sole.Id">@sole.TypeName</option>
+            }
+        </select>
+    </div>
+
+    <div>
+        <label for="sizeSelect">Chọn kích thước:</label>
+        <select id="sizeSelect" name="selectedSizeId" class="form-control">
+            <option value="">-- Tất cả --</option>
+            @foreach (var size in Model.Sizes)
+            {
+                <option value="@size.Id">@size.Value</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Lọc</button>
+</form>
+
+
+<!-- Danh sách sản phẩm sau khi lọc -->
+<h2>Danh sách sản phẩm</h2>
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Stock)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Weight)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Product)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Color)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Size)
-            </th>
-            <th></th>
+            <th>STT</th>
+            <th>Tên sản phẩm</th>
+            <th>Chất liệu (Material)</th>
+            <th>Màu sắc</th>
+            <th>Kích thước</th>
+            <th>Thương hiệu</th>
+            <th>Danh mục</th>
+            <th>Đế (Sole)</th>
+            <th>Hành động</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Stock)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Weight)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Product.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Color.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Size.Value)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @if (Model.ProductDetails != null && Model.ProductDetails.Any())
+        {
+            var index = 1;
+            foreach (var productDetail in Model.ProductDetails)
+            {
+                <tr>
+                    <td>@index</td>
+                    <td>@productDetail.Product.Name</td>
+                    <td>@productDetail.Product.Material.Name</td>
+                    <td>@productDetail.Color.Name</td>
+                    <td>@productDetail.Size.Value</td>
+                    <td>@productDetail.Product.Brand.Name</td>
+                    <td>@productDetail.Product.Category.Name</td>
+                    <td>@productDetail.Product.Sole.TypeName</td>
+                    <td>
+                        <a asp-action="Detail" asp-route-id="@productDetail.Id" class="btn btn-info">Chi tiết</a>
+                        <a asp-action="Edit" asp-route-id="@productDetail.Id" class="btn btn-warning">Chỉnh sửa</a>
+                        <a asp-action="Delete" asp-route-id="@productDetail.Id" class="btn btn-danger">Xóa</a>
+                    </td>
+                </tr>
+                index++;
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="9">Không có sản phẩm nào được tìm thấy.</td>
+            </tr>
+        }
     </tbody>
 </table>
