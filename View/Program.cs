@@ -8,6 +8,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ViewContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ViewContext' not found.")));
 
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(10);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -23,7 +29,7 @@ builder.Services.AddHttpClient<IColorServices, ColorServices>();
 builder.Services.AddHttpClient<IImageServices, ImageServices>();
 builder.Services.AddHttpClient<ISelectedImageServices, SelectedImageServices>();
 builder.Services.AddHttpClient<IAccountService, AccountService>();
-//
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddHttpClient<IProductDetailService, ProductDetailService>();
 builder.Services.AddHttpClient<IShippingUnitServices,ShippingUnitServices>();
 builder.Services.AddHttpClient<IProductDetailPromotionServices, ProductDetailPromotionServices>();
@@ -41,11 +47,11 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthorization();
-
+app.UseAuthentication();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Voucher}/{action=Index}/{id?}");
+    pattern: "{controller=Account}/{action=Login}");
 
 app.Run();
