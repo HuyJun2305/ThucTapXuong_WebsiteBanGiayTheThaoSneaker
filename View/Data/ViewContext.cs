@@ -28,16 +28,12 @@ namespace View.Data
 
         public DbSet<DataProcessing.Models.Material>? Material { get; set; }
         public DbSet<DataProcessing.Models.Promotion>? Promotion {  get; set; }
-<<<<<<< HEAD
-        public DbSet<DataProcessing.Models.ShippingUnit>? shippingUnits { get; set; }
+        public DbSet<DataProcessing.Models.ShippingUnit>? ShippingUnits { get; set; }
         public DbSet<DataProcessing.Models.ProductDetail>? ProductDetail { get; set; }
         public DbSet<DataProcessing.Models.Voucher>? Voucher { get; set; }
 
-=======
-        public DbSet<DataProcessing.Models.ProductDetail>? ProductDetail { get; set; }
-        public DbSet<DataProcessing.Models.Voucher>? Voucher { get; set; }
+        public DbSet<DataProcessing.Models.ProductDetail>? ProductDetails { get; set; }
+        public DbSet<DataProcessing.Models.Voucher>? Vouchers { get; set; }
 
-        public DbSet<DataProcessing.Models.ShippingUnit>? shippingUnits { get; set; }
->>>>>>> Toan2
     }
 }

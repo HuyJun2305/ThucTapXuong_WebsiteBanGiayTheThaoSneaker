@@ -143,8 +143,8 @@ namespace API.Repositories
                     PhoneNumber = models.PhoneNumber,
                     UserName = models.Email,
                     Email = models.Email,
-                    CIC = models.CIC 
-
+                    CIC = models.CIC ,
+                    IsSubscribedToNews = false
                 };
                 var result = await _userManager.CreateAsync(account, models.Password);
                 if (result.Succeeded)
@@ -274,7 +274,8 @@ namespace API.Repositories
                     PhoneNumber = models.PhoneNumber,
                     UserName = models.Email,
                     Email = models.Email,
-                    CIC = models.CIC
+                    CIC = models.CIC,
+                    IsSubscribedToNews = false
                 };
 
                 var result = await _userManager.CreateAsync(account, models.Password);

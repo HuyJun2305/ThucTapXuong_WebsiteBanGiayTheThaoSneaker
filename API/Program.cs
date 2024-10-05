@@ -11,39 +11,6 @@ using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Đăng ký ApplicationDbContext và Identity
-builder.Services.AddDbContext<ApplicationDbContext>(options => {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-});
-builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
-
-builder.Services.AddScoped<IProductRepo, ProductRepos>();
-builder.Services.AddScoped<IProductDetailRepos, ProductDetailRepos>();
-builder.Services.AddScoped<ISoleRepo, SoleRepos>();
-builder.Services.AddScoped<ICategoryRepo, CategoryRepos>();
-builder.Services.AddScoped<ICartRepos, CartRepos>();
-builder.Services.AddScoped<ICartDetailRepos, CartDetailRepos>();
-builder.Services.AddScoped<IBrandRepo, BrandRepos>();
-builder.Services.AddScoped<IMaterialRepo, MaterialRepos>();
-builder.Services.AddScoped<IPromotionRepos, PromotionRepos>();
-builder.Services.AddScoped<IProductDetailPromotionRepos, ProductDetailPromotionRepo>();
-
-builder.Services.AddScoped<IVoucherRepos, VoucherRepos>();
-
-builder.Services.AddScoped<IColorRepo, ColorRepo>();
-builder.Services.AddScoped<ISizeRepo, SizeRepo>();
-builder.Services.AddScoped<IImageRepo, ImageRepo>();
-builder.Services.AddScoped<ISelectedImageRepo, SelectedImageRepo>();
-builder.Services.AddScoped<IOrderRepo, OrderRepo>();
-builder.Services.AddScoped<IOrderHistoryRepo, OrderHistoryRepo>();
-builder.Services.AddScoped<IShippingUnitRepos,ShippingUnitRepos>();
-
-builder.Services.AddAuthentication(options =>
 internal class Program
 {
     private static void Main(string[] args)

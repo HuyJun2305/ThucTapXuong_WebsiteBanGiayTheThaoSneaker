@@ -26,6 +26,6 @@ namespace DataProcessing.Models
         [Display(Name = "CIC")]
         public string? CIC { get; set; }
         public string? ImageURL { get; set; }
-        public bool IsSubscribedToNews { get; set; } = false; // Mặc định là không đăng ký
+        public bool IsSubscribedToNews { get; set; } 
     }
 }

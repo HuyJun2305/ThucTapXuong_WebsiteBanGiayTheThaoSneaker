@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-    public partial class SubcribedToNewsForUser : Migration
+    public partial class toanv2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -120,6 +120,23 @@ namespace API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Promotions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShippingUnits",
+                columns: table => new
+                {
+                    ShippingUnitID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Website = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShippingUnits", x => x.ShippingUnitID);
                 });
 
             migrationBuilder.CreateTable(
@@ -385,7 +402,8 @@ namespace API.Migrations
                     PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    VoucherId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    VoucherId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ShippingUnitID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -397,11 +415,15 @@ namespace API.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_Orders_ShippingUnits_ShippingUnitID",
+                        column: x => x.ShippingUnitID,
+                        principalTable: "ShippingUnits",
+                        principalColumn: "ShippingUnitID");
+                    table.ForeignKey(
                         name: "FK_Orders_Vouchers_VoucherId",
                         column: x => x.VoucherId,
                         principalTable: "Vouchers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -540,6 +562,36 @@ namespace API.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { new Guid("42f83993-ec5b-43a3-ba81-e7592b58d0c9"), "90036728-e305-4d0e-bcf0-0b85ba0ad84c", "Admin", "ADMIN" },
+                    { new Guid("7f20e431-65a1-4afa-8227-2ec5d75dea9e"), "5820f74e-7316-46b6-976a-8a42602d0847", "Customer", "CUSTOMER" },
+                    { new Guid("ad31a0ff-3cf6-4ad0-a675-a9bfaabdaf32"), "a5b39224-b2ce-4565-b351-ad9aee2c4a04", "Guest", "GUEST" },
+                    { new Guid("b92faa65-7413-4378-ba57-f7057a61d76a"), "ec9cb900-8f6e-4b60-be4a-06fdf32f3a0d", "Employee", "EMPLOYEE" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "Birthday", "CIC", "ConcurrencyStamp", "Email", "EmailConfirmed", "ImageURL", "IsSubscribedToNews", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { new Guid("2b1d12a8-5b38-4eb2-ac79-6328206e1d6b"), 0, null, "004204004364", "de3e32f8-d3fd-4fdf-9b2c-ba299db11f3d", "user@example.com", false, null, false, true, null, "Regular User", "USER@EXAMPLE.COM", "USER@EXAMPLE.COM", "AQAAAAEAACcQAAAAEDp5zYGZVZ+dfccmavm4gkSYmxVwKRAmnVsfR+1ZJfz8QmRE3g7XTI9XF61EWwDK7w==", "0987654321", false, "eb63c74c-e5ea-4845-82a8-ea39862a2db6", false, "user@example.com" },
+                    { new Guid("f3bee6e5-96b1-4eea-b539-ca40fe36af52"), 0, null, "002204004364", "c4f4f26c-5668-4264-9d70-129f39088969", "admin@example.com", false, null, false, true, null, "Admin User", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAEAACcQAAAAEDUAcWVuzmgmc2v+EoA3paCeI96iZobPw5x5vHK7ly0qLEX36UymHH0ssTyFK3waeQ==", "0123456789", false, "cd072401-2716-480f-a3ac-a29f7ebe58b9", false, "admin@example.com" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { new Guid("7f20e431-65a1-4afa-8227-2ec5d75dea9e"), new Guid("2b1d12a8-5b38-4eb2-ac79-6328206e1d6b") });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { new Guid("42f83993-ec5b-43a3-ba81-e7592b58d0c9"), new Guid("f3bee6e5-96b1-4eea-b539-ca40fe36af52") });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -613,6 +665,11 @@ namespace API.Migrations
                 name: "IX_OrderHistories_OrderId",
                 table: "OrderHistories",
                 column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_ShippingUnitID",
+                table: "Orders",
+                column: "ShippingUnitID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
@@ -727,6 +784,9 @@ namespace API.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "ShippingUnits");
 
             migrationBuilder.DropTable(
                 name: "Vouchers");
