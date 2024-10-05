@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using API.Data;
+using API.DTO;
+using API.IRepositories;
+using Data.ViewModels;
+using DataProcessing.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using API.DTO;
-using API.Data;
-using DataProcessing.Models;
-using API.IRepositories;
-using API.Repositories;
 
 namespace API.Controllers
 {
@@ -20,24 +15,118 @@ namespace API.Controllers
         private readonly IProductDetailRepos _productDetailRepos;
         private readonly ApplicationDbContext _context;
 
-        public ProductDetailController (IProductDetailRepos productDetailRepos, ApplicationDbContext context)
+        public ProductDetailController(IProductDetailRepos productDetailRepos, ApplicationDbContext context)
         {
             _productDetailRepos = productDetailRepos;
             _context = context;
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchProductDetails(string searchString)
+        {
+            var products = _context.ProductDetails
+                                      .Include(p => p.Color)
+                                      .Include(p => p.Product)
+                                          .ThenInclude(p => p.Brand)
+                                      .Include(p => p.Product)
+                                          .ThenInclude(p => p.Category)
+                                      .Include(p => p.Product)
+                                          .ThenInclude(p => p.Material)
+                                      .Include(p => p.Product)
+                                          .ThenInclude(p => p.Sole)
+                                      .AsQueryable();
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(p =>
+                    p.Product.Name.Contains(searchString) ||       // Tìm theo tên Product
+                    p.Color.Name.Contains(searchString) ||         // Tìm theo Color
+                    p.Product.Brand.Name.Contains(searchString) || // Tìm theo Brand
+                    p.Product.Material.Name.Contains(searchString) ||
+                    p.Product.Sole.TypeName.Contains(searchString) ||
+                    p.Product.Category.Name.Contains(searchString) ||
+                    p.Id.Contains(searchString)
+                );
+            }
+
+            return Ok(await products.ToListAsync());
+        }
+        [HttpGet("filter")]
+        public async Task<IActionResult> FilterProductDetails(Guid? selectedColorId, Guid? selectedCategoryId,
+            Guid? selectedBrandId, Guid? selectedSoleId, Guid? selectedSizeId)
+        {
+            var products = _context.ProductDetails
+                                      .Include(p => p.Color)
+                                      .Include(p => p.Product)
+                                          .ThenInclude(p => p.Brand)
+                                      .Include(p => p.Product)
+                                          .ThenInclude(p => p.Category)
+                                      .Include(p => p.Product)
+                                          .ThenInclude(p => p.Material)
+                                      .Include(p => p.Product)
+                                          .ThenInclude(p => p.Sole)
+                                      .AsQueryable();
+
+            // Lọc Size
+            if (selectedSizeId.HasValue)
+            {
+                products = products.Where(p => p.SizeId == selectedSizeId.Value);
+            }
+            // Lọc Brand
+            if (selectedBrandId.HasValue)
+            {
+                products = products.Where(p => p.Product.BrandId == selectedBrandId.Value);
+            }
+            // Lọc Category
+            if (selectedCategoryId.HasValue)
+            {
+                products = products.Where(p => p.Product.CategoryId == selectedCategoryId.Value);
+            }
+            // Lọc Sole
+            if (selectedSoleId.HasValue)
+            {
+                products = products.Where(p => p.Product.SoleId == selectedSoleId.Value);
+            }
+            // Lọc Color
+            if (selectedColorId.HasValue)
+            {
+                products = products.Where(p => p.ColorId == selectedColorId.Value);
+            }
+
+
+            // Tạo ViewModel và gán dữ liệu (Sử dụng ToListAsync để truy xuất không đồng bộ)
+            var viewModel = new FilterProductViewModel
+            {
+                SelectedColorId = selectedColorId,
+                SelectedCategoryId = selectedCategoryId,
+                SelectedBrandId = selectedBrandId,
+                SelectedSoleId = selectedSoleId,
+                SelectedSizeId = selectedSizeId,
+                Colors = await _context.Colors.ToListAsync(),
+                Categories = await _context.Categories.ToListAsync(),
+                Brands = await _context.Brands.ToListAsync(),
+                Soles = await _context.Soles.ToListAsync(), 
+                Sizes = await _context.Sizes.ToListAsync(),
+                ProductDetails = await products.ToListAsync()
+            };
+
+            return Ok(viewModel);
+
+        }
+
+
+
         // GET: api/ProductDetail
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductDetail>>> GetProductDetailsDTO()
         {
-                return await  _productDetailRepos.GetAllProductDetail();
+            return await _productDetailRepos.GetAllProductDetail();
         }
 
         // GET: api/ProductDetail/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDetail>> GetProductDetail(string id)
         {
-                return await _productDetailRepos.GetProductDetailById(id);  
+            return await _productDetailRepos.GetProductDetailById(id);
         }
 
         // PUT: api/ProductDetail/5
@@ -105,7 +194,7 @@ namespace API.Controllers
                 string sizeValue = size.Value.ToString(); // Hoặc bạn có thể sử dụng size.Value.ToString() nếu size là Nullable<int>
 
                 // Tạo Id theo định dạng "chữ cái đầu tiên của Brand - chữ cái đầu tiên của Product - chữ cái đầu tiên của Color - kích cỡ"
-                string baseId = $"{GetFirstChar(product.Brand.Name)}-{GetFirstChar(product.Name)}-{GetFirstChar(color.Name)}-{sizeValue}";
+                string baseId = $"{(product.Brand.Name)}{(product.Name)}{(color.Name)}{sizeValue}";
 
                 // Lấy số lượng bản ghi hiện tại để tạo số tự sinh
                 int count = await _context.ProductDetails
@@ -136,11 +225,7 @@ namespace API.Controllers
             return CreatedAtAction("GetProductDetail", new { id = productDetailDTO.ProductId }, productDetailDTO);
         }
 
-        // Hàm để lấy 2 ký tự đầu tiên
-        private string GetFirstChar(string value)
-        {
-            return !string.IsNullOrEmpty(value) ? value.Substring(0, 1).ToUpper() : string.Empty; // Lấy chữ cái đầu tiên và chuyển thành chữ hoa
-        }
+        
 
 
         // DELETE: api/ProductDetail/5
