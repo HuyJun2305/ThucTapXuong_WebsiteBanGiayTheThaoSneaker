@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -36,6 +37,7 @@ namespace DataProcessing.Models
         [Required]
         public string PaymentMethod { get; set; }
         public string Status { get; set; }
+       
 
         public Guid UserId { get; set; }
         [JsonIgnore]
@@ -43,5 +45,8 @@ namespace DataProcessing.Models
         public Guid? VoucherId { get; set; }
         [JsonIgnore]
         public virtual Voucher Voucher { get; set; }
+
+        public Guid ShippingUnitID { get; set; }
+        public virtual ShippingUnit ShippingUnit { get; set; }
     }
 }
