@@ -21,8 +21,16 @@ namespace API.Repositories
 
         public async Task delete(Guid id)
         {
-            var deleteItem = await GetShippingUnitById(id);
-            _context.ShippingUnits.Remove(deleteItem);
+            var hasOrders = _context.Orders.Any(o => o.ShippingUnitID == id);
+            if (!hasOrders)
+            {
+                var deleteItem = await GetShippingUnitById(id);
+                if (deleteItem != null)
+                {
+                    _context.ShippingUnits.Remove(deleteItem);
+                }
+
+            }
                                                                 
         }
 

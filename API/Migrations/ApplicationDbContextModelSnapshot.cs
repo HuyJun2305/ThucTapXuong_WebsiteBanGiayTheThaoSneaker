@@ -73,6 +73,9 @@ namespace API.Migrations
                     b.Property<string>("ImageURL")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsSubscribedToNews")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
