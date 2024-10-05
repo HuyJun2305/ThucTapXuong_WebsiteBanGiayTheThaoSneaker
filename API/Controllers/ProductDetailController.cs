@@ -194,7 +194,7 @@ namespace API.Controllers
                 string sizeValue = size.Value.ToString(); // Hoặc bạn có thể sử dụng size.Value.ToString() nếu size là Nullable<int>
 
                 // Tạo Id theo định dạng "chữ cái đầu tiên của Brand - chữ cái đầu tiên của Product - chữ cái đầu tiên của Color - kích cỡ"
-                string baseId = $"{GetFirstChar(product.Brand.Name)}{GetFirstChar(product.Name)}{GetFirstChar(color.Name)}{sizeValue}";
+                string baseId = $"{(product.Brand.Name)}{(product.Name)}{(color.Name)}{sizeValue}";
 
                 // Lấy số lượng bản ghi hiện tại để tạo số tự sinh
                 int count = await _context.ProductDetails
@@ -225,11 +225,7 @@ namespace API.Controllers
             return CreatedAtAction("GetProductDetail", new { id = productDetailDTO.ProductId }, productDetailDTO);
         }
 
-        // Hàm để lấy 2 ký tự đầu tiên
-        private string GetFirstChar(string value)
-        {
-            return !string.IsNullOrEmpty(value) ? value.Substring(0, 1).ToUpper() : string.Empty; // Lấy chữ cái đầu tiên và chuyển thành chữ hoa
-        }
+        
 
 
         // DELETE: api/ProductDetail/5
