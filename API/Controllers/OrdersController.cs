@@ -69,6 +69,7 @@ namespace API.Controllers
 					PaymentMethod = order.PaymentMethod,
 					Status = order.Status,
 					UserId = order.UserId,
+					AddressId = order.AddressId,
 					VoucherId = order.VoucherId,
 					ShippingUnitID = order.ShippingUnitID,
 				};

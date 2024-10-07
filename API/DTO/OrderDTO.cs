@@ -34,6 +34,7 @@ namespace API.DTO
 
 		public Guid UserId { get; set; }
 		public Guid? VoucherId { get; set; }
+		public Guid? AddressId { get; set; }
 		public Guid? ShippingUnitID { get; set; }
 	}
 }

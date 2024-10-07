@@ -21,7 +21,7 @@ namespace API.Repositories
 		public async Task Delete(Guid id)
 		{
 			var data = GetOrderById(id).Result;
-			if (data != null) throw new KeyNotFoundException("This order is not existed!");
+			if (data == null) throw new KeyNotFoundException("This order is not existed!");
 			_context.Orders.Remove(data);
 		}
 

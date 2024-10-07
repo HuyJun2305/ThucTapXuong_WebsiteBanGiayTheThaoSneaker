@@ -31,6 +31,7 @@ namespace API.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<OrderHistory> OrderHistories { get; set; }
+        public DbSet<PaymentHistory> PaymentHistories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductDetail> ProductDetails { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
@@ -49,6 +50,11 @@ namespace API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<PaymentHistory>()
+                .HasOne(ph => ph.Order)
+                .WithMany(o => o.paymentHistories)
+                .HasForeignKey(ph => ph.OrderId);
+
             // Khai báo Entity cho ProductDetailPromotion
             modelBuilder.Entity<ProductDetailPromotion>()
                 .HasKey(pd => pd.Id); // Khóa chính là Id

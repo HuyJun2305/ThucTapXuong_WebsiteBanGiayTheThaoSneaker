@@ -22,6 +22,48 @@ namespace API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("Data.Models.PaymentHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ConfirmerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("PaymentAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("PaymentCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("PaymentHistories");
+                });
+
             modelBuilder.Entity("Data.Models.ProductDetailPromotion", b =>
                 {
                     b.Property<Guid>("Id")
@@ -278,12 +320,18 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("AddressId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PaymentMethod")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ShippingUnitID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -299,6 +347,8 @@ namespace API.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ShippingUnitID");
 
                     b.HasIndex("UserId");
 
@@ -342,7 +392,6 @@ namespace API.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("OrderId")
@@ -487,6 +536,42 @@ namespace API.Migrations
                     b.HasIndex("ColorId");
 
                     b.ToTable("SelectedImages");
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.ShippingUnit", b =>
+                {
+                    b.Property<Guid>("ShippingUnitID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Website")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ShippingUnitID");
+
+                    b.ToTable("ShippingUnits");
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Size", b =>
@@ -705,6 +790,17 @@ namespace API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Data.Models.PaymentHistory", b =>
+                {
+                    b.HasOne("DataProcessing.Models.Order", "Order")
+                        .WithMany("paymentHistories")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("Data.Models.ProductDetailPromotion", b =>
                 {
                     b.HasOne("DataProcessing.Models.ProductDetail", "ProductDetail")
@@ -767,6 +863,10 @@ namespace API.Migrations
 
             modelBuilder.Entity("DataProcessing.Models.Order", b =>
                 {
+                    b.HasOne("DataProcessing.Models.ShippingUnit", "ShippingUnit")
+                        .WithMany("Orders")
+                        .HasForeignKey("ShippingUnitID");
+
                     b.HasOne("DataProcessing.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -776,6 +876,8 @@ namespace API.Migrations
                     b.HasOne("DataProcessing.Models.Voucher", "Voucher")
                         .WithMany()
                         .HasForeignKey("VoucherId");
+
+                    b.Navigation("ShippingUnit");
 
                     b.Navigation("User");
 
@@ -936,6 +1038,11 @@ namespace API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DataProcessing.Models.Order", b =>
+                {
+                    b.Navigation("paymentHistories");
+                });
+
             modelBuilder.Entity("DataProcessing.Models.ProductDetail", b =>
                 {
                     b.Navigation("ProductDetailPromotions");
@@ -944,6 +1051,11 @@ namespace API.Migrations
             modelBuilder.Entity("DataProcessing.Models.Promotion", b =>
                 {
                     b.Navigation("ProductDetailPromotions");
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.ShippingUnit", b =>
+                {
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }
