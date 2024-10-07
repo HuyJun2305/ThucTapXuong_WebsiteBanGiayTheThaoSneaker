@@ -39,7 +39,13 @@ internal class Program
         builder.Services.AddScoped<ISizeRepo, SizeRepo>();
         builder.Services.AddScoped<IImageRepo, ImageRepo>();
         builder.Services.AddScoped<ISelectedImageRepo, SelectedImageRepo>();
-
+        builder.Services.AddScoped<ICartRepo, CartRepo>();
+        builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+                options.JsonSerializerOptions.MaxDepth = 64; // Tuỳ chọn này có thể điều chỉnh theo yêu cầu
+            });
         builder.Services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

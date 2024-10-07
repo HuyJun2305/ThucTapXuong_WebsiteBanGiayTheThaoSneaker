@@ -14,5 +14,6 @@ namespace DataProcessing.Models
         public Guid AccountId {  get; set; }
         [JsonIgnore]
         public virtual ApplicationUser Account {  get; set; }
+        public virtual ICollection<CartDetail> CartDetails { get; set; }
     }
 }   
