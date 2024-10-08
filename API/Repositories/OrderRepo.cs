@@ -25,11 +25,11 @@ namespace API.Repositories
 			_context.Orders.Remove(data);
 		}
 
-		public async Task<List<Order>?> GetAllOrderByUser(Guid userId)
+		public async Task<List<Order>?> GetAllOrderByUser(string userId)
 		{
 			var data = await _context.Orders.Where(o => o.UserId == userId)
-				.Include(o => o.User)
 				.Include(o => o.Voucher)
+				.Include(o => o.ShippingUnit)
 				.ToListAsync();
 			return data;
 		}
@@ -37,7 +37,7 @@ namespace API.Repositories
 		public async Task<List<Order>?> GetAllOrders()
 		{
 			return await _context.Orders
-				.Include(o => o.User)
+				.Include(o => o.ShippingUnit)
 				.Include(o => o.Voucher)
 				.ToListAsync();
 		}
@@ -45,7 +45,7 @@ namespace API.Repositories
 		public async Task<Order?> GetOrderById(Guid id)
 		{
 			return await _context.Orders.Where(o => o.Id == id)
-				.Include(o => o.User)
+				.Include(o => o.ShippingUnit)
 				.Include(o => o.Voucher)
 				.FirstOrDefaultAsync();
 		}
@@ -117,6 +117,60 @@ namespace API.Repositories
 			var data = await GetHistoryById(OrderHistory.Id);
 			if (data == null) throw new KeyNotFoundException("This OrderHistory is not existed!");
 			_context.Entry(OrderHistory).State = EntityState.Modified;
+		}
+	}
+
+	public class PaymentHistoryRepo : IPaymentHistoryRepo
+	{
+		private readonly ApplicationDbContext _context;
+        public PaymentHistoryRepo(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+        public async Task Create(PaymentHistory payment)
+		{
+			if (await GetHistoryById(payment.Id) is not null) throw new DuplicateWaitObjectException("This record is existed!");
+			await _context.PaymentHistories.AddAsync(payment);
+		}
+
+		public async Task Delete(Guid id)
+		{
+			var data = await GetHistoryById(id);
+			if (data is null) throw new KeyNotFoundException("Not found this record");
+			_context.PaymentHistories.Remove(data);
+		}
+
+		public async Task<List<PaymentHistory>> GetAllPaymentHistories()
+		{
+			return await _context.PaymentHistories
+				.Include(ph => ph.Order)
+				.ToListAsync();
+		}
+
+		public async Task<PaymentHistory?> GetHistoryById(Guid id)
+		{
+			return await _context.PaymentHistories
+				.Include(ph => ph.Order)
+				.FirstOrDefaultAsync(ph => ph.Id == id);
+		}
+
+		public async Task<List<PaymentHistory>> GetPaymentHistoriesByOrderId(Guid id)
+		{
+			return await _context.PaymentHistories
+				.Where(ph => ph.OrderId == id)
+				.Include(ph => ph.Order)
+				.ToListAsync();
+		}
+
+		public async Task SaveChanges()
+		{
+			await _context.SaveChangesAsync();
+		}
+
+		public async Task Update(PaymentHistory payment)
+		{
+			if (await GetHistoryById(payment.Id) is null) throw new KeyNotFoundException("Not found this record");
+			_context.Entry(payment).State = EntityState.Modified;
 		}
 	}
 }

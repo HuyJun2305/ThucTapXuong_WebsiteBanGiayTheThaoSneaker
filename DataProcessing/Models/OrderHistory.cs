@@ -17,6 +17,6 @@ namespace DataProcessing.Models
         public Guid UpdatedByUserId { get; set; }
         public Guid OrderId { get; set; }
         [JsonIgnore]
-        public virtual Order Order { get; set; }
+        public virtual Order? Order { get; set; }
     }
 }

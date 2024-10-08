@@ -36,18 +36,18 @@ namespace DataProcessing.Models
         public decimal TotalPrice { get; set; }
         [Required]
         public string PaymentMethod { get; set; }
-        public string Status { get; set; } = "Chờ xác nhận";
+        public string? Status { get; set; } = "Chờ xác nhận";
         public Guid? AddressId { get; set; }
 
 
-        public Guid UserId { get; set; }
-        public virtual ApplicationUser? User { get; set; }
+        public string? UserId { get; set; } = "Khách lẻ";
         public Guid? VoucherId { get; set; }
+        [JsonIgnore]
         public virtual Voucher? Voucher { get; set; }
-
         public Guid? ShippingUnitID { get; set; }
+        [JsonIgnore]
         public virtual ShippingUnit? ShippingUnit { get; set; }
-
-        public ICollection<PaymentHistory> paymentHistories { get; set; }
+        [JsonIgnore]
+        public ICollection<PaymentHistory>? paymentHistories { get; set; }
     }
 }

@@ -22,48 +22,6 @@ namespace API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Data.Models.PaymentHistory", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ConfirmerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("OrderId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("PaymentAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("PaymentCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PaymentMethod")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PaymentType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("PaymentHistories");
-                });
-
             modelBuilder.Entity("Data.Models.ProductDetailPromotion", b =>
                 {
                     b.Property<Guid>("Id")
@@ -334,14 +292,13 @@ namespace API.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("VoucherId")
                         .HasColumnType("uniqueidentifier");
@@ -349,8 +306,6 @@ namespace API.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ShippingUnitID");
-
-                    b.HasIndex("UserId");
 
                     b.HasIndex("VoucherId");
 
@@ -412,6 +367,48 @@ namespace API.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderHistories");
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.PaymentHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ConfirmerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("PaymentAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("PaymentCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("PaymentHistories");
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Product", b =>
@@ -790,17 +787,6 @@ namespace API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Data.Models.PaymentHistory", b =>
-                {
-                    b.HasOne("DataProcessing.Models.Order", "Order")
-                        .WithMany("paymentHistories")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-                });
-
             modelBuilder.Entity("Data.Models.ProductDetailPromotion", b =>
                 {
                     b.HasOne("DataProcessing.Models.ProductDetail", "ProductDetail")
@@ -867,19 +853,11 @@ namespace API.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("ShippingUnitID");
 
-                    b.HasOne("DataProcessing.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DataProcessing.Models.Voucher", "Voucher")
                         .WithMany()
                         .HasForeignKey("VoucherId");
 
                     b.Navigation("ShippingUnit");
-
-                    b.Navigation("User");
 
                     b.Navigation("Voucher");
                 });
@@ -907,6 +885,17 @@ namespace API.Migrations
                 {
                     b.HasOne("DataProcessing.Models.Order", "Order")
                         .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.PaymentHistory", b =>
+                {
+                    b.HasOne("DataProcessing.Models.Order", "Order")
+                        .WithMany("paymentHistories")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

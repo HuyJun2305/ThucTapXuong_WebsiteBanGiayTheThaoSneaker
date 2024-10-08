@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Data.Models
+namespace DataProcessing.Models
 {
 	public class PaymentHistory
 	{
@@ -26,6 +26,7 @@ namespace Data.Models
         public bool Status { get; set; } // true = Thành công - false = Thất bại
         [Required]
         public Guid OrderId {  get; set; } // khoá phụ nối tới hoá đơn
-        public virtual Order Order { get; set; }
+        [JsonIgnore]
+        public virtual Order? Order { get; set; }
     }
 }
