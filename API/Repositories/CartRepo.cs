@@ -13,47 +13,72 @@ namespace API.Repositories
             _context=context;
         }
         public async Task AddToCartAsync(Guid userId, string productDetailId, int quantity)
-        {
-            var cart = await _context.Carts.Include(c=>c.CartDetails).FirstOrDefaultAsync(c=>c.Account.Id == userId);
-            if (cart == null)
+        { 
+            var user = await _context.Users.Include(u => u.Cart)
+                                             .ThenInclude(c => c.CartDetails)
+                                             .FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
             {
-                cart = new Cart
+                throw new Exception("User not found.");
+            }
+            else
+            {
+                var product = await _context.ProductDetails.FindAsync(productDetailId);
+                if (product == null)
+                {
+                    throw new Exception("Product not found.");
+                }
+                if(product.Stock < quantity)
+                {
+                    throw new Exception("Not enough stock available.");
+                }
+                // Kiểm tra giỏ hàng của người dùng (nếu chưa có thì tạo mới)
+                var cart = user.Cart ?? new Cart
                 {
                     Id = Guid.NewGuid(),
                     AccountId = userId,
                     CartDetails = new List<CartDetail>()
                 };
-                _context.Carts.Add(cart);
-            }
-            var cartDetails = cart.CartDetails.FirstOrDefault(cd => cd.ProductDetailId == productDetailId);
-            // checl tồn tại sản phẩm 
-            if(cartDetails != null)
-            {
-                cartDetails.Quanlity += quantity; // nếu sp có trong cart rồi thì cộng dồn
-            }    
-            else
-            {
-                var productDetails = await _context.ProductDetails.FindAsync(productDetailId);
-                if (productDetails != null)
+                // check sản phẩm đã tồn tại trong cart chưa 
+                var cartItem = await _context.CartDetails.FirstOrDefaultAsync(c => c.ProductDetailId == productDetailId);
+                if (cartItem == null)
                 {
-                    cart.CartDetails.Add(new CartDetail
+                    CartDetail newCartDetails = new CartDetail()
                     {
-                        Id= Guid.NewGuid(),
-                        ProductDetailId= productDetailId,
-                        Quanlity=quantity,
-                        TotalPrice = productDetails.Price * quantity,
-                        CartId = cart.Id
-                    });
-
+                        Id = Guid.NewGuid(),
+                        CartId = cart.Id,
+                        ProductDetailId = productDetailId,
+                        Quanlity = quantity,
+                        TotalPrice = product.Price * quantity,
+                    
+                    };
+                    _context.CartDetails.Add(newCartDetails);         
                 }
-            }    
-            await _context.SaveChangesAsync();  
+                else
+                {
+                    if (product.Stock < cartItem.Quanlity + quantity)
+                    // nếu số lượng sản phẩm trong kho nhỏ hơn số lượng sản phẩm thêm vào 
+                    {
+                        throw new Exception("Not enough stock to add the additional quantity.");
+                    }
+                    cartItem.Quanlity = cartItem.Quanlity + quantity; // cộng dồn
+                    cartItem.TotalPrice += product.Price * quantity;       
+                    _context.CartDetails.Update(cartItem);          
+                }
+                if (user.Cart == null)
+                {
+                    _context.Carts.Add(cart);
+                }
+                // sửa lại số lượng sản phẩm trong kho 
+                product.Stock = product.Stock - quantity;
+                _context.ProductDetails.Update(product);
 
+            }
+            await _context.SaveChangesAsync();
         }
-        // danh sách cart details của user 
         public async Task<IEnumerable<CartDetail>> GetUserCartAsync(Guid userId)
         {
-            // Tìm giỏ hàng của người dùng
+            
             var cart = await _context.Carts
                 .Include(c => c.CartDetails) // Bao gồm thông tin CartDetails
                     .ThenInclude(cd => cd.ProductDetail) // Bao gồm thông tin ProductDetail
@@ -65,14 +90,24 @@ namespace API.Repositories
 
         public async Task UpdateCartQuantityAsync(Guid cartDetailId, int quantity)
         {
-            var cartDetail = await _context.CartDetails.FindAsync(cartDetailId);
-            if (cartDetail != null)
+            if(quantity<0)
             {
-                cartDetail.Quanlity = quantity;
-                cartDetail.TotalPrice = cartDetail.ProductDetail.Price * quantity;
-
-                await _context.SaveChangesAsync();
+                throw new Exception("Số lượng phải lớn hơn 0");
+            }    
+            var cartDetail = await _context.CartDetails
+                                    .Include(cd => cd.ProductDetail)  // Bao gồm ProductDetail để nạp thông tin sản phẩm
+                                    .FirstOrDefaultAsync(cd => cd.Id == cartDetailId);
+            if (cartDetail == null)
+            {
+                throw new ArgumentException("Không tìm thấy sản phẩm trong giỏ hàng");
             }
+            cartDetail.Quanlity = quantity;
+            if (cartDetail.ProductDetail != null)
+            {
+                cartDetail.TotalPrice = cartDetail.ProductDetail.Price * quantity;
+            }
+            _context.CartDetails.Update(cartDetail);
+            await _context.SaveChangesAsync();
         }
         public async Task RemoveFromCartAsync(Guid cartDetailId)
         {

@@ -24,8 +24,10 @@ namespace DataProcessing.Models
         public string? PhoneNumber { get; set; }
         [RegularExpression(@"^\d{12}$", ErrorMessage = "CIC must be exactly 12 digits")]
         [Display(Name = "CIC")]
-        public string? CIC { get; set; }
+        public string? CIC { get; set; }    
         public string? ImageURL { get; set; }
-        public bool IsSubscribedToNews { get; set; } 
+        public bool IsSubscribedToNews { get; set; } = false; // Mặc định là không đăng ký
+        public virtual ICollection<Address> Addresses { get; set; }
+        public virtual Cart Cart { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241007035946_cartforaccount")]
+    partial class cartforaccount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -170,10 +172,6 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c726075d-e3a6-48ea-bab8-0f57fcb702b3"),
-                            AccessFailedCount = 0,
-                            CIC = "002204004364",
-                            ConcurrencyStamp = "b6f80f02-a6f8-4852-8747-b390807578bf",
                             Id = new Guid("570a38f9-96d5-421c-bb85-9ebec8d4e1e2"),
                             AccessFailedCount = 0,
                             CIC = "002204004364",
@@ -185,10 +183,6 @@ namespace API.Migrations
                             Name = "Admin User",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEM4c06DMGzqg+DAHBcUtvUHOzeMDNZLsK3LCAhDVU2SdRskrH7wtpHeGwR9j4TtDNA==",
-                            PhoneNumber = "0123456789",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "9b2ea68b-f437-4f57-9b38-6273bdd1f4d0",
                             PasswordHash = "AQAAAAEAACcQAAAAEHe+jYb97lsVsZjHzcG+vApW3DmMfZSTTgCSKMUbBeelY5Zr7DHeq+W7CO9KPMvu4Q==",
                             PhoneNumber = "0123456789",
                             PhoneNumberConfirmed = false,
@@ -198,10 +192,6 @@ namespace API.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d70ae549-e8e6-4eb3-88c9-d98e35174e20"),
-                            AccessFailedCount = 0,
-                            CIC = "004204004364",
-                            ConcurrencyStamp = "5df23260-21e7-4728-8904-c965ec98f8a7",
                             Id = new Guid("ef593612-0d45-4466-a89e-b570ef7963ff"),
                             AccessFailedCount = 0,
                             CIC = "004204004364",
@@ -213,10 +203,6 @@ namespace API.Migrations
                             Name = "Regular User",
                             NormalizedEmail = "USER@EXAMPLE.COM",
                             NormalizedUserName = "USER@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHtUEVkrdTYBVXLvdCJFHdglUdxBVk/FfrpeKhQIRB7fdpyQEc2iVLtFjjt4lc9kfw==",
-                            PhoneNumber = "0987654321",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "c6b4131b-9f88-4ee1-ae10-81c0275ab1fe",
                             PasswordHash = "AQAAAAEAACcQAAAAEGVUe1FvcRPDiW6Sez3toycgoaGnZ+R6z+Z8gVxzcarKXB0qoWEDhEnyHQ28iM4l9A==",
                             PhoneNumber = "0987654321",
                             PhoneNumberConfirmed = false,
@@ -387,7 +373,7 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ShippingUnitID")
+                    b.Property<Guid>("ShippingUnitID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
@@ -746,8 +732,6 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("f065ce9c-e1ce-4b1a-a4f7-49e7b0ed68a1"),
-                            ConcurrencyStamp = "ef413f5e-df35-4a9b-842e-4a70dff89e97",
                             Id = new Guid("a626bc29-6dcf-4c0c-947a-47801d048e53"),
                             ConcurrencyStamp = "2092a0c2-fae6-42fa-8822-635c8cdad791",
                             Name = "Admin",
@@ -755,8 +739,6 @@ namespace API.Migrations
                         },
                         new
                         {
-                            Id = new Guid("12f80741-e1f1-4dfe-9aa3-77f70a401d91"),
-                            ConcurrencyStamp = "361d2e41-e684-423a-9cd1-e55e7ea1fd0f",
                             Id = new Guid("39e25f9a-5511-4e65-ac1f-6ca98f16818c"),
                             ConcurrencyStamp = "91c73eaf-538b-4153-8217-148a651b232a",
                             Name = "Customer",
@@ -764,8 +746,6 @@ namespace API.Migrations
                         },
                         new
                         {
-                            Id = new Guid("5806af01-40ed-40c7-ad86-69658498738f"),
-                            ConcurrencyStamp = "65e8c564-ab2b-4f6a-a723-70e34ab799bd",
                             Id = new Guid("4674f9a1-530b-491d-a73e-e41ba73600da"),
                             ConcurrencyStamp = "ead07250-1c50-4843-9e93-cf39a4e28eb7",
                             Name = "Employee",
@@ -970,7 +950,9 @@ namespace API.Migrations
                 {
                     b.HasOne("DataProcessing.Models.ShippingUnit", "ShippingUnit")
                         .WithMany("Orders")
-                        .HasForeignKey("ShippingUnitID");
+                        .HasForeignKey("ShippingUnitID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("DataProcessing.Models.ApplicationUser", "User")
                         .WithMany()
