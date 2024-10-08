@@ -10,8 +10,12 @@ namespace View.IServices
         Task Update(ProductDetail productDetail);
         Task Delete(string id);
 
-        Task<IEnumerable<ProductDetail>?> SearchProductDetails(string searchString);
-        Task<IEnumerable<ProductDetail>?> FilterProductDetails(Guid? selectedColorId, Guid? selectedCategoryId,
-            Guid? selectedBrandId, Guid? selectedSoleId, Guid? selectedSizeId);
+        Task<List<ProductDetail>> GetFilteredProductDetails(string? searchQuery = null,
+               Guid? colorId = null,
+               Guid? sizeId = null,
+               Guid? categoryId = null,
+               Guid? brandId = null,
+               Guid? soleId = null,
+               Guid? materialId = null);
     }
 }
