@@ -17,13 +17,20 @@ namespace API.Controllers
         [HttpPost("AddProductToCart")]
         public async Task<IActionResult> AddToCart(Guid userId, string productDetailId, int quantity)
         {
-            if (quantity <= 0)
+            try
             {
-                return BadRequest("ố lượng sản phẩm phải lớn hơn 0");
+                if (quantity <= 0)
+                {
+                    return BadRequest("ố lượng sản phẩm phải lớn hơn 0");
+                }
+                await _cartRepo.AddToCartAsync(userId, productDetailId, quantity);
+                return Ok();
             }
-
-            await _cartRepo.AddToCartAsync(userId, productDetailId, quantity);
-            return Ok();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+     
         }
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserCart(Guid userId)
@@ -31,7 +38,7 @@ namespace API.Controllers
             var cartDetails = await _cartRepo.GetUserCartAsync(userId);
             return Ok(cartDetails);
         }
-        [HttpPut("UpdateCartQuantity/{cartDetailId}")]
+        [HttpPatch("UpdateCartQuantity/{cartDetailId}")]
         public async Task<IActionResult> UpdateCartQuantity(Guid cartDetailId, [FromBody] int quantity)
         {
             if (quantity <= 0)
