@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using DataProcessing.Models;
 using View.Data;
 using View.IServices;
+using View.Servicecs;
+using View.ViewModel;
 
 namespace View.Controllers
 {
@@ -21,11 +23,26 @@ namespace View.Controllers
         }
 
         // GET: Categories
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int currentPage = 1, int rowsPerPage = 10)
         {
-              return _categoryServices.GetAllCategories() != null ? 
-                          View(await _categoryServices.GetAllCategories()) :
-                          Problem("Entity set 'Category'  is null.");
+            var categories = await _categoryServices.GetAllCategories();
+
+            // Phân trang
+            var totalCategories = categories.Count();
+            var totalPages = (int)Math.Ceiling((double)totalCategories / rowsPerPage);
+            var pagedCategories = categories.Skip((currentPage - 1) * rowsPerPage).Take(rowsPerPage).ToList();
+
+            var viewModel = new CategoriesViewModel
+            {
+                Categories = pagedCategories,
+                Category = new Category(),
+            };
+
+            ViewBag.CurrentPage = currentPage;
+            ViewBag.RowsPerPage = rowsPerPage;
+            ViewBag.TotalPages = totalPages;
+
+            return View(viewModel);
         }
 
         // GET: Categories/Details/5
@@ -55,15 +72,15 @@ namespace View.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,Name,Status")] Category category)
+        public async Task<IActionResult> Create(CategoriesViewModel categoriesViewModel)
         {
             if (ModelState.IsValid)
             {
-                category.Id = Guid.NewGuid();
-                await _categoryServices.Create(category);
+                categoriesViewModel.Category.Id = Guid.NewGuid();
+                await _categoryServices.Create(categoriesViewModel.Category);
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Categories/Edit/5
@@ -87,22 +104,18 @@ namespace View.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Status")] Category category)
+        public async Task<IActionResult> Edit(Guid id, CategoriesViewModel categoriesViewModel)
         {
-            if (id != category.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _categoryServices.Update(category);
+                    await _categoryServices.Update(categoriesViewModel.Category);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (_categoryServices.GetAllCategories() == null)
+                    var existingMaterial = await _categoryServices.GetCategoryById(categoriesViewModel.Category.Id);
+                    if (existingMaterial == null)
                     {
                         return NotFound();
                     }
@@ -111,9 +124,10 @@ namespace View.Controllers
                         throw;
                     }
                 }
+                categoriesViewModel.Categories = await _categoryServices.GetAllCategories();
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return BadRequest("Lỗi không sửa được");
         }
 
         // GET: Categories/Delete/5
@@ -146,6 +160,20 @@ namespace View.Controllers
             await _categoryServices.Delete(id);
 
             return RedirectToAction(nameof(Index));
+        }
+        [HttpPost]
+        public async Task<IActionResult> ToggleStatus(Guid id)
+        {
+            var material = await _categoryServices.GetCategoryById(id);
+            if (material == null)
+            {
+                return NotFound();
+            }
+
+            material.Status = !material.Status;
+            await _categoryServices.Update(material);
+
+            return RedirectToAction("Index");
         }
     }
 }

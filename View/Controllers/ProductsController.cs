@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using DataProcessing.Models;
 using View.Data;
 using View.IServices;
+using View.Servicecs;
+using View.ViewModel;
+using Newtonsoft.Json;
 
 namespace View.Controllers
 {
@@ -18,14 +21,20 @@ namespace View.Controllers
         private readonly ICategoryServices _categoryServices;
         private readonly IBrandServices _brandServices;
         private readonly IMaterialServices _materialServices;
+        private readonly IColorServices _colorServices;
+        private readonly ISizeServices _sizeServices;
+        private readonly IProductDetailService _productDetailService;
 
-        public ProductsController(IProductServices productService, ISoleServices soleServices, ICategoryServices categoryServices, IBrandServices brandServices, IMaterialServices materialServices)
+        public ProductsController(IProductServices productService, ISoleServices soleServices, ICategoryServices categoryServices, IBrandServices brandServices, IMaterialServices materialServices, IColorServices colorServices, ISizeServices sizeServices, IProductDetailService productDetailService)
         {
             _productServices = productService;
             _soleServices = soleServices;
             _categoryServices = categoryServices;
             _brandServices = brandServices;
             _materialServices = materialServices;
+            _colorServices = colorServices;
+            _sizeServices = sizeServices;
+            _productDetailService = productDetailService;
         }
 
         // GET: Products
@@ -44,12 +53,14 @@ namespace View.Controllers
         }
 
         // GET: Products/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["BrandId"] = new SelectList(_brandServices.GetAllBrands().Result.Where(x => x.Status == true), "Id", "Name");
-            ViewData["CategoryId"] = new SelectList(_categoryServices.GetAllCategories().Result.Where(x => x.Status == true), "Id", "Name");
-            ViewData["MaterialId"] = new SelectList(_materialServices.GetAllMaterials().Result.Where(x => x.Status == true), "Id", "Name");
-            ViewData["SoleId"] = new SelectList(_soleServices.GetAllSoles().Result.Where(x => x.Status == true), "Id", "TypeName");
+            ViewData["BrandId"] = new SelectList(await _brandServices.GetAllBrands(), "Id", "Name");
+            ViewData["CategoryId"] = new SelectList(await _categoryServices.GetAllCategories(), "Id", "Name");
+            ViewData["MaterialId"] = new SelectList(await _materialServices.GetAllMaterials(), "Id", "Name");
+            ViewData["SoleId"] = new SelectList(await _soleServices.GetAllSoles(), "Id", "TypeName");
+            ViewData["ColorId"] = new SelectList(await _colorServices.GetAllColors(), "Id", "Name");
+            ViewData["SizeId"] = new SelectList(await _sizeServices.GetAllSizes(), "Id", "Value");
             return View();
         }
 
@@ -57,20 +68,63 @@ namespace View.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Name,Description,CategoryId,SoleId,BrandId,MaterialId")] Product product)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(ProductAndDetailViewModel viewModel, string productDetailsJson)
         {
-			if (product.Name != null)
+            if (ModelState.IsValid)
             {
+                if (string.IsNullOrEmpty(productDetailsJson))
+                {
+                    ModelState.AddModelError("", "Product details are missing!");
+                    return View(viewModel);
+                }
+
+                var product = new Product
+                {
+                    Id = Guid.NewGuid(),
+                    Name = viewModel.Name,
+                    Description = viewModel.Description,
+                    CategoryId = viewModel.CategoryId,
+                    SoleId = viewModel.SoleId,
+                    BrandId = viewModel.BrandId,
+                    MaterialId = viewModel.MaterialId
+                };
+
                 await _productServices.Create(product);
+
+                var productDetails = JsonConvert.DeserializeObject<List<ProductDetailViewModel>>(productDetailsJson);
+                var productid = product.Id;
+
+                if (productDetails == null || !productDetails.Any())
+                {
+                    ModelState.AddModelError("", "Product details are invalid or empty.");
+                    return View(viewModel);
+                }
+
+                // Lưu chi tiết sản phẩm
+                foreach (var detail in productDetails)
+                {
+                    var productDetail = new ProductDetail
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ProductId = productid,
+                        Price = detail.Price,
+                        Stock = detail.Stock,
+                        Weight = detail.Weight,
+                        ColorId = detail.ColorId,
+                        SizeId = detail.SizeId
+                    };
+
+                    await _productDetailService.Create(productDetail);
+                }
 
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BrandId"] = new SelectList(_brandServices.GetAllBrands().Result.Where(x => x.Status == true), "Id", "Name", product.BrandId);
-            ViewData["CategoryId"] = new SelectList(_categoryServices.GetAllCategories().Result.Where(x => x.Status == true), "Id", "Name", product.CategoryId);
-            ViewData["MaterialId"] = new SelectList(_materialServices.GetAllMaterials().Result.Where(x => x.Status == true), "Id", "Name", product.MaterialId);
-            ViewData["SoleId"] = new SelectList(_soleServices.GetAllSoles().Result.Where(x => x.Status == true), "Id", "TypeName", product.SoleId);
-            return View(product);
+
+            return View(viewModel);
         }
+
+
 
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(Guid id)
