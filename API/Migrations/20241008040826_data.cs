@@ -209,6 +209,30 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Address",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RecipientName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AddressDetail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    District = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Commune = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Address", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Address_AspNetUsers_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
@@ -567,10 +591,10 @@ namespace API.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("12f80741-e1f1-4dfe-9aa3-77f70a401d91"), "361d2e41-e684-423a-9cd1-e55e7ea1fd0f", "Customer", "CUSTOMER" },
-                    { new Guid("5806af01-40ed-40c7-ad86-69658498738f"), "65e8c564-ab2b-4f6a-a723-70e34ab799bd", "Employee", "EMPLOYEE" },
-                    { new Guid("80771198-ea3f-4281-92ea-419bfbfa9072"), "a501be41-822f-474b-abb7-dd423aa8fe16", "Guest", "GUEST" },
-                    { new Guid("f065ce9c-e1ce-4b1a-a4f7-49e7b0ed68a1"), "ef413f5e-df35-4a9b-842e-4a70dff89e97", "Admin", "ADMIN" }
+                    { new Guid("2966e428-e560-4835-a757-b846cabd3dbb"), "5261dc68-f383-4802-b7ac-5ee63eabea44", "Customer", "CUSTOMER" },
+                    { new Guid("7a438650-385d-4da0-a339-3c722376f43b"), "02c43442-9426-4e7a-9ac2-a5f586b27d8e", "Employee", "EMPLOYEE" },
+                    { new Guid("df5ea8a1-0816-47e7-80e4-2758b27ec261"), "2fba941d-9f04-415a-99fc-451cb411d657", "Guest", "GUEST" },
+                    { new Guid("f2e1f35c-af31-4617-89eb-0922348a87f0"), "f7c24ad4-aca3-4215-b64a-a0693fdeb47f", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -578,19 +602,24 @@ namespace API.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "Birthday", "CIC", "ConcurrencyStamp", "Email", "EmailConfirmed", "ImageURL", "IsSubscribedToNews", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("c726075d-e3a6-48ea-bab8-0f57fcb702b3"), 0, null, "002204004364", "b6f80f02-a6f8-4852-8747-b390807578bf", "admin@example.com", false, null, false, true, null, "Admin User", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAEAACcQAAAAEM4c06DMGzqg+DAHBcUtvUHOzeMDNZLsK3LCAhDVU2SdRskrH7wtpHeGwR9j4TtDNA==", "0123456789", false, "9b2ea68b-f437-4f57-9b38-6273bdd1f4d0", false, "admin@example.com" },
-                    { new Guid("d70ae549-e8e6-4eb3-88c9-d98e35174e20"), 0, null, "004204004364", "5df23260-21e7-4728-8904-c965ec98f8a7", "user@example.com", false, null, false, true, null, "Regular User", "USER@EXAMPLE.COM", "USER@EXAMPLE.COM", "AQAAAAEAACcQAAAAEHtUEVkrdTYBVXLvdCJFHdglUdxBVk/FfrpeKhQIRB7fdpyQEc2iVLtFjjt4lc9kfw==", "0987654321", false, "c6b4131b-9f88-4ee1-ae10-81c0275ab1fe", false, "user@example.com" }
+                    { new Guid("46242dd6-7118-4430-862f-dcf1b523dba5"), 0, null, "002204004364", "1ff6566b-5266-480a-a0a9-2117e79829c9", "admin@example.com", false, null, false, true, null, "Admin User", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAEAACcQAAAAEKuj/CUEtjyWYKkIiwdPqY2NfuO2hXCgPJgApd68ADjMxHhshcDktTe5JyVzOomTtA==", "0123456789", false, "56e18d20-3684-4209-9a6c-b5b47e77dd97", false, "admin@example.com" },
+                    { new Guid("6cd6ba72-34ac-4a0e-a474-81761ccbdba6"), 0, null, "004204004364", "e19f8216-f895-41f8-a412-22d00bff9643", "user@example.com", false, null, false, true, null, "Regular User", "USER@EXAMPLE.COM", "USER@EXAMPLE.COM", "AQAAAAEAACcQAAAAENNi24ZBYMbMyFnRTo0yeoeWv3KLa4Cx9NmfCgxOxUFEzUx7c3GegbjDFQeWFdPdLQ==", "0987654321", false, "37f53241-1a89-4cf6-b390-7834ca9d980b", false, "user@example.com" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { new Guid("f065ce9c-e1ce-4b1a-a4f7-49e7b0ed68a1"), new Guid("c726075d-e3a6-48ea-bab8-0f57fcb702b3") });
+                values: new object[] { new Guid("f2e1f35c-af31-4617-89eb-0922348a87f0"), new Guid("46242dd6-7118-4430-862f-dcf1b523dba5") });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { new Guid("12f80741-e1f1-4dfe-9aa3-77f70a401d91"), new Guid("d70ae549-e8e6-4eb3-88c9-d98e35174e20") });
+                values: new object[] { new Guid("2966e428-e560-4835-a757-b846cabd3dbb"), new Guid("6cd6ba72-34ac-4a0e-a474-81761ccbdba6") });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Address_AccountId",
+                table: "Address",
+                column: "AccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -644,7 +673,8 @@ namespace API.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Carts_AccountId",
                 table: "Carts",
-                column: "AccountId");
+                column: "AccountId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Images_ColorId",
@@ -734,6 +764,9 @@ namespace API.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Address");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
