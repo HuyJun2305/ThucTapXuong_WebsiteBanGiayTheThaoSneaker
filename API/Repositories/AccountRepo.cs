@@ -153,7 +153,6 @@ namespace API.Repositories
                     Email = models.Email,
                     CIC = models.CIC ,
                     IsSubscribedToNews = false
-                    IsSubscribedToNews=false
 
                 };
                 var result = await _userManager.CreateAsync(account, models.Password);

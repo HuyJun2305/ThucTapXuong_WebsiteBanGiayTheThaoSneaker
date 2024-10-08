@@ -30,6 +30,7 @@ internal class Program
         builder.Services.AddScoped<IProductDetailRepos, ProductDetailRepos>();
         builder.Services.AddScoped<ISoleRepo, SoleRepos>();  
         builder.Services.AddScoped<ICategoryRepo, CategoryRepos>();
+        builder.Services.AddScoped<ICartDetailRepo, CartDetailRepo>();
         builder.Services.AddScoped<IBrandRepo, BrandRepos>();
         builder.Services.AddScoped<IMaterialRepo, MaterialRepos>();
         builder.Services.AddScoped<IPromotionRepos, PromotionRepos>();

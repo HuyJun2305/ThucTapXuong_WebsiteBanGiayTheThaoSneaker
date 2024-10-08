@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-<<<<<<<< HEAD:API/Migrations/20241005063845_toanv2.Designer.cs
-    [Migration("20241005063845_toanv2")]
-    partial class toanv2
-========
-    [Migration("20241005073343_data")]
+    [Migration("20241007034426_data")]
     partial class data
->>>>>>>> origin/XuanDung:API/Migrations/20241005073343_data.Designer.cs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -137,17 +132,10 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-<<<<<<<< HEAD:API/Migrations/20241005063845_toanv2.Designer.cs
-                            Id = new Guid("f3bee6e5-96b1-4eea-b539-ca40fe36af52"),
+                            Id = new Guid("c726075d-e3a6-48ea-bab8-0f57fcb702b3"),
                             AccessFailedCount = 0,
                             CIC = "002204004364",
-                            ConcurrencyStamp = "c4f4f26c-5668-4264-9d70-129f39088969",
-========
-                            Id = new Guid("ef0e2c74-b7e2-45d8-8d90-d14fb3aa2db9"),
-                            AccessFailedCount = 0,
-                            CIC = "002204004364",
-                            ConcurrencyStamp = "ecacd393-0a83-4847-90eb-17832ceb7041",
->>>>>>>> origin/XuanDung:API/Migrations/20241005073343_data.Designer.cs
+                            ConcurrencyStamp = "b6f80f02-a6f8-4852-8747-b390807578bf",
                             Email = "admin@example.com",
                             EmailConfirmed = false,
                             IsSubscribedToNews = false,
@@ -155,33 +143,19 @@ namespace API.Migrations
                             Name = "Admin User",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-<<<<<<<< HEAD:API/Migrations/20241005063845_toanv2.Designer.cs
-                            PasswordHash = "AQAAAAEAACcQAAAAEDUAcWVuzmgmc2v+EoA3paCeI96iZobPw5x5vHK7ly0qLEX36UymHH0ssTyFK3waeQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEM4c06DMGzqg+DAHBcUtvUHOzeMDNZLsK3LCAhDVU2SdRskrH7wtpHeGwR9j4TtDNA==",
                             PhoneNumber = "0123456789",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "cd072401-2716-480f-a3ac-a29f7ebe58b9",
-========
-                            PasswordHash = "AQAAAAEAACcQAAAAEBO3cUvD4z1FCvjosKY16BZsThKwZHEF+S3a5aVRpG16ktvLqIGTQlUR+G06hRoD1Q==",
-                            PhoneNumber = "0123456789",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "e5b682a1-141b-41d1-b4c0-03426363d209",
->>>>>>>> origin/XuanDung:API/Migrations/20241005073343_data.Designer.cs
+                            SecurityStamp = "9b2ea68b-f437-4f57-9b38-6273bdd1f4d0",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
                         new
                         {
-<<<<<<<< HEAD:API/Migrations/20241005063845_toanv2.Designer.cs
-                            Id = new Guid("2b1d12a8-5b38-4eb2-ac79-6328206e1d6b"),
+                            Id = new Guid("d70ae549-e8e6-4eb3-88c9-d98e35174e20"),
                             AccessFailedCount = 0,
                             CIC = "004204004364",
-                            ConcurrencyStamp = "de3e32f8-d3fd-4fdf-9b2c-ba299db11f3d",
-========
-                            Id = new Guid("be5a05a9-f4a0-4d64-bb77-a648547b9073"),
-                            AccessFailedCount = 0,
-                            CIC = "004204004364",
-                            ConcurrencyStamp = "4bd78ed3-5461-4609-8d14-c4ca15948db6",
->>>>>>>> origin/XuanDung:API/Migrations/20241005073343_data.Designer.cs
+                            ConcurrencyStamp = "5df23260-21e7-4728-8904-c965ec98f8a7",
                             Email = "user@example.com",
                             EmailConfirmed = false,
                             IsSubscribedToNews = false,
@@ -189,17 +163,10 @@ namespace API.Migrations
                             Name = "Regular User",
                             NormalizedEmail = "USER@EXAMPLE.COM",
                             NormalizedUserName = "USER@EXAMPLE.COM",
-<<<<<<<< HEAD:API/Migrations/20241005063845_toanv2.Designer.cs
-                            PasswordHash = "AQAAAAEAACcQAAAAEDp5zYGZVZ+dfccmavm4gkSYmxVwKRAmnVsfR+1ZJfz8QmRE3g7XTI9XF61EWwDK7w==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHtUEVkrdTYBVXLvdCJFHdglUdxBVk/FfrpeKhQIRB7fdpyQEc2iVLtFjjt4lc9kfw==",
                             PhoneNumber = "0987654321",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "eb63c74c-e5ea-4845-82a8-ea39862a2db6",
-========
-                            PasswordHash = "AQAAAAEAACcQAAAAEMv/2trYgHuHk7mWioXoRZgrBetWNbLKcVN1aNFuAMNpz4cz19UZiDWgakKnS9aGTA==",
-                            PhoneNumber = "0987654321",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "bdf674ac-b063-4cba-a0a6-46d9dbc58f57",
->>>>>>>> origin/XuanDung:API/Migrations/20241005073343_data.Designer.cs
+                            SecurityStamp = "c6b4131b-9f88-4ee1-ae10-81c0275ab1fe",
                             TwoFactorEnabled = false,
                             UserName = "user@example.com"
                         });
@@ -365,11 +332,7 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-<<<<<<<< HEAD:API/Migrations/20241005063845_toanv2.Designer.cs
                     b.Property<Guid?>("ShippingUnitID")
-========
-                    b.Property<Guid>("ShippingUnitID")
->>>>>>>> origin/XuanDung:API/Migrations/20241005073343_data.Designer.cs
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
@@ -728,49 +691,29 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-<<<<<<<< HEAD:API/Migrations/20241005063845_toanv2.Designer.cs
-                            Id = new Guid("42f83993-ec5b-43a3-ba81-e7592b58d0c9"),
-                            ConcurrencyStamp = "90036728-e305-4d0e-bcf0-0b85ba0ad84c",
-========
-                            Id = new Guid("f673fac9-d72b-4bfa-9e79-013a9e1c24db"),
-                            ConcurrencyStamp = "624aaa4e-65d5-4169-a26c-89484863ba40",
->>>>>>>> origin/XuanDung:API/Migrations/20241005073343_data.Designer.cs
+                            Id = new Guid("f065ce9c-e1ce-4b1a-a4f7-49e7b0ed68a1"),
+                            ConcurrencyStamp = "ef413f5e-df35-4a9b-842e-4a70dff89e97",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-<<<<<<<< HEAD:API/Migrations/20241005063845_toanv2.Designer.cs
-                            Id = new Guid("7f20e431-65a1-4afa-8227-2ec5d75dea9e"),
-                            ConcurrencyStamp = "5820f74e-7316-46b6-976a-8a42602d0847",
-========
-                            Id = new Guid("91a2f8cd-3679-4f92-a9e1-ba3f2362ecf2"),
-                            ConcurrencyStamp = "cf4f750f-5bd5-442b-b401-05612fa01635",
->>>>>>>> origin/XuanDung:API/Migrations/20241005073343_data.Designer.cs
+                            Id = new Guid("12f80741-e1f1-4dfe-9aa3-77f70a401d91"),
+                            ConcurrencyStamp = "361d2e41-e684-423a-9cd1-e55e7ea1fd0f",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-<<<<<<<< HEAD:API/Migrations/20241005063845_toanv2.Designer.cs
-                            Id = new Guid("b92faa65-7413-4378-ba57-f7057a61d76a"),
-                            ConcurrencyStamp = "ec9cb900-8f6e-4b60-be4a-06fdf32f3a0d",
-========
-                            Id = new Guid("e972a8a2-942a-4cd4-bb3e-fc945a491eec"),
-                            ConcurrencyStamp = "e29e2dc2-a656-4728-b57b-5fc5372d1304",
->>>>>>>> origin/XuanDung:API/Migrations/20241005073343_data.Designer.cs
+                            Id = new Guid("5806af01-40ed-40c7-ad86-69658498738f"),
+                            ConcurrencyStamp = "65e8c564-ab2b-4f6a-a723-70e34ab799bd",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-<<<<<<<< HEAD:API/Migrations/20241005063845_toanv2.Designer.cs
-                            Id = new Guid("ad31a0ff-3cf6-4ad0-a675-a9bfaabdaf32"),
-                            ConcurrencyStamp = "a5b39224-b2ce-4565-b351-ad9aee2c4a04",
-========
-                            Id = new Guid("fef7d570-87e7-4e2c-8b2e-817ab5cde609"),
-                            ConcurrencyStamp = "540288a5-7c8c-4eba-a55c-0c2c2b1907b5",
->>>>>>>> origin/XuanDung:API/Migrations/20241005073343_data.Designer.cs
+                            Id = new Guid("80771198-ea3f-4281-92ea-419bfbfa9072"),
+                            ConcurrencyStamp = "a501be41-822f-474b-abb7-dd423aa8fe16",
                             Name = "Guest",
                             NormalizedName = "GUEST"
                         });
@@ -862,23 +805,13 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-<<<<<<<< HEAD:API/Migrations/20241005063845_toanv2.Designer.cs
-                            UserId = new Guid("f3bee6e5-96b1-4eea-b539-ca40fe36af52"),
-                            RoleId = new Guid("42f83993-ec5b-43a3-ba81-e7592b58d0c9")
+                            UserId = new Guid("c726075d-e3a6-48ea-bab8-0f57fcb702b3"),
+                            RoleId = new Guid("f065ce9c-e1ce-4b1a-a4f7-49e7b0ed68a1")
                         },
                         new
                         {
-                            UserId = new Guid("2b1d12a8-5b38-4eb2-ac79-6328206e1d6b"),
-                            RoleId = new Guid("7f20e431-65a1-4afa-8227-2ec5d75dea9e")
-========
-                            UserId = new Guid("ef0e2c74-b7e2-45d8-8d90-d14fb3aa2db9"),
-                            RoleId = new Guid("f673fac9-d72b-4bfa-9e79-013a9e1c24db")
-                        },
-                        new
-                        {
-                            UserId = new Guid("be5a05a9-f4a0-4d64-bb77-a648547b9073"),
-                            RoleId = new Guid("91a2f8cd-3679-4f92-a9e1-ba3f2362ecf2")
->>>>>>>> origin/XuanDung:API/Migrations/20241005073343_data.Designer.cs
+                            UserId = new Guid("d70ae549-e8e6-4eb3-88c9-d98e35174e20"),
+                            RoleId = new Guid("12f80741-e1f1-4dfe-9aa3-77f70a401d91")
                         });
                 });
 
@@ -965,13 +898,7 @@ namespace API.Migrations
                 {
                     b.HasOne("DataProcessing.Models.ShippingUnit", "ShippingUnit")
                         .WithMany("Orders")
-<<<<<<<< HEAD:API/Migrations/20241005063845_toanv2.Designer.cs
                         .HasForeignKey("ShippingUnitID");
-========
-                        .HasForeignKey("ShippingUnitID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
->>>>>>>> origin/XuanDung:API/Migrations/20241005073343_data.Designer.cs
 
                     b.HasOne("DataProcessing.Models.ApplicationUser", "User")
                         .WithMany()
