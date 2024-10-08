@@ -31,11 +31,27 @@ namespace View.Controllers
 
         }
 
+        public async Task<IActionResult> SearchProductDetails(string searchString)
+        {
+            var viewSearch = await _productDetailService.SearchProductDetails(searchString);
+            return View("Index",viewSearch);
+        }
+
+        public async Task<IActionResult> FilterProductDetails(Guid? selectedColorId, Guid? selectedCategoryId,
+            Guid? selectedBrandId, Guid? selectedSoleId, Guid? selectedSizeId)
+        {
+
+            var viewSearch =  _productDetailService.FilterProductDetails(selectedColorId,  selectedCategoryId,
+            selectedBrandId, selectedSoleId, selectedSizeId).Result;
+            return View("Index", viewSearch);
+        }
+
+
         // GET: ProductDetails
         public async Task<IActionResult> Index()
         {
             var viewContext = _productDetailService.GetAllProductDetail().Result;
-            return View(viewContext.ToList());
+            return  View(viewContext.ToList());
         }
 
         // GET: ProductDetails/Details/5

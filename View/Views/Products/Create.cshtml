@@ -1,54 +1,354 @@
-﻿@model DataProcessing.Models.Product
+﻿@model View.ViewModel.ProductAndDetailViewModel
 
 @{
     ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Create</h1>
+<div class="container mt-5">
+    <!-- Product Information -->
+    <h5>Thêm sản phẩm</h5>
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="text-center">Thông Tin Sản Phẩm</h5>
+        </div>
+        <div class="card-body row justify-content-center">
+            <form id="productForm" asp-action="Create" method="post" class="col-md-6">
+                <div class="row mb-3 justify-content-center">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label asp-for="Name" class="form-label">Tên Sản Phẩm <span class="text-danger">*</span></label>
+                            <input asp-for="Name" id="productName" class="form-control" placeholder="Nhập tên sản phẩm" required />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-3">
+                        <div class="form-group">
+                            <label asp-for="CategoryId" class="form-label">Danh Mục <span class="text-danger">*</span></label>
+                            <select asp-for="CategoryId" class="form-control">
+                                <option value="">Chọn danh mục</option>
+                                @foreach (var category in (IEnumerable<SelectListItem>)ViewData["CategoryId"])
+                                {
+                                    <option value="@category.Value">@category.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-3">
+                        <div class="form-group">
+                            <label asp-for="BrandId" class="form-label">Thương Hiệu <span class="text-danger">*</span></label>
+                            <select asp-for="BrandId" class="form-control">
+                                <option value="">Chọn thương hiệu</option>
+                                @foreach (var brand in (IEnumerable<SelectListItem>)ViewData["BrandId"])
+                                {
+                                    <option value="@brand.Value">@brand.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="BrandId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
 
-<h4>Product</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <div class="row mb-3 justify-content-center">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="SoleId" class="form-label">Đế Giày <span class="text-danger">*</span></label>
+                            <select asp-for="SoleId" class="form-control">
+                                <option value="">Chọn đế giày</option>
+                                @foreach (var sole in (IEnumerable<SelectListItem>)ViewData["SoleId"])
+                                {
+                                    <option value="@sole.Value">@sole.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="SoleId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="MaterialId" class="form-label">Chất Liệu <span class="text-danger">*</span></label>
+                            <select asp-for="MaterialId" class="form-control">
+                                <option value="">Chọn chất liệu</option>
+                                @foreach (var material in (IEnumerable<SelectListItem>)ViewData["MaterialId"])
+                                {
+                                    <option value="@material.Value">@material.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="MaterialId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-3">
+                        <div class="form-group">
+                            <label asp-for="Description" class="form-label">Mô Tả Sản phẩm</label>
+                            <textarea asp-for="Description" class="form-control" rows="2" placeholder="Nhập mô tả sản phẩm"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-end mt-4 mb-4 me-5">
+                    <button type="submit" class="btn btn-success">Lưu Sản Phẩm</button>
+                    <button type="reset" class="btn btn-secondary">Hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Color and Size Selection -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="text-center">Màu Sắc & Kích Cỡ</h5>
+        </div>
+        <div class="card-body">
+            <div class="row col-md-12 justify-content-center">
+                <!-- Dropdown Chọn Màu Sắc với Checkbox -->
+                <div class="col-md-3">
+                    <label class="form-label">Chọn Màu Sắc <span class="text-danger">*</span></label>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="colorDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            Chọn màu sắc
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="colorDropdown">
+                            @foreach (var color in (IEnumerable<SelectListItem>)ViewData["ColorId"])
+                            {
+                                <li>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="color-@color.Value" value="@color.Value" onchange="updateVariants()">
+                                        <label class="form-check-label" for="color-@color.Value">
+                                            @color.Text
+                                        </label>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Dropdown Chọn Kích Cỡ với Checkbox -->
+                <div class="col-md-3">
+                    <label class="form-label">Chọn Kích Cỡ <span class="text-danger">*</span></label>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="sizeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            Chọn kích cỡ
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="sizeDropdown">
+                            @foreach (var size in (IEnumerable<SelectListItem>)ViewData["SizeId"])
+                            {
+                                <li>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="size-@size.Value" value="@size.Value" onchange="updateVariants()">
+                                        <label class="form-check-label" for="size-@size.Value">
+                                            @size.Text
+                                        </label>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+    </div>
+
+    <!-- Product Variants Section -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="text-center">Chi tiết Sản Phẩm</h5>
+        </div>
+        <div class="card-body">
+            <div id="variantContainer">
+                <!-- Product variants will be dynamically added here -->
             </div>
-            <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <select asp-for="CategoryId" class ="form-control" asp-items="ViewBag.CategoryId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="SoleId" class="control-label"></label>
-                <select asp-for="SoleId" class ="form-control" asp-items="ViewBag.SoleId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="BrandId" class="control-label"></label>
-                <select asp-for="BrandId" class ="form-control" asp-items="ViewBag.BrandId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaterialId" class="control-label"></label>
-                <select asp-for="MaterialId" class ="form-control" asp-items="ViewBag.MaterialId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        let selectedSizes = [];
+        let deletedVariants = [];
+        let variants = [];
+
+        function updateVariants() {
+            const productName = document.getElementById('productName').value;
+
+            const selectedColors = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+                .filter(checkbox => checkbox.id.startsWith('color'))
+                .map(checkbox => ({
+                    value: checkbox.value,
+                    text: document.querySelector(`label[for="${checkbox.id}"]`).innerText
+                }));
+
+            selectedSizes = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+                .filter(checkbox => checkbox.id.startsWith('size'))
+                .map(checkbox => ({
+                    value: checkbox.value,
+                    text: document.querySelector(`label[for="${checkbox.id}"]`).innerText
+                }));
+
+            if (selectedColors.length === 0 || selectedSizes.length === 0 || !productName) {
+                return;
+            }
+
+            const variantContainer = document.getElementById('variantContainer');
+            variantContainer.innerHTML = '';
+            variants = [];
+
+            selectedColors.forEach(color => {
+                const colorRow = document.createElement('div');
+                colorRow.className = 'variant-color-row';
+                colorRow.style.position = 'relative';
+
+                const headerRow = document.createElement('div');
+                headerRow.innerHTML = `
+                            <h6 style="display: inline;">Danh mục sản phẩm màu ${color.text}</h6>
+                            <span class="restore-btn" style="display:none; position: absolute; right: 0; top: 0;" onclick="restoreVariants(this)">Khôi phục</span>
+                        `;
+
+                colorRow.appendChild(headerRow);
+
+                const variantTable = document.createElement('table');
+                variantTable.className = 'table table-bordered';
+                variantTable.innerHTML = `
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="select-all-${color.value}" onclick="toggleSelectAll(this)"></th>
+                                    <th>Tên Sản Phẩm</th>
+                                    <th>Kích Cỡ</th>
+                                    <th>Cân Nặng</th>
+                                    <th>Số Lượng</th>
+                                    <th>Giá</th>
+                                    <th class="table-action">Hành Động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${selectedSizes.map((size, index) => {
+                    return `
+                                        <tr data-variant-index="${index}">
+                                            <td><input type="checkbox" class="variant-checkbox"></td>
+                                            <td>${productName}</td>
+                                            <td>${size.text}</td>
+                                            <td><input type="number" class="form-control" min="0" name="ProductDetails[${index}].Weight" required /></td>
+                                            <td><input type="number" class="form-control" min="0" name="ProductDetails[${index}].Stock" required /></td>
+                                            <td><input type="number" class="form-control" min="0" name="ProductDetails[${index}].Price" required /></td>
+                                            <td class="table-action">
+                                                <span class="remove-btn" onclick="removeVariant(this)">Xóa</span>
+                                            </td>
+                                        </tr>
+                                    `;
+                }).join('')}
+                            </tbody>
+                        `;
+
+                colorRow.appendChild(variantTable);
+                variantContainer.appendChild(colorRow);
+
+                // Lưu biến thể sản phẩm vào danh sách
+                selectedSizes.forEach(size => {
+                    variants.push({
+                        ColorId: color.value,
+                        SizeId: size.value,
+                        Name: productName,
+                        Price: null,
+                        Stock: null,
+                        Weight: null
+                    });
+                });
+            });
+        }
+
+        // Hàm để lấy dữ liệu từ các input của các biến thể
+        function getVariantsData() {
+            const rows = document.querySelectorAll('#variantContainer table tbody tr');
+
+            rows.forEach((row, index) => {
+                const price = row.querySelector('input[name^="ProductDetails"][name$=".Price"]').value;
+                const stock = row.querySelector('input[name^="ProductDetails"][name$=".Stock"]').value;
+                const weight = row.querySelector('input[name^="ProductDetails"][name$=".Weight"]').value;
+
+                // Cập nhật biến thể
+                variants[index].Price = price;
+                variants[index].Stock = stock;
+                variants[index].Weight = weight;
+            });
+        }
+
+        function removeVariant(element) {
+            const row = element.closest('tr');
+            const colorRow = row.closest('.variant-color-row');
+            const restoreBtn = colorRow.querySelector('.restore-btn');
+
+            const variantInfo = {
+                name: row.cells[1].textContent,
+                size: row.cells[2].textContent,
+                weight: row.cells[3].querySelector('input').value,
+                quantity: row.cells[4].querySelector('input').value,
+                price: row.cells[5].querySelector('input').value,
+                color: colorRow.querySelector('h6').textContent
+            };
+
+            deletedVariants.push(variantInfo);
+            row.remove(); // Xóa hàng khỏi bảng
+
+            // Hiển thị nút khôi phục cho biến thể bị xóa
+            restoreBtn.style.display = 'inline'; // Hiện nút khôi phục
+        }
+
+        // Hàm khôi phục tất cả các biến thể đã xóa
+        function restoreVariants(element) {
+            const colorRow = element.closest('.variant-color-row');
+            deletedVariants.forEach(variant => {
+                const variantTable = colorRow.querySelector('table tbody');
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                            <td><input type="checkbox" class="variant-checkbox"></td>
+                            <td>${variant.name}</td>
+                            <td>${variant.size}</td>
+                            <td><input type="number" class="form-control" min="0" value="${variant.weight}" name="ProductDetails[0].Weight" required /></td>
+                            <td><input type="number" class="form-control" min="0" value="${variant.quantity}" name="ProductDetails[0].Stock" required /></td>
+                            <td><input type="number" class="form-control" min="0" value="${variant.price}" name="ProductDetails[0].Price" required /></td>
+                            <td class="table-action">
+                                <span class="remove-btn" onclick="removeVariant(this)">Xóa</span>
+                            </td>
+                        `;
+                variantTable.appendChild(newRow);
+            });
+            deletedVariants = []; // Reset lại danh sách đã xóa
+            colorRow.querySelector('.restore-btn').style.display = 'none'; // Ẩn nút khôi phục
+        }
+
+        // Hàm để bật/tắt chọn tất cả các biến thể trong một hàng
+        function toggleSelectAll(checkbox) {
+            const rows = checkbox.closest('table').querySelectorAll('tbody .variant-checkbox');
+            rows.forEach(rowCheckbox => {
+                rowCheckbox.checked = checkbox.checked;
+            });
+        }
+
+        // Hàm xử lý submit form
+        document.getElementById('productForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // Ngăn chặn submit mặc định
+
+            // Thu thập dữ liệu biến thể trước khi submit
+            getVariantsData();
+
+            // Chuyển đổi danh sách biến thể thành JSON
+            const productDetailsJson = JSON.stringify(variants);
+
+            // Tạo một input hidden để lưu JSON của chi tiết sản phẩm
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'productDetailsJson'; // Tên phải khớp với bên controller
+            hiddenInput.value = productDetailsJson;
+
+            // Gắn input ẩn vào form
+            this.appendChild(hiddenInput);
+
+            // Submit form
+            this.submit();
+        });
+    </script>
 }
+
+
+
+
