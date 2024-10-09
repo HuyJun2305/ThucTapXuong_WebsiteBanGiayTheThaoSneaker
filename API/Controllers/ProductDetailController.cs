@@ -21,102 +21,63 @@ namespace API.Controllers
             _context = context;
         }
 
-        [HttpGet("search")]
-        public async Task<IActionResult> SearchProductDetails(string searchString)
+        //[HttpGet("search")]
+        //public async Task<IActionResult> SearchProductDetails(string? searchString, List<ProductDetail> productDetails)
+        //{
+        //    var products = _context.ProductDetails
+        //                              .Include(p => p.Color)
+        //                              .Include(p => p.Product)
+        //                                  .ThenInclude(p => p.Brand)
+        //                              .Include(p => p.Product)
+        //                                  .ThenInclude(p => p.Category)
+        //                              .Include(p => p.Product)
+        //                                  .ThenInclude(p => p.Material)
+        //                              .Include(p => p.Product)
+        //                                  .ThenInclude(p => p.Sole)
+        //                              .AsQueryable();
+        //    if (!string.IsNullOrEmpty(searchString))
+        //    {
+        //        products = productDetails.AsQueryable().Where(p =>
+        //            p.Product.Name.Contains(searchString) ||       // Tìm theo tên Product
+        //            p.Color.Name.Contains(searchString) ||         // Tìm theo Color
+        //            p.Product.Brand.Name.Contains(searchString) || // Tìm theo Brand
+        //            p.Product.Material.Name.Contains(searchString) ||
+        //            p.Product.Sole.TypeName.Contains(searchString) ||
+        //            p.Product.Category.Name.Contains(searchString) ||
+        //            p.Id.Contains(searchString)
+        //        );
+        //    }
+
+
+        //    return Ok(await products.ToListAsync());
+        //}
+        [HttpGet("filterAndsearch")]
+        public async Task<ActionResult<List<ProductDetail>>> FilterProductDetails(string? searchQuery = null,
+            Guid? colorId = null,
+        Guid? sizeId = null,
+        Guid? categoryId = null,
+        Guid? brandId = null,
+        Guid? soleId = null,
+        Guid? materialId = null
+            )
         {
-            var products = _context.ProductDetails
-                                      .Include(p => p.Color)
-                                      .Include(p => p.Product)
-                                          .ThenInclude(p => p.Brand)
-                                      .Include(p => p.Product)
-                                          .ThenInclude(p => p.Category)
-                                      .Include(p => p.Product)
-                                          .ThenInclude(p => p.Material)
-                                      .Include(p => p.Product)
-                                          .ThenInclude(p => p.Sole)
-                                      .AsQueryable();
-            if (!string.IsNullOrEmpty(searchString))
+            var productDetails = await _productDetailRepos.GetFilteredProductDetails( searchQuery,
+                        colorId, sizeId, categoryId, brandId, soleId, materialId);
+
+            // Kiểm tra xem có sản phẩm nào được tìm thấy không
+            if (productDetails == null || productDetails.Count == 0)
             {
-                products = products.Where(p =>
-                    p.Product.Name.Contains(searchString) ||       // Tìm theo tên Product
-                    p.Color.Name.Contains(searchString) ||         // Tìm theo Color
-                    p.Product.Brand.Name.Contains(searchString) || // Tìm theo Brand
-                    p.Product.Material.Name.Contains(searchString) ||
-                    p.Product.Sole.TypeName.Contains(searchString) ||
-                    p.Product.Category.Name.Contains(searchString) ||
-                    p.Id.Contains(searchString)
-                );
+                return NotFound(); // Trả về 404 nếu không có sản phẩm nào
             }
 
-            return Ok(await products.ToListAsync());
-        }
-        [HttpGet("filter")]
-        public async Task<IActionResult> FilterProductDetails(Guid? selectedColorId, Guid? selectedCategoryId,
-            Guid? selectedBrandId, Guid? selectedSoleId, Guid? selectedSizeId)
-        {
-            var products = _context.ProductDetails
-                                      .Include(p => p.Color)
-                                      .Include(p => p.Product)
-                                          .ThenInclude(p => p.Brand)
-                                      .Include(p => p.Product)
-                                          .ThenInclude(p => p.Category)
-                                      .Include(p => p.Product)
-                                          .ThenInclude(p => p.Material)
-                                      .Include(p => p.Product)
-                                          .ThenInclude(p => p.Sole)
-                                      .AsQueryable();
-
-            // Lọc Size
-            if (selectedSizeId.HasValue)
-            {
-                products = products.Where(p => p.SizeId == selectedSizeId.Value);
-            }
-            // Lọc Brand
-            if (selectedBrandId.HasValue)
-            {
-                products = products.Where(p => p.Product.BrandId == selectedBrandId.Value);
-            }
-            // Lọc Category
-            if (selectedCategoryId.HasValue)
-            {
-                products = products.Where(p => p.Product.CategoryId == selectedCategoryId.Value);
-            }
-            // Lọc Sole
-            if (selectedSoleId.HasValue)
-            {
-                products = products.Where(p => p.Product.SoleId == selectedSoleId.Value);
-            }
-            // Lọc Color
-            if (selectedColorId.HasValue)
-            {
-                products = products.Where(p => p.ColorId == selectedColorId.Value);
+            return Ok(productDetails); // Trả về danh sách sản phẩm
             }
 
 
-            // Tạo ViewModel và gán dữ liệu (Sử dụng ToListAsync để truy xuất không đồng bộ)
-            var viewModel = new FilterProductViewModel
-            {
-                SelectedColorId = selectedColorId,
-                SelectedCategoryId = selectedCategoryId,
-                SelectedBrandId = selectedBrandId,
-                SelectedSoleId = selectedSoleId,
-                SelectedSizeId = selectedSizeId,
-                Colors = await _context.Colors.ToListAsync(),
-                Categories = await _context.Categories.ToListAsync(),
-                Brands = await _context.Brands.ToListAsync(),
-                Soles = await _context.Soles.ToListAsync(), 
-                Sizes = await _context.Sizes.ToListAsync(),
-                ProductDetails = await products.ToListAsync()
-            };
-
-            return Ok(viewModel);
-
-        }
 
 
-
-        // GET: api/ProductDetail
-        [HttpGet]
+            // GET: api/ProductDetail
+            [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductDetail>>> GetProductDetailsDTO()
         {
             return await _productDetailRepos.GetAllProductDetail();
@@ -194,7 +155,7 @@ namespace API.Controllers
                 string sizeValue = size.Value.ToString(); // Hoặc bạn có thể sử dụng size.Value.ToString() nếu size là Nullable<int>
 
                 // Tạo Id theo định dạng "chữ cái đầu tiên của Brand - chữ cái đầu tiên của Product - chữ cái đầu tiên của Color - kích cỡ"
-                string baseId = $"{(product.Brand.Name)}{(product.Name)}{(color.Name)}{sizeValue}";
+                string baseId = $"{(product.Brand.Name)}-{(product.Name)}-{(color.Name)}-{sizeValue}-";
 
                 // Lấy số lượng bản ghi hiện tại để tạo số tự sinh
                 int count = await _context.ProductDetails
