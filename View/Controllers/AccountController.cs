@@ -36,8 +36,10 @@ namespace View.Controllers
                     if (!string.IsNullOrEmpty(token)) 
                     {
                         HttpContext.Session.SetString("AuthToken", token);
+                        TempData["Welcome"] = "Welcome " + token;
                         return RedirectToAction("Index", "Home");                   
                     }
+
                     else
                     {
                         ViewData["LoginError"] = "Tên đăng nhập hoặc mật khẩu không đúng.";
