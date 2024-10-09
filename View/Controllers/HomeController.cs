@@ -1,21 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using View.IServices;
 using View.Models;
 
 namespace View.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IProductServices productServices;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IProductServices _productServices)
         {
-            _logger = logger;
+            productServices = _productServices;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var viewContext = productServices.GetAllProducts().Result;
+            if (viewContext == null) return View("'Product is null!'");
+            return View(viewContext.ToList());
         }
 
         public IActionResult Privacy()
