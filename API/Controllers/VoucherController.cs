@@ -79,5 +79,15 @@ namespace API.Controllers
             await _voucherRepos.delete(id);
             return NoContent();
         }
+        // GET: api/voucher/applicable
+        [HttpGet("applicable")]
+        public async Task<ActionResult<IEnumerable<Voucher>>> GetApplicableVouchers()
+        {
+            var vouchers = await _voucherRepos.GetAll();
+            var applicableVouchers = vouchers.Where(v => v.Status && v.StartDate <= DateTime.Now && v.EndDate >= DateTime.Now && v.Stock > 0)
+                .OrderByDescending(v => v.DiscountAmount > 0 ? v.DiscountAmount : v.DiscountPercent)
+                .ToList();
+            return Ok(applicableVouchers);
+        }
     }
 }
