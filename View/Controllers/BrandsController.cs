@@ -164,18 +164,15 @@ namespace View.Controllers
         [HttpPost]
         public async Task<IActionResult> ToggleStatus(Guid id)
         {
-            // Tìm kiếm vật liệu theo ID
             var material = await _brandServices.GetBrandById(id);
             if (material == null)
             {
                 return NotFound();
             }
 
-            // Đảo ngược trạng thái
-            material.Status = !material.Status; // Chuyển đổi trạng thái
-            await _brandServices.Update(material); // Lưu thay đổi vào cơ sở dữ liệu
+            material.Status = !material.Status;
+            await _brandServices.Update(material);
 
-            // Chuyển hướng về trang danh sách
             return RedirectToAction("Index");
         }
     }

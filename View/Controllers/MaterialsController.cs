@@ -174,11 +174,9 @@ namespace View.Controllers
                 return NotFound();
             }
 
-            // Đảo ngược trạng thái
-            material.Status = !material.Status; // Chuyển đổi trạng thái
-            await _materialServices.Update(material); // Lưu thay đổi vào cơ sở dữ liệu
+            material.Status = !material.Status;
+            await _materialServices.Update(material);
 
-            // Chuyển hướng về trang danh sách
             return RedirectToAction("Index");
         }
     }
