@@ -20,23 +20,34 @@ namespace View.Servicecs
             _smtpPort = int.Parse(configuration["EmailSettings:SmtpPort"]);
         }
 
-        public async Task SendEmailAsync( string subject, string message)
+        public async Task SendEmailAsync(string toEmail, string subject, string message)
         {
             var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress("ShoseShop", _emailFrom));
-            emailMessage.To.Add(new MailboxAddress("123", "xdug94@gmail.com"));
+            emailMessage.To.Add(new MailboxAddress("", toEmail));
             emailMessage.Subject = subject;
-            emailMessage.Body = new TextPart("plain") { Text = "Hello, this is a test email." };
+            emailMessage.Body = new TextPart("plain") { Text = message };   
 
             using (var client = new SmtpClient())
             {
-                client.Connect(_smtpServer, _smtpPort, SecureSocketOptions.StartTls);
-                client.Authenticate(_emailFrom, _emailPassword);
-                client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-                await client.ConnectAsync(_smtpServer, _smtpPort, MailKit.Security.SecureSocketOptions.StartTls);
-                await client.AuthenticateAsync(_emailFrom, _emailPassword);
-                await client.SendAsync(emailMessage);
-                await client.DisconnectAsync(true);
+                try
+                {
+                    await client.ConnectAsync(_smtpServer, _smtpPort, SecureSocketOptions.StartTls);
+                    await client.AuthenticateAsync(_emailFrom, _emailPassword);
+                    await client.SendAsync(emailMessage);
+                }
+                catch (SmtpCommandException ex)
+                {
+                    Console.WriteLine($"Error sending email: {ex.Message}");
+                }
+                catch (AuthenticationException ex)
+                {
+                    Console.WriteLine($"Authentication error: {ex.Message}");
+                }
+                finally
+                {
+                    await client.DisconnectAsync(true);
+                }
             }
         }
     }

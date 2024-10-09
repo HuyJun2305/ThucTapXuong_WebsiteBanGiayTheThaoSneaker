@@ -12,5 +12,6 @@ namespace DataProcessing.Models
         public decimal? TotalPrice { get; set; }
         public Guid AccountId {  get; set; }
         public virtual ApplicationUser Account {  get; set; }
+        public virtual ICollection<CartDetail> CartDetails { get; set; }
     }
 }   
