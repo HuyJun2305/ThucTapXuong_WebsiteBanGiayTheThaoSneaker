@@ -47,6 +47,7 @@ namespace DataProcessing.Models
         public virtual Voucher Voucher { get; set; }
 
         public Guid? ShippingUnitID { get; set; }
+        [JsonIgnore]
         public virtual ShippingUnit ShippingUnit { get; set; }
     }
 }
