@@ -18,24 +18,52 @@ namespace View.Controllers
         private readonly ISizeServices _sizeServices;
         private readonly IColorServices _colorServices;
         private readonly IProductServices _productServices;
-        private readonly HttpClient _client;
+        private readonly ICategoryServices _categoryServices;
+        private readonly ISoleServices _soleServices;
+        private readonly IBrandServices _brandServices;
+        private readonly IMaterialServices _materialServices;
 
-        public ProductDetailsController(IProductDetailService productDetailService, ISizeServices sizeServices, IColorServices colorServices, IProductServices productServices , HttpClient client)
+
+        public ProductDetailsController(IProductDetailService productDetailService,
+            ISizeServices sizeServices, IColorServices colorServices,
+            IProductServices productServices, ICategoryServices categoryServices,
+            ISoleServices soleServices, IBrandServices brandServices, IMaterialServices materialServices)
         {
             _productDetailService = productDetailService;
             _sizeServices = sizeServices;
             _colorServices = colorServices;
             _productServices = productServices;
-            _client = client;
+            _brandServices = brandServices;
+            _categoryServices = categoryServices;
+            _soleServices = soleServices;
+            _materialServices = materialServices;
+        }
+
+        
 
 
+        public async Task<IActionResult> FilterProducts(string? searchQuery = null, Guid? colorId = null,
+            Guid? sizeId = null, Guid? categoryId = null, Guid? brandId = null,
+            Guid? soleId = null, Guid? materialId = null)
+        {
+            var productDetails = await _productDetailService.GetFilteredProductDetails(searchQuery, colorId, sizeId, categoryId, brandId, soleId, materialId);
+            return Json(productDetails); // Trả về dưới dạng JSON
         }
 
         // GET: ProductDetails
         public async Task<IActionResult> Index()
         {
+            ViewData["ColorId"] = new SelectList(_colorServices.GetAllColors().Result.Where(x => x.Status), "Id", "Name"); ;
+            ViewData["SizeId"] = new SelectList(_sizeServices.GetAllSizes().Result.Where(x => x.Status), "Id", "Value");
+            ViewData["ProductId"] = new SelectList(_productServices.GetAllProducts().Result, "Id", "Name");
+            ViewData["BrandId"] = new SelectList(_brandServices.GetAllBrands().Result, "Id", "Name");
+            ViewData["CategoryId"] = new SelectList(_categoryServices.GetAllCategories().Result, "Id", "Name");
+            ViewData["SoleId"] = new SelectList(_soleServices.GetAllSoles().Result, "Id", "TypeName");
+            ViewData["MaterialId"] = new SelectList(_materialServices.GetAllMaterials().Result, "Id", "Name");
+
+
             var viewContext = _productDetailService.GetAllProductDetail().Result;
-            return View(viewContext.ToList());
+            return  View(viewContext.ToList());
         }
 
         // GET: ProductDetails/Details/5

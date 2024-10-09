@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using API.Data;
+using API.DTO;
+using API.IRepositories;
+using Data.ViewModels;
+using DataProcessing.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using API.DTO;
-using API.Data;
-using DataProcessing.Models;
-using API.IRepositories;
-using API.Repositories;
 
 namespace API.Controllers
 {
@@ -20,24 +15,79 @@ namespace API.Controllers
         private readonly IProductDetailRepos _productDetailRepos;
         private readonly ApplicationDbContext _context;
 
-        public ProductDetailController (IProductDetailRepos productDetailRepos, ApplicationDbContext context)
+        public ProductDetailController(IProductDetailRepos productDetailRepos, ApplicationDbContext context)
         {
             _productDetailRepos = productDetailRepos;
             _context = context;
         }
 
-        // GET: api/ProductDetail
-        [HttpGet]
+        //[HttpGet("search")]
+        //public async Task<IActionResult> SearchProductDetails(string? searchString, List<ProductDetail> productDetails)
+        //{
+        //    var products = _context.ProductDetails
+        //                              .Include(p => p.Color)
+        //                              .Include(p => p.Product)
+        //                                  .ThenInclude(p => p.Brand)
+        //                              .Include(p => p.Product)
+        //                                  .ThenInclude(p => p.Category)
+        //                              .Include(p => p.Product)
+        //                                  .ThenInclude(p => p.Material)
+        //                              .Include(p => p.Product)
+        //                                  .ThenInclude(p => p.Sole)
+        //                              .AsQueryable();
+        //    if (!string.IsNullOrEmpty(searchString))
+        //    {
+        //        products = productDetails.AsQueryable().Where(p =>
+        //            p.Product.Name.Contains(searchString) ||       // Tìm theo tên Product
+        //            p.Color.Name.Contains(searchString) ||         // Tìm theo Color
+        //            p.Product.Brand.Name.Contains(searchString) || // Tìm theo Brand
+        //            p.Product.Material.Name.Contains(searchString) ||
+        //            p.Product.Sole.TypeName.Contains(searchString) ||
+        //            p.Product.Category.Name.Contains(searchString) ||
+        //            p.Id.Contains(searchString)
+        //        );
+        //    }
+
+
+        //    return Ok(await products.ToListAsync());
+        //}
+        [HttpGet("filterAndsearch")]
+        public async Task<ActionResult<List<ProductDetail>>> FilterProductDetails(string? searchQuery = null,
+            Guid? colorId = null,
+        Guid? sizeId = null,
+        Guid? categoryId = null,
+        Guid? brandId = null,
+        Guid? soleId = null,
+        Guid? materialId = null
+            )
+        {
+            var productDetails = await _productDetailRepos.GetFilteredProductDetails( searchQuery,
+                        colorId, sizeId, categoryId, brandId, soleId, materialId);
+
+            // Kiểm tra xem có sản phẩm nào được tìm thấy không
+            if (productDetails == null || productDetails.Count == 0)
+            {
+                return NotFound(); // Trả về 404 nếu không có sản phẩm nào
+            }
+
+            return Ok(productDetails); // Trả về danh sách sản phẩm
+            }
+
+
+
+
+            // GET: api/ProductDetail
+            [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductDetail>>> GetProductDetailsDTO()
         {
-                return await  _productDetailRepos.GetAllProductDetail();
+            return await _productDetailRepos.GetAllProductDetail();
         }
 
         // GET: api/ProductDetail/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDetail>> GetProductDetail(string id)
         {
-                return await _productDetailRepos.GetProductDetailById(id);  
+            return await _productDetailRepos.GetProductDetailById(id);
         }
 
         // PUT: api/ProductDetail/5
@@ -105,7 +155,7 @@ namespace API.Controllers
                 string sizeValue = size.Value.ToString(); // Hoặc bạn có thể sử dụng size.Value.ToString() nếu size là Nullable<int>
 
                 // Tạo Id theo định dạng "chữ cái đầu tiên của Brand - chữ cái đầu tiên của Product - chữ cái đầu tiên của Color - kích cỡ"
-                string baseId = $"{GetFirstChar(product.Brand.Name)}-{GetFirstChar(product.Name)}-{GetFirstChar(color.Name)}-{sizeValue}";
+                string baseId = $"{(product.Brand.Name)}-{(product.Name)}-{(color.Name)}-{sizeValue}-";
 
                 // Lấy số lượng bản ghi hiện tại để tạo số tự sinh
                 int count = await _context.ProductDetails
@@ -136,11 +186,7 @@ namespace API.Controllers
             return CreatedAtAction("GetProductDetail", new { id = productDetailDTO.ProductId }, productDetailDTO);
         }
 
-        // Hàm để lấy 2 ký tự đầu tiên
-        private string GetFirstChar(string value)
-        {
-            return !string.IsNullOrEmpty(value) ? value.Substring(0, 1).ToUpper() : string.Empty; // Lấy chữ cái đầu tiên và chuyển thành chữ hoa
-        }
+        
 
 
         // DELETE: api/ProductDetail/5

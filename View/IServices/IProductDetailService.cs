@@ -10,5 +10,12 @@ namespace View.IServices
         Task Update(ProductDetail productDetail);
         Task Delete(string id);
 
+        Task<List<ProductDetail>> GetFilteredProductDetails(string? searchQuery = null,
+               Guid? colorId = null,
+               Guid? sizeId = null,
+               Guid? categoryId = null,
+               Guid? brandId = null,
+               Guid? soleId = null,
+               Guid? materialId = null);
     }
 }

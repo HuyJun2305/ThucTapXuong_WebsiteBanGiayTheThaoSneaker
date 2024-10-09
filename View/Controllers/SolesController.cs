@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using DataProcessing.Models;
 using View.Data;
 using View.IServices;
+using View.Servicecs;
+using View.ViewModel;
 
 namespace View.Controllers
 {
@@ -21,11 +23,26 @@ namespace View.Controllers
         }
 
         // GET: Soles
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int currentPage = 1, int rowsPerPage = 10)
         {
-              return _soleServices.GetAllSoles() != null ? 
-                          View(await _soleServices.GetAllSoles()) :
-                          Problem("Entity set 'Sole'  is null.");
+            var materials = await _soleServices.GetAllSoles();
+
+            // Phân trang
+            var totalSoles = materials.Count();
+            var totalPages = (int)Math.Ceiling((double)totalSoles / rowsPerPage);
+            var pagedSoles = materials.Skip((currentPage - 1) * rowsPerPage).Take(rowsPerPage).ToList();
+
+            var viewModel = new SolesViewModel
+            {
+                soles = pagedSoles,
+                sole = new Sole(),
+            };
+
+            ViewBag.CurrentPage = currentPage;
+            ViewBag.RowsPerPage = rowsPerPage;
+            ViewBag.TotalPages = totalPages;
+
+            return View(viewModel);
         }
 
         // GET: Soles/Details/5
@@ -50,14 +67,15 @@ namespace View.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,TypeName,Status")] Sole sole)
+        public async Task<IActionResult> Create(SolesViewModel solesViewModel)
         {
             if (ModelState.IsValid)
             {
-                await _soleServices.Create(sole);
+                solesViewModel.sole.Id = Guid.NewGuid();
+                await _soleServices.Create(solesViewModel.sole);
                 return RedirectToAction(nameof(Index));
             }
-            return View(sole);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Soles/Edit/5
@@ -76,19 +94,30 @@ namespace View.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,TypeName,Status")] Sole sole)
+        public async Task<IActionResult> Edit(Guid id, SolesViewModel solesViewModel)
         {
-            if (id != sole.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                await _soleServices.Update(sole);
+                try
+                {
+                    await _soleServices.Update(solesViewModel.sole);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    var existingMaterial = await _soleServices.GetSoleById(solesViewModel.sole.Id);
+                    if (existingMaterial == null)
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                solesViewModel.soles = await _soleServices.GetAllSoles();
                 return RedirectToAction(nameof(Index));
             }
-            return View(sole);
+            return BadRequest("Lỗi không sửa được");
         }
 
         // GET: Soles/Delete/5
@@ -114,6 +143,20 @@ namespace View.Controllers
             }
             await _soleServices.Delete(id);
             return RedirectToAction(nameof(Index));
+        }
+        [HttpPost]
+        public async Task<IActionResult> ToggleStatus(Guid id)
+        {
+            var material = await _soleServices.GetSoleById(id);
+            if (material == null)
+            {
+                return NotFound();
+            }
+
+            material.Status = !material.Status;
+            await _soleServices.Update(material);
+
+            return RedirectToAction("Index");
         }
     }
 }
