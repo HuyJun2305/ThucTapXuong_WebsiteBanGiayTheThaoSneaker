@@ -44,6 +44,46 @@ namespace API.Migrations
                     b.ToTable("ProductDetailPromotions");
                 });
 
+            modelBuilder.Entity("DataProcessing.Models.Address", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AddressDetail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Commune")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("District")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RecipientName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("Address");
+                });
+
             modelBuilder.Entity("DataProcessing.Models.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
@@ -72,6 +112,9 @@ namespace API.Migrations
 
                     b.Property<string>("ImageURL")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsSubscribedToNews")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -158,7 +201,8 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountId");
+                    b.HasIndex("AccountId")
+                        .IsUnique();
 
                     b.ToTable("Carts");
                 });
@@ -617,8 +661,7 @@ namespace API.Migrations
 
                     b.Property<string>("Condittion")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("DiscountAmount")
                         .HasColumnType("decimal(18,2)");
@@ -806,11 +849,22 @@ namespace API.Migrations
                     b.Navigation("Promotion");
                 });
 
+            modelBuilder.Entity("DataProcessing.Models.Address", b =>
+                {
+                    b.HasOne("DataProcessing.Models.ApplicationUser", "User")
+                        .WithMany("Addresses")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DataProcessing.Models.Cart", b =>
                 {
                     b.HasOne("DataProcessing.Models.ApplicationUser", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
+                        .WithOne("Cart")
+                        .HasForeignKey("DataProcessing.Models.Cart", "AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -820,7 +874,7 @@ namespace API.Migrations
             modelBuilder.Entity("DataProcessing.Models.CartDetail", b =>
                 {
                     b.HasOne("DataProcessing.Models.Cart", "Cart")
-                        .WithMany()
+                        .WithMany("CartDetails")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1025,6 +1079,19 @@ namespace API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Addresses");
+
+                    b.Navigation("Cart")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.Cart", b =>
+                {
+                    b.Navigation("CartDetails");
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Order", b =>

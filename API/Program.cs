@@ -39,6 +39,7 @@ builder.Services.AddScoped<IOrderRepo, OrderRepo>();
 builder.Services.AddScoped<IOrderHistoryRepo, OrderHistoryRepo>();
 builder.Services.AddScoped<IPaymentHistoryRepo, PaymentHistoryRepo>();
 builder.Services.AddScoped<IShippingUnitRepos,ShippingUnitRepos>();
+builder.Services.AddScoped<IVoucherRepos, VoucherRepos>();
 
 builder.Services.AddAuthentication(options =>
 {
