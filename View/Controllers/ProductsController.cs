@@ -35,6 +35,7 @@ namespace View.Controllers
             _colorServices = colorServices;
             _sizeServices = sizeServices;
             _productDetailService = productDetailService;
+            _accountService = accountService;
         }
 
         // GET: Products
@@ -91,7 +92,16 @@ namespace View.Controllers
                 };
 
                 await _productServices.Create(product);
+                 var subscribedUsers = (await _accountService.GetAllCustomer())
+                                  .Where(u => u.IsSubscribedToNews)
+                                  .ToList();
 
+                string emailSubject = "SẢN PHẨM MỚI HÓT HÒN HỌT ĐÂY !!!";
+                string emailMessage = $"Sản phẩm {product.Name} mới được ra lò";
+                foreach (var user in subscribedUsers)
+                {
+                    await _emailSender.SendEmailAsync(user.Email, emailSubject, emailMessage);
+                }
                 var productDetails = JsonConvert.DeserializeObject<List<ProductDetailViewModel>>(productDetailsJson);
                 var productid = product.Id;
 
