@@ -35,8 +35,13 @@ builder.Services.AddScoped<IColorRepo, ColorRepo>();
 builder.Services.AddScoped<ISizeRepo, SizeRepo>();
 builder.Services.AddScoped<IImageRepo, ImageRepo>();
 builder.Services.AddScoped<ISelectedImageRepo, SelectedImageRepo>();
+builder.Services.AddScoped<IOrderRepo, OrderRepo>();
+builder.Services.AddScoped<IOrderHistoryRepo, OrderHistoryRepo>();
+builder.Services.AddScoped<IPaymentHistoryRepo, PaymentHistoryRepo>();
+builder.Services.AddScoped<IShippingUnitRepos,ShippingUnitRepos>();
+builder.Services.AddScoped<IVoucherRepos, VoucherRepos>();
 
-/*builder.Services.AddAuthentication(options =>
+builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -54,7 +59,7 @@ builder.Services.AddScoped<ISelectedImageRepo, SelectedImageRepo>();
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"])),
         RoleClaimType = ClaimTypes.Role
     };
-});*/
+});
 builder.Services.AddSwaggerGen(option =>
 {
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });

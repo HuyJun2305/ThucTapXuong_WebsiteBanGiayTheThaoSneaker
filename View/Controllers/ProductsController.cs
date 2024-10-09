@@ -24,8 +24,10 @@ namespace View.Controllers
         private readonly IColorServices _colorServices;
         private readonly ISizeServices _sizeServices;
         private readonly IProductDetailService _productDetailService;
+        private readonly IAccountService _accountService;
+        private readonly IEmailSender _emailSender;
 
-        public ProductsController(IProductServices productService, ISoleServices soleServices, ICategoryServices categoryServices, IBrandServices brandServices, IMaterialServices materialServices, IColorServices colorServices, ISizeServices sizeServices, IProductDetailService productDetailService)
+        public ProductsController(IProductServices productService, ISoleServices soleServices, ICategoryServices categoryServices, IBrandServices brandServices, IMaterialServices materialServices, IColorServices colorServices, ISizeServices sizeServices, IProductDetailService productDetailService, IEmailSender emailSender, IAccountService accountService)
         {
             _productServices = productService;
             _soleServices = soleServices;
@@ -35,6 +37,8 @@ namespace View.Controllers
             _colorServices = colorServices;
             _sizeServices = sizeServices;
             _productDetailService = productDetailService;
+            _accountService = accountService;
+            _emailSender = emailSender;
         }
 
         // GET: Products
@@ -91,7 +95,16 @@ namespace View.Controllers
                 };
 
                 await _productServices.Create(product);
+                 var subscribedUsers = (await _accountService.GetAllCustomer())
+                                  .Where(u => u.IsSubscribedToNews)
+                                  .ToList();
 
+                string emailSubject = "SẢN PHẨM MỚI HÓT HÒN HỌT ĐÂY !!!";
+                string emailMessage = $"Sản phẩm {product.Name} mới được ra lò";
+                foreach (var user in subscribedUsers)
+                {
+                    await _emailSender.SendEmailAsync(user.Email, emailSubject, emailMessage);
+                }
                 var productDetails = JsonConvert.DeserializeObject<List<ProductDetailViewModel>>(productDetailsJson);
                 var productid = product.Id;
 
