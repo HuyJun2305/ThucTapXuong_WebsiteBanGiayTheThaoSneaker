@@ -84,11 +84,6 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="text-end mt-4 mb-4 me-5">
-                    <button type="submit" class="btn btn-success">Lưu Sản Phẩm</button>
-                    <button type="reset" class="btn btn-secondary">Hủy</button>
-                </div>
             </form>
         </div>
     </div>
@@ -160,10 +155,20 @@
             </div>
         </div>
     </div>
+
+    <!-- Nút lưu và hủy -->
+    <div class="row justify-content-center mt-4 mb-4">
+        <div class="col-md-6 text-center">
+            <button type="submit" form="productForm" class="btn btn-success">Lưu Sản Phẩm</button>
+            <button type="reset" class="btn btn-secondary">Hủy</button>
+        </div>
+    </div>
 </div>
+
 
 @section Scripts {
     <script>
+        // Sản phẩm biến thể
         let selectedSizes = [];
         let deletedVariants = [];
         let variants = [];
@@ -200,44 +205,44 @@
 
                 const headerRow = document.createElement('div');
                 headerRow.innerHTML = `
-                            <h6 style="display: inline;">Danh mục sản phẩm màu ${color.text}</h6>
-                            <span class="restore-btn" style="display:none; position: absolute; right: 0; top: 0;" onclick="restoreVariants(this)">Khôi phục</span>
-                        `;
+                                    <h6 style="display: inline;">Danh mục sản phẩm màu ${color.text}</h6>
+                                    <span class="restore-btn" style="display:none; position: absolute; right: 0; top: 0;" onclick="restoreVariants(this)">Khôi phục</span>
+                                `;
 
                 colorRow.appendChild(headerRow);
 
                 const variantTable = document.createElement('table');
                 variantTable.className = 'table table-bordered';
                 variantTable.innerHTML = `
-                            <thead>
-                                <tr>
-                                    <th><input type="checkbox" id="select-all-${color.value}" onclick="toggleSelectAll(this)"></th>
-                                    <th>Tên Sản Phẩm</th>
-                                    <th>Kích Cỡ</th>
-                                    <th>Cân Nặng</th>
-                                    <th>Số Lượng</th>
-                                    <th>Giá</th>
-                                    <th class="table-action">Hành Động</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${selectedSizes.map((size, index) => {
-                    return `
-                                        <tr data-variant-index="${index}">
-                                            <td><input type="checkbox" class="variant-checkbox"></td>
-                                            <td>${productName}</td>
-                                            <td>${size.text}</td>
-                                            <td><input type="number" class="form-control" min="0" name="ProductDetails[${index}].Weight" required /></td>
-                                            <td><input type="number" class="form-control" min="0" name="ProductDetails[${index}].Stock" required /></td>
-                                            <td><input type="number" class="form-control" min="0" name="ProductDetails[${index}].Price" required /></td>
-                                            <td class="table-action">
-                                                <span class="remove-btn" onclick="removeVariant(this)">Xóa</span>
-                                            </td>
+                                    <thead>
+                                        <tr>
+                                            <th><input type="checkbox" id="select-all-${color.value}" onclick="toggleSelectAll(this)"> Chọn Tất Cả</th>
+                                            <th>Tên Sản Phẩm</th>
+                                            <th>Kích Cỡ</th>
+                                            <th>Cân Nặng</th>
+                                            <th>Số Lượng</th>
+                                            <th>Giá</th>
+                                            <th class="table-action">Hành Động</th>
                                         </tr>
-                                    `;
+                                    </thead>
+                                    <tbody>
+                                        ${selectedSizes.map((size, index) => {
+                    return `
+                                                <tr data-variant-index="${index}">
+                                                    <td><input type="checkbox" class="select-item"></td>
+                                                    <td>${productName}</td>
+                                                    <td>${size.text}</td>
+                                                    <td><input type="number" class="form-control weight" min="0" required onchange="syncInputs(this)" /></td>
+                                                    <td><input type="number" class="form-control stock" min="0" required onchange="syncInputs(this)" /></td>
+                                                    <td><input type="number" class="form-control price" min="0" required onchange="syncInputs(this)" /></td>
+                                                    <td class="table-action">
+                                                        <span class="remove-btn" onclick="removeVariant(this)">Xóa</span>
+                                                    </td>
+                                                </tr>
+                                            `;
                 }).join('')}
-                            </tbody>
-                        `;
+                                    </tbody>
+                                `;
 
                 colorRow.appendChild(variantTable);
                 variantContainer.appendChild(colorRow);
@@ -256,14 +261,39 @@
             });
         }
 
+        // Hàm đồng bộ hóa các ô nhập liệu
+        function syncInputs(inputElement) {
+            // Lấy giá trị từ ô nhập liệu đã thay đổi
+            const value = inputElement.value;
+
+            // Tìm kiếm tất cả các ô nhập liệu trong cùng hàng
+            const row = inputElement.closest('tr');
+
+            // Cập nhật tất cả các ô nhập liệu cùng loại (Cân Nặng, Số Lượng, Giá)
+            const columnIndex = Array.from(row.cells).indexOf(inputElement.closest('td'));
+
+            const tables = document.querySelectorAll('#variantContainer table');
+
+            tables.forEach(table => {
+                const rows = table.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const checkbox = row.querySelector('.select-item');
+                    if (checkbox.checked) {
+                        const targetInput = row.cells[columnIndex].querySelector('input');
+                        targetInput.value = value; // Cập nhật giá trị
+                    }
+                });
+            });
+        }
+
         // Hàm để lấy dữ liệu từ các input của các biến thể
         function getVariantsData() {
             const rows = document.querySelectorAll('#variantContainer table tbody tr');
 
             rows.forEach((row, index) => {
-                const price = row.querySelector('input[name^="ProductDetails"][name$=".Price"]').value;
-                const stock = row.querySelector('input[name^="ProductDetails"][name$=".Stock"]').value;
-                const weight = row.querySelector('input[name^="ProductDetails"][name$=".Weight"]').value;
+                const price = row.querySelector('.price').value;
+                const stock = row.querySelector('.stock').value;
+                const weight = row.querySelector('.weight').value;
 
                 // Cập nhật biến thể
                 variants[index].Price = price;
@@ -272,11 +302,13 @@
             });
         }
 
+        // Hàm xóa biến thể
         function removeVariant(element) {
             const row = element.closest('tr');
             const colorRow = row.closest('.variant-color-row');
             const restoreBtn = colorRow.querySelector('.restore-btn');
 
+            // Lưu trữ thông tin biến thể đã xóa
             const variantInfo = {
                 name: row.cells[1].textContent,
                 size: row.cells[2].textContent,
@@ -286,7 +318,7 @@
                 color: colorRow.querySelector('h6').textContent
             };
 
-            deletedVariants.push(variantInfo);
+            deletedVariants.push(variantInfo); // Lưu thông tin biến thể đã xóa
             row.remove(); // Xóa hàng khỏi bảng
 
             // Hiển thị nút khôi phục cho biến thể bị xóa
@@ -300,16 +332,16 @@
                 const variantTable = colorRow.querySelector('table tbody');
                 const newRow = document.createElement('tr');
                 newRow.innerHTML = `
-                            <td><input type="checkbox" class="variant-checkbox"></td>
-                            <td>${variant.name}</td>
-                            <td>${variant.size}</td>
-                            <td><input type="number" class="form-control" min="0" value="${variant.weight}" name="ProductDetails[0].Weight" required /></td>
-                            <td><input type="number" class="form-control" min="0" value="${variant.quantity}" name="ProductDetails[0].Stock" required /></td>
-                            <td><input type="number" class="form-control" min="0" value="${variant.price}" name="ProductDetails[0].Price" required /></td>
-                            <td class="table-action">
-                                <span class="remove-btn" onclick="removeVariant(this)">Xóa</span>
-                            </td>
-                        `;
+                                    <td><input type="checkbox" class="select-item"></td>
+                                    <td>${variant.name}</td>
+                                    <td>${variant.size}</td>
+                                    <td><input type="number" class="form-control weight" min="0" value="${variant.weight}" required onchange="syncInputs(this)" /></td>
+                                    <td><input type="number" class="form-control stock" min="0" value="${variant.quantity}" required onchange="syncInputs(this)" /></td>
+                                    <td><input type="number" class="form-control price" min="0" value="${variant.price}" required onchange="syncInputs(this)" /></td>
+                                    <td class="table-action">
+                                        <span class="remove-btn" onclick="removeVariant(this)">Xóa</span>
+                                    </td>
+                                `;
                 variantTable.appendChild(newRow);
             });
             deletedVariants = []; // Reset lại danh sách đã xóa
@@ -318,7 +350,7 @@
 
         // Hàm để bật/tắt chọn tất cả các biến thể trong một hàng
         function toggleSelectAll(checkbox) {
-            const rows = checkbox.closest('table').querySelectorAll('tbody .variant-checkbox');
+            const rows = checkbox.closest('table').querySelectorAll('tbody .select-item');
             rows.forEach(rowCheckbox => {
                 rowCheckbox.checked = checkbox.checked;
             });
@@ -346,6 +378,28 @@
             // Submit form
             this.submit();
         });
+        function addNewCategory() {
+            const newCategoryName = document.getElementById('newCategory').value.trim();
+
+            // Kiểm tra xem trường nhập liệu có hợp lệ không
+            if (newCategoryName === '') {
+                alert('Vui lòng nhập tên danh mục.');
+                return;
+            }
+
+            // Tạo một option mới cho dropdown
+            const newOption = document.createElement('option');
+            newOption.value = newCategoryName; // Giá trị có thể thay đổi tùy theo yêu cầu
+            newOption.textContent = newCategoryName;
+
+            const categorySelect = document.getElementById('categorySelect');
+            categorySelect.appendChild(newOption);
+            categorySelect.value = newCategoryName; // Chọn option mới
+
+            // Đặt lại trường nhập liệu
+            document.getElementById('newCategory').value = '';
+        }
+
     </script>
 }
 

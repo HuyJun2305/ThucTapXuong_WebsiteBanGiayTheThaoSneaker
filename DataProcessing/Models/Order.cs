@@ -40,27 +40,19 @@ namespace DataProcessing.Models
 
         [Required]
         public string PaymentMethod { get; set; }
+        public string? Status { get; set; } = "Chờ xác nhận";
+        public Guid? AddressId { get; set; }
 
-        public string Status { get; set; }
 
-        public Guid UserId { get; set; }
-
-        [JsonIgnore]
-        public virtual ApplicationUser User { get; set; }
-
+        public string? UserId { get; set; } = "Khách lẻ";
         public Guid? VoucherId { get; set; }
 
         [JsonIgnore]
-        public virtual Voucher Voucher { get; set; }
-
-        [ForeignKey("Address")]
-        public Guid AddressId { get; set; }
-
-        public virtual Address Address { get; set; }
-
+        public virtual Voucher? Voucher { get; set; }
         public Guid? ShippingUnitID { get; set; }
-
         [JsonIgnore]
-        public virtual ShippingUnit ShippingUnit { get; set; }
+        public virtual ShippingUnit? ShippingUnit { get; set; }
+        [JsonIgnore]
+        public ICollection<PaymentHistory>? paymentHistories { get; set; }
     }
 }

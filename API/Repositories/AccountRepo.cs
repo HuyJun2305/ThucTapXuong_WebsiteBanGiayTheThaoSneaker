@@ -237,7 +237,7 @@ namespace API.Repositories
                 {
                     throw new Exception("Not Found");
                 }
-                var hasOrders = _context.Orders.Any(o=>o.UserId == idAccount);
+                var hasOrders = _context.Orders.Any(o=>o.UserId == idAccount.ToString());
                 if(hasOrders)
                 {
                     throw new Exception("Tài khoản đã có hóa đơn, không thể xóa");

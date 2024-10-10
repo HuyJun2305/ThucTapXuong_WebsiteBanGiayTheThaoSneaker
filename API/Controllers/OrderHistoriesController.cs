@@ -57,7 +57,7 @@ namespace API.Controllers
         // PUT: api/OrderHistories/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrderHistory(Guid id, OrderHistoryDTO orderHistory)
+        public async Task<IActionResult> PutOrderHistory(Guid id, OrderHistory orderHistory)
         {
             if (id != orderHistory.Id)
             {
@@ -97,7 +97,7 @@ namespace API.Controllers
         // POST: api/OrderHistories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<OrderHistory>> PostOrderHistory(OrderHistoryDTO orderHistory)
+        public async Task<ActionResult<OrderHistory>> PostOrderHistory(OrderHistory orderHistory)
         {
             try
             {

@@ -174,48 +174,6 @@ namespace API.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("cde706f6-8a95-42b9-a7b6-7475e48743cd"),
-                            AccessFailedCount = 0,
-                            CIC = "002204004364",
-                            ConcurrencyStamp = "eac8da6d-4b9c-4680-9016-58c264a033d6",
-                            Email = "admin@example.com",
-                            EmailConfirmed = false,
-                            IsSubscribedToNews = false,
-                            LockoutEnabled = true,
-                            Name = "Admin User",
-                            NormalizedEmail = "ADMIN@EXAMPLE.COM",
-                            NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEAy+VOL1nUgN5TkFGttORz6XU7TTfEn6WREjkW8s8fYf6+UVHocEM2RuvT0cYJC92w==",
-                            PhoneNumber = "0123456789",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "72b9375d-a83d-4858-9c4a-81bd847e9dc7",
-                            TwoFactorEnabled = false,
-                            UserName = "admin@example.com"
-                        },
-                        new
-                        {
-                            Id = new Guid("29c3d0bf-3f47-4df0-9456-c63a015d8477"),
-                            AccessFailedCount = 0,
-                            CIC = "004204004364",
-                            ConcurrencyStamp = "11e8e0bd-bd51-4cce-88e6-a0ac7f75af19",
-                            Email = "user@example.com",
-                            EmailConfirmed = false,
-                            IsSubscribedToNews = false,
-                            LockoutEnabled = true,
-                            Name = "Regular User",
-                            NormalizedEmail = "USER@EXAMPLE.COM",
-                            NormalizedUserName = "USER@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDTFJP/VBT5GZVtU19mgMOrHnqurz3zn9i9f+yaNbwX07oC4QZQyDKJ29foVqj5pbw==",
-                            PhoneNumber = "0987654321",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "30478077-2337-4cc8-b96b-8aab8ecce10e",
-                            TwoFactorEnabled = false,
-                            UserName = "user@example.com"
-                        });
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Brand", b =>
@@ -372,7 +330,7 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AddressId")
+                    b.Property<Guid?>("AddressId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
@@ -386,14 +344,13 @@ namespace API.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("VoucherId")
                         .HasColumnType("uniqueidentifier");
@@ -403,8 +360,6 @@ namespace API.Migrations
                     b.HasIndex("AddressId");
 
                     b.HasIndex("ShippingUnitID");
-
-                    b.HasIndex("UserId");
 
                     b.HasIndex("VoucherId");
 
@@ -446,7 +401,6 @@ namespace API.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("OrderId")
@@ -467,6 +421,48 @@ namespace API.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderHistories");
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.PaymentHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ConfirmerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("PaymentAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("PaymentCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("PaymentHistories");
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Product", b =>
@@ -739,36 +735,6 @@ namespace API.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("60df8184-c1ec-4a3f-b2b9-66d3bf6bff82"),
-                            ConcurrencyStamp = "bb22df9c-219b-4ef9-a25e-75b00032ef22",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = new Guid("d2d23f26-6a58-4e37-966a-2535c076912d"),
-                            ConcurrencyStamp = "7f2bf6ba-d68c-4099-a4be-60f2e7f1c6a7",
-                            Name = "Customer",
-                            NormalizedName = "CUSTOMER"
-                        },
-                        new
-                        {
-                            Id = new Guid("d91cb73a-80f4-4951-a2db-1d9b50292f56"),
-                            ConcurrencyStamp = "c546e989-4651-4f96-9323-20e2eaee594c",
-                            Name = "Employee",
-                            NormalizedName = "EMPLOYEE"
-                        },
-                        new
-                        {
-                            Id = new Guid("4e5d7fcc-6729-4ba0-9a3e-0ef2d2249954"),
-                            ConcurrencyStamp = "e7d46a24-d3b5-493c-a2cd-7f3cd8eeeca6",
-                            Name = "Guest",
-                            NormalizedName = "GUEST"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -853,18 +819,6 @@ namespace API.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = new Guid("cde706f6-8a95-42b9-a7b6-7475e48743cd"),
-                            RoleId = new Guid("60df8184-c1ec-4a3f-b2b9-66d3bf6bff82")
-                        },
-                        new
-                        {
-                            UserId = new Guid("29c3d0bf-3f47-4df0-9456-c63a015d8477"),
-                            RoleId = new Guid("d2d23f26-6a58-4e37-966a-2535c076912d")
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -973,21 +927,11 @@ namespace API.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("ShippingUnitID");
 
-                    b.HasOne("DataProcessing.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DataProcessing.Models.Voucher", "Voucher")
                         .WithMany()
                         .HasForeignKey("VoucherId");
 
-                    b.Navigation("Address");
-
                     b.Navigation("ShippingUnit");
-
-                    b.Navigation("User");
 
                     b.Navigation("Voucher");
                 });
@@ -1015,6 +959,17 @@ namespace API.Migrations
                 {
                     b.HasOne("DataProcessing.Models.Order", "Order")
                         .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.PaymentHistory", b =>
+                {
+                    b.HasOne("DataProcessing.Models.Order", "Order")
+                        .WithMany("paymentHistories")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1157,6 +1112,11 @@ namespace API.Migrations
             modelBuilder.Entity("DataProcessing.Models.Cart", b =>
                 {
                     b.Navigation("CartDetails");
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.Order", b =>
+                {
+                    b.Navigation("paymentHistories");
                 });
 
             modelBuilder.Entity("DataProcessing.Models.ProductDetail", b =>
