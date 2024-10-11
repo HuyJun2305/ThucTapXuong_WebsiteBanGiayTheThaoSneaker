@@ -102,7 +102,7 @@
         <tbody>
             @if (Model != null && Model.Any())
             {
-                foreach (var product in Model)
+                foreach (var product in Model.ToList())
                 {
                     <tr>
                         <td>@product.Id</td>
