@@ -75,17 +75,17 @@ namespace API.Data
                 .OnDelete(DeleteBehavior.Cascade); // Thay đổi hành vi khi xóa (nếu cần)
 
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Address)
-                .WithMany()
-                .HasForeignKey(o => o.AddressId)
-                .OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<Order>()
+            //    .HasOne(o => o.Address)
+            //    .WithMany()
+            //    .HasForeignKey(o => o.AddressId)
+            //    .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Address>()
-                .HasOne(a => a.User)
-                .WithMany()
-                .HasForeignKey(a => a.AccountId)
-                .OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<Address>()
+            //    .HasOne(a => a.User)
+            //    .WithMany()
+            //    .HasForeignKey(a => a.AccountId)
+            //    .OnDelete(DeleteBehavior.Restrict);
             // SeedData for Account
             //var adminRoleId = Guid.NewGuid();
             //var customerRoleId = Guid.NewGuid();
