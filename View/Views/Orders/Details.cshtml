@@ -60,7 +60,9 @@
         </dd>
     </dl>
     <hr />
-    <h5>Lịch sử hoá đơn</h5>
+    <h5>Lịch sử trạng thái</h5>
+    <a class="btn btn-success" asp-action="ChangeStatus" asp-route-id="@Model?.Orders.Id">Chuyển trạng thái tiếp theo</a>
+    <a class="btn btn-danger" asp-action="BackStatus" asp-route-id="@Model?.Orders.Id">Quay lại trạng thái trước</a>
     <table class="table">
         <thead>
             <tr>
@@ -71,7 +73,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.OrderHistories.ToList())
+            @foreach (var item in Model.OrderHistories.OrderByDescending(oh => oh.TimeStamp).ToList())
             {
                 <tr>
                     <td>@item.StatusType</td>
@@ -109,6 +111,29 @@
                     <td>@item.PaymentMethod</td>
                     <td>@item.ConfirmerId</td>
                     <td>@item.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <hr />
+    <h5>Danh sách sản phẩm</h5>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã sản phẩm</th>
+                <th>Tổng tiền</th>
+                <th>Số lượng</th>
+                <th>Tên sản phẩm</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderDetails.ToList())
+            {
+                <tr>
+                    <td>@item.ProductDetailId</td>
+                    <td>@item.TotalPrice</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.ProductDetail.Product.Name</td>
                 </tr>
             }
         </tbody>
