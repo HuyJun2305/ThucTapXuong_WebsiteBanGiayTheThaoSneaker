@@ -45,7 +45,6 @@ namespace DataProcessing.Models
         [JsonIgnore]
         public virtual Voucher? Voucher { get; set; }
         public Guid? ShippingUnitID { get; set; }
-        [JsonIgnore]
         public virtual ShippingUnit? ShippingUnit { get; set; }
         [JsonIgnore]
         public ICollection<PaymentHistory>? paymentHistories { get; set; }

@@ -12,5 +12,6 @@ namespace View.ViewModel
 		public Order Orders { get; set; }
 		public IEnumerable<OrderHistory> OrderHistories { get; set; }
 		public IEnumerable<PaymentHistory> PaymentHistories { get; set; }
+		public IEnumerable<OrderDetail> OrderDetails { get; set; }
 	}
 }

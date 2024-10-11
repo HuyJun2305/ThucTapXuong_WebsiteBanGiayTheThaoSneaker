@@ -39,7 +39,8 @@ namespace View.Controllers
 			{
 				Orders = _orderServices.GetOrderById(id).Result,
 				OrderHistories = _orderServices.GetOrderHistoriesByOrderId(id).Result,
-				PaymentHistories = _orderServices.GetPaymentHistoriesByOrderId(id).Result
+				PaymentHistories = _orderServices.GetPaymentHistoriesByOrderId(id).Result,
+				OrderDetails = _orderServices.GetAllOrderDetailsByOrderId(id).Result
 			};
 
 			return View(orderVM);
@@ -152,6 +153,53 @@ namespace View.Controllers
 				return Problem(ex.Message);
 			}
 			return RedirectToAction(nameof(Index));
+		}
+
+		public async Task<IActionResult> ChangeStatus(Guid id)
+		{
+			try
+			{
+				var token = HttpContext.Session.GetString("AuthToken");
+				var userId = "";
+				if (!string.IsNullOrEmpty(token))
+				{
+					var tokenHandler = new JwtSecurityTokenHandler();
+					var jwtToken = tokenHandler.ReadJwtToken(token);
+
+					var claims = jwtToken.Claims.ToList();
+					userId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+				}
+				await _orderServices.ChangeStatus(Guid.Parse(userId), id);
+			}catch (Exception ex)
+			{
+				return Problem(ex.Message);
+			}
+
+			return RedirectToAction("Details", new { id });
+		}
+
+		public async Task<IActionResult> BackStatus(Guid id)
+		{
+			try
+			{
+				var token = HttpContext.Session.GetString("AuthToken");
+				var userId = "";
+				if (!string.IsNullOrEmpty(token))
+				{
+					var tokenHandler = new JwtSecurityTokenHandler();
+					var jwtToken = tokenHandler.ReadJwtToken(token);
+
+					var claims = jwtToken.Claims.ToList();
+					userId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+				}
+				await _orderServices.BackStatus(Guid.Parse(userId), id);
+			}
+			catch (Exception ex)
+			{
+				return Problem(ex.Message);
+			}
+
+			return RedirectToAction("Details", new { id });
 		}
 	}
 }
