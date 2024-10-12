@@ -163,9 +163,14 @@
                                     <div class="product-content p-3 bg-white rounded-bottom">
                                         <div class="mb-2">
                                             <div class="d-flex mt-1">
-                                                <div class="color-circle rounded-circle me-2 bg-danger" data-color="black"></div>
-                                                <div class="color-circle rounded-circle me-2 bg-dark" data-color="blue"></div>
-                                                <div class="color-circle rounded-circle me-2 bg-success" data-color="red"></div>
+                                                @foreach (var color in (IEnumerable<SelectListItem>)ViewData["ColorId"])
+                                                {
+                                                    <div class="color-circle rounded-circle me-2"
+                                                         value="@color.Value"
+                                                         data-color="@color.Text"
+                                                         style="background-color: @color.Text; width: 30px; height: 30px;">
+                                                    </div>
+                                                }                                            
                                             </div>
                                         </div>
 
@@ -174,17 +179,16 @@
 
                                         <div class="size-options mb-2">
                                             <div class="d-flex mt-1">
-                                                <div class="size-circle me-2" data-size="40">40</div>
-                                                <div class="size-circle me-2" data-size="41">41</div>
-                                                <div class="size-circle me-2" data-size="42">42</div>
-                                                <div class="size-circle me-2" data-size="43">43</div>
-                                                <div class="size-circle me-2" data-size="44">44</div>
+                                                @foreach (var category in (IEnumerable<SelectListItem>)ViewData["SizeId"])
+                                                {
+                                                    <div class="size-circle me-2" value="@category.Value" data-size="@category.Text">@category.Text</div>
+                                                }
                                             </div>
                                         </div>
 
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div>
-                                                <p class="fs-5 fw-bold mb-0 original-price">$188.99</p>
+                                                <p class="fs-5 fw-bold mb-0 original-price"></p>
                                                 <p class="fs-5 fw-bold mb-0 sale-price" style="display: none;"></p>
                                             </div>
                                             <div class="action-icons">
