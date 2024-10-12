@@ -152,7 +152,7 @@ namespace API.Repositories
                     UserName = models.Email,
                     Email = models.Email,
                     CIC = models.CIC ,
-                    IsSubscribedToNews=false
+                    IsSubscribedToNews = false
 
                 };
                 var result = await _userManager.CreateAsync(account, models.Password);
@@ -284,7 +284,7 @@ namespace API.Repositories
                     UserName = models.Email,
                     Email = models.Email,
                     CIC = models.CIC,
-                    IsSubscribedToNews=false
+                    IsSubscribedToNews = false
                 };
 
                 var result = await _userManager.CreateAsync(account, models.Password);
