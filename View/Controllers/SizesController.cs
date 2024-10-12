@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using DataProcessing.Models;
 using View.Data;
 using View.IServices;
+using View.Servicecs;
+using View.ViewModel;
 
 namespace View.Controllers
 {
@@ -21,11 +23,26 @@ namespace View.Controllers
         }
 
         // GET: Sizes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int currentPage = 1, int rowsPerPage = 10)
         {
-              return _sizeServices.GetAllSizes() != null ? 
-                          View(await _sizeServices.GetAllSizes()) :
-                          Problem("Entity set 'ViewContext.Size'  is null.");
+            var sizes = await _sizeServices.GetAllSizes();
+
+            // Phân trang
+            var totalSizes = sizes.Count();
+            var totalPages = (int)Math.Ceiling((double)totalSizes / rowsPerPage);
+            var pagedSizes = sizes.Skip((currentPage - 1) * rowsPerPage).Take(rowsPerPage).ToList();
+
+            var viewModel = new SizeViewModel
+            {
+                Sizes = pagedSizes,
+                NewSize = new Size(),
+            };
+
+            ViewBag.CurrentPage = currentPage;
+            ViewBag.RowsPerPage = rowsPerPage;
+            ViewBag.TotalPages = totalPages;
+
+            return View(viewModel);
         }
 
         // GET: Sizes/Details/5
@@ -56,15 +73,15 @@ namespace View.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Value,Status")] Size size)
+        public async Task<IActionResult> Create(SizeViewModel sizeViewModel)
         {
             if (ModelState.IsValid)
             {
-                size.Id = Guid.NewGuid();
-                await _sizeServices.Create(size);
+                sizeViewModel.NewSize.Id = Guid.NewGuid();
+                await _sizeServices.Create(sizeViewModel.NewSize);
                 return RedirectToAction(nameof(Index));
             }
-            return View(size);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Sizes/Edit/5
@@ -88,22 +105,18 @@ namespace View.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Value,Status")] Size size)
+        public async Task<IActionResult> Edit(Guid id, SizeViewModel sizeViewModel)
         {
-            if (id != size.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _sizeServices.Update(size);
+                    await _sizeServices.Update(sizeViewModel.NewSize);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (_sizeServices.GetSizeById(id) == null)
+                    var existingMaterial = await _sizeServices.GetSizeById(sizeViewModel.NewSize.Id);
+                    if (existingMaterial == null)
                     {
                         return NotFound();
                     }
@@ -112,9 +125,10 @@ namespace View.Controllers
                         throw;
                     }
                 }
+                sizeViewModel.Sizes = await _sizeServices.GetAllSizes();
                 return RedirectToAction(nameof(Index));
             }
-            return View(size);
+            return BadRequest("Lỗi không sửa được");
         }
 
         // GET: Sizes/Delete/5

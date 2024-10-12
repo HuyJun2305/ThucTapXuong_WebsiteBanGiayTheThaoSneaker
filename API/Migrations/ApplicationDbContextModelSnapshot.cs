@@ -44,6 +44,54 @@ namespace API.Migrations
                     b.ToTable("ProductDetailPromotions");
                 });
 
+            modelBuilder.Entity("DataProcessing.Models.Address", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AddressDetail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ApplicationUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Commune")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("District")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RecipientName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("Addresses");
+                });
+
             modelBuilder.Entity("DataProcessing.Models.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
@@ -72,6 +120,9 @@ namespace API.Migrations
 
                     b.Property<string>("ImageURL")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsSubscribedToNews")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -158,7 +209,8 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountId");
+                    b.HasIndex("AccountId")
+                        .IsUnique();
 
                     b.ToTable("Carts");
                 });
@@ -278,6 +330,9 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("AddressId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -285,22 +340,26 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("ShippingUnitID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("VoucherId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("AddressId");
+
+                    b.HasIndex("ShippingUnitID");
 
                     b.HasIndex("VoucherId");
 
@@ -342,7 +401,6 @@ namespace API.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("OrderId")
@@ -363,6 +421,48 @@ namespace API.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderHistories");
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.PaymentHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ConfirmerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("PaymentAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("PaymentCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("PaymentHistories");
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Product", b =>
@@ -489,6 +589,42 @@ namespace API.Migrations
                     b.ToTable("SelectedImages");
                 });
 
+            modelBuilder.Entity("DataProcessing.Models.ShippingUnit", b =>
+                {
+                    b.Property<Guid>("ShippingUnitID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Website")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ShippingUnitID");
+
+                    b.ToTable("ShippingUnits");
+                });
+
             modelBuilder.Entity("DataProcessing.Models.Size", b =>
                 {
                     b.Property<Guid>("Id")
@@ -535,8 +671,7 @@ namespace API.Migrations
 
                     b.Property<string>("Condittion")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("DiscountAmount")
                         .HasColumnType("decimal(18,2)");
@@ -724,11 +859,26 @@ namespace API.Migrations
                     b.Navigation("Promotion");
                 });
 
+            modelBuilder.Entity("DataProcessing.Models.Address", b =>
+                {
+                    b.HasOne("DataProcessing.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DataProcessing.Models.ApplicationUser", null)
+                        .WithMany("Addresses")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DataProcessing.Models.Cart", b =>
                 {
                     b.HasOne("DataProcessing.Models.ApplicationUser", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
+                        .WithOne("Cart")
+                        .HasForeignKey("DataProcessing.Models.Cart", "AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -738,7 +888,7 @@ namespace API.Migrations
             modelBuilder.Entity("DataProcessing.Models.CartDetail", b =>
                 {
                     b.HasOne("DataProcessing.Models.Cart", "Cart")
-                        .WithMany()
+                        .WithMany("CartDetails")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -767,17 +917,21 @@ namespace API.Migrations
 
             modelBuilder.Entity("DataProcessing.Models.Order", b =>
                 {
-                    b.HasOne("DataProcessing.Models.ApplicationUser", "User")
+                    b.HasOne("DataProcessing.Models.Address", "Address")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("DataProcessing.Models.ShippingUnit", "ShippingUnit")
+                        .WithMany("Orders")
+                        .HasForeignKey("ShippingUnitID");
 
                     b.HasOne("DataProcessing.Models.Voucher", "Voucher")
                         .WithMany()
                         .HasForeignKey("VoucherId");
 
-                    b.Navigation("User");
+                    b.Navigation("ShippingUnit");
 
                     b.Navigation("Voucher");
                 });
@@ -805,6 +959,17 @@ namespace API.Migrations
                 {
                     b.HasOne("DataProcessing.Models.Order", "Order")
                         .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.PaymentHistory", b =>
+                {
+                    b.HasOne("DataProcessing.Models.Order", "Order")
+                        .WithMany("paymentHistories")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -936,6 +1101,24 @@ namespace API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DataProcessing.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Addresses");
+
+                    b.Navigation("Cart")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.Cart", b =>
+                {
+                    b.Navigation("CartDetails");
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.Order", b =>
+                {
+                    b.Navigation("paymentHistories");
+                });
+
             modelBuilder.Entity("DataProcessing.Models.ProductDetail", b =>
                 {
                     b.Navigation("ProductDetailPromotions");
@@ -944,6 +1127,11 @@ namespace API.Migrations
             modelBuilder.Entity("DataProcessing.Models.Promotion", b =>
                 {
                     b.Navigation("ProductDetailPromotions");
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.ShippingUnit", b =>
+                {
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

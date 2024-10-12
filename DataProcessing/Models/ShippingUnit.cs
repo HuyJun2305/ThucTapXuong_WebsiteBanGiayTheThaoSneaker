@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DataProcessing.Models
@@ -33,7 +34,7 @@ namespace DataProcessing.Models
         public string? Website { get; set; }      // Website (nếu có)
 
         public bool Status { get; set; }         // Trạng thái (true: hoạt động, false: ngừng)
-
+        [JsonIgnore]
         public ICollection<Order>? Orders { get; set; }
     }
 }

@@ -53,18 +53,29 @@ namespace View.Controllers
         // GET: ProductDetails
         public async Task<IActionResult> Index()
         {
-            ViewData["ColorId"] = new SelectList(_colorServices.GetAllColors().Result.Where(x => x.Status), "Id", "Name"); ;
-            ViewData["SizeId"] = new SelectList(_sizeServices.GetAllSizes().Result.Where(x => x.Status), "Id", "Value");
-            ViewData["ProductId"] = new SelectList(_productServices.GetAllProducts().Result, "Id", "Name");
-            ViewData["BrandId"] = new SelectList(_brandServices.GetAllBrands().Result, "Id", "Name");
-            ViewData["CategoryId"] = new SelectList(_categoryServices.GetAllCategories().Result, "Id", "Name");
-            ViewData["SoleId"] = new SelectList(_soleServices.GetAllSoles().Result, "Id", "TypeName");
-            ViewData["MaterialId"] = new SelectList(_materialServices.GetAllMaterials().Result, "Id", "Name");
+            ViewData["ColorId"] = new SelectList((await _colorServices.GetAllColors()).Where(x => x.Status), "Id", "Name");
+            ViewData["SizeId"] = new SelectList((await _sizeServices.GetAllSizes()).Where(x => x.Status), "Id", "Value");
+            ViewData["ProductId"] = new SelectList(await _productServices.GetAllProducts(), "Id", "Name");
+            ViewData["BrandId"] = new SelectList(await _brandServices.GetAllBrands(), "Id", "Name");
+            ViewData["CategoryId"] = new SelectList(await _categoryServices.GetAllCategories(), "Id", "Name");
+            ViewData["SoleId"] = new SelectList(await _soleServices.GetAllSoles(), "Id", "TypeName");
+            ViewData["MaterialId"] = new SelectList(await _materialServices.GetAllMaterials(), "Id", "Name");
 
+            // Lấy dữ liệu productDetail
+            var viewContext = await _productDetailService.GetAllProductDetail();
 
-            var viewContext = _productDetailService.GetAllProductDetail().Result;
-            return  View(viewContext.ToList());
+            // Kiểm tra xem dữ liệu có hợp lệ không (loại bỏ null hoặc kiểm tra dữ liệu)
+            if (viewContext == null || !viewContext.Any())
+            {
+                // Nếu không có dữ liệu hoặc null, trả về một thông báo cho view
+                ViewBag.Message = "No product details found.";
+                return View(new List<ProductDetail>()); // Trả về một danh sách rỗng
+            }
+
+            // Trả về view với dữ liệu hợp lệ
+            return View(viewContext);
         }
+
 
         // GET: ProductDetails/Details/5
         public async Task<IActionResult> Details(string id)
@@ -87,17 +98,14 @@ namespace View.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Price,Stock,Weight,ProductId,ColorId,SizeId")] ProductDetail productDetail)
+        public async Task<IActionResult> Create([Bind("Price,Stock,Weight,ProductId,ColorId,SizeId")] ProductDetail productDetail)
         {
             if (productDetail.ProductId != null)
             {
-                 await _productDetailService.Create(productDetail);
+                productDetail.Id = Guid.NewGuid().ToString();
+                await _productDetailService.Create(productDetail);
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["ColorId"] = new SelectList(_colorServices.GetAllColors().Result.Where(x => x.Status), "Id", "Name"); ;
-            ViewData["SizeId"] = new SelectList(_sizeServices.GetAllSizes().Result.Where(x => x.Status), "Id", "Value");
-            ViewData["ProductId"] = new SelectList(_productServices.GetAllProducts().Result, "Id", "Name");
-            return View(productDetail);
+            }            return View(productDetail);
         }
 
         // GET: ProductDetails/Edit/5
@@ -180,7 +188,6 @@ namespace View.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
     }
 
 }

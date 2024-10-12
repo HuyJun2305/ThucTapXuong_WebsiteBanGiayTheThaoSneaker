@@ -26,7 +26,14 @@ namespace View.Controllers
             var vouchers = await _voucherService.GetAllVouchers();
             return vouchers != null ? View(vouchers) : Problem("Entity set 'Voucher' is null.");
         }
-
+        // GET: Vouchers/Applicable
+        public async Task<IActionResult> Applicable()
+        {
+            var vouchers = await _voucherService.GetAllVouchers();
+            var applicableVouchers = vouchers?.Where(v => v.Status && v.StartDate <= DateTime.Now && v.EndDate >= DateTime.Now && v.Stock > 0)
+                .OrderByDescending(v => v.DiscountAmount > 0 ? v.DiscountAmount : v.DiscountPercent).ToList();
+            return applicableVouchers != null ? View(applicableVouchers) : Problem("Entity set 'Voucher' is null");
+        }
         // GET: Vouchers/Details/5
         public async Task<IActionResult> Details(Guid id)
         {

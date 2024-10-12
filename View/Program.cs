@@ -33,6 +33,7 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddHttpClient<IProductDetailService, ProductDetailService>();
 builder.Services.AddHttpClient<IShippingUnitServices,ShippingUnitServices>();
 builder.Services.AddHttpClient<IProductDetailPromotionServices, ProductDetailPromotionServices>();
+builder.Services.AddHttpClient<IOrderServices, OrderServices>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

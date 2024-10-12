@@ -24,8 +24,10 @@ namespace View.Controllers
         private readonly IColorServices _colorServices;
         private readonly ISizeServices _sizeServices;
         private readonly IProductDetailService _productDetailService;
+        private readonly IAccountService _accountService;
+        private readonly IEmailSender _emailSender;
 
-        public ProductsController(IProductServices productService, ISoleServices soleServices, ICategoryServices categoryServices, IBrandServices brandServices, IMaterialServices materialServices, IColorServices colorServices, ISizeServices sizeServices, IProductDetailService productDetailService)
+        public ProductsController(IProductServices productService, ISoleServices soleServices, ICategoryServices categoryServices, IBrandServices brandServices, IMaterialServices materialServices, IColorServices colorServices, ISizeServices sizeServices, IProductDetailService productDetailService, IEmailSender emailSender, IAccountService accountService)
         {
             _productServices = productService;
             _soleServices = soleServices;
@@ -35,6 +37,8 @@ namespace View.Controllers
             _colorServices = colorServices;
             _sizeServices = sizeServices;
             _productDetailService = productDetailService;
+            _accountService = accountService;
+            _emailSender = emailSender;
         }
 
         // GET: Products
@@ -53,14 +57,14 @@ namespace View.Controllers
         }
 
         // GET: Products/Create
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
-            ViewData["BrandId"] = new SelectList(await _brandServices.GetAllBrands(), "Id", "Name");
-            ViewData["CategoryId"] = new SelectList(await _categoryServices.GetAllCategories(), "Id", "Name");
-            ViewData["MaterialId"] = new SelectList(await _materialServices.GetAllMaterials(), "Id", "Name");
-            ViewData["SoleId"] = new SelectList(await _soleServices.GetAllSoles(), "Id", "TypeName");
-            ViewData["ColorId"] = new SelectList(await _colorServices.GetAllColors(), "Id", "Name");
-            ViewData["SizeId"] = new SelectList(await _sizeServices.GetAllSizes(), "Id", "Value");
+            ViewData["BrandId"] = new SelectList(_brandServices.GetAllBrands().Result.Where(x => x.Status), "Id", "Name");
+            ViewData["CategoryId"] = new SelectList(_categoryServices.GetAllCategories().Result.Where(x => x.Status), "Id", "Name");
+            ViewData["MaterialId"] = new SelectList(_materialServices.GetAllMaterials().Result.Where(x => x.Status), "Id", "Name");
+            ViewData["SoleId"] = new SelectList(_soleServices.GetAllSoles().Result.Where(x => x.Status), "Id", "TypeName");
+            ViewData["ColorId"] = new SelectList(_colorServices.GetAllColors().Result.Where(x => x.Status), "Id", "Name");
+            ViewData["SizeId"] = new SelectList(_sizeServices.GetAllSizes().Result.Where(x => x.Status), "Id", "Value");
             return View();
         }
 
@@ -91,7 +95,16 @@ namespace View.Controllers
                 };
 
                 await _productServices.Create(product);
+                 var subscribedUsers = (await _accountService.GetAllCustomer())
+                                  .Where(u => u.IsSubscribedToNews)
+                                  .ToList();
 
+                string emailSubject = "SẢN PHẨM MỚI HÓT HÒN HỌT ĐÂY !!!";
+                string emailMessage = $"Sản phẩm {product.Name} mới được ra lò";
+                foreach (var user in subscribedUsers)
+                {
+                    await _emailSender.SendEmailAsync(user.Email, emailSubject, emailMessage);
+                }
                 var productDetails = JsonConvert.DeserializeObject<List<ProductDetailViewModel>>(productDetailsJson);
                 var productid = product.Id;
 

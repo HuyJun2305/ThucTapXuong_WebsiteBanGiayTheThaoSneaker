@@ -6,7 +6,7 @@ namespace API.IRepositories
 	{
 		Task<List<Order>> GetAllOrders();
 		Task<Order> GetOrderById(Guid id);
-		Task<List<Order>> GetAllOrderByUser(Guid userId);
+		Task<List<Order>> GetAllOrderByUser(string userId);
 		Task Create(Order order);
 		Task Update(Order order);
 		Task Delete(Guid id);
@@ -20,6 +20,28 @@ namespace API.IRepositories
 		Task<List<OrderHistory>> GetAllHistoriesByOrderId(Guid id);
 		Task Create(OrderHistory orderHistory);
 		Task Update(OrderHistory orderHistory);
+		Task Delete(Guid id);
+		Task SaveChanges();
+	}
+
+	public interface IPaymentHistoryRepo
+	{
+		Task<List<PaymentHistory>> GetAllPaymentHistories();
+		Task<List<PaymentHistory>> GetPaymentHistoriesByOrderId(Guid id);
+		Task<PaymentHistory> GetHistoryById(Guid id);
+		Task Create(PaymentHistory payment);
+		Task Update(PaymentHistory payment);
+		Task Delete(Guid id);
+		Task SaveChanges();
+	}
+
+	public interface IOrderDetailRepo
+	{
+		Task<List<OrderDetail>?> GetAllOrderDetails();
+		Task<List<OrderDetail>?> GetOrderDetailsByOrderId(Guid id);
+		Task<OrderDetail?> GetOrderDetailById(Guid id);
+		Task Create(OrderDetail orderDetail);
+		Task Update(OrderDetail orderDetail);
 		Task Delete(Guid id);
 		Task SaveChanges();
 	}
