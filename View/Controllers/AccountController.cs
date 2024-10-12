@@ -13,7 +13,7 @@ namespace View.Controllers
     {
         private readonly IAccountService _accountService;
 
-        public AccountController(IAccountService accountService  )
+        public AccountController(IAccountService accountService)
         {
             _accountService = accountService;
 
@@ -33,11 +33,11 @@ namespace View.Controllers
                 try
                 {
                     var token = await _accountService.SignInAsync(model);
-                    if (!string.IsNullOrEmpty(token)) 
+                    if (!string.IsNullOrEmpty(token))
                     {
                         HttpContext.Session.SetString("AuthToken", token);
                         TempData["Welcome"] = "Welcome " + token;
-                        return RedirectToAction("Index", "Home");                   
+                        return RedirectToAction("Index", "Home");
                     }
 
                     else
@@ -49,9 +49,9 @@ namespace View.Controllers
                 catch (Exception ex)
                 {
                     ModelState.AddModelError("", ex.Message);
-                }       
+                }
             }
-            return View(model); 
+            return View(model);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -66,7 +66,7 @@ namespace View.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                return RedirectToAction("Index", "Home"); 
+                return RedirectToAction("Index", "Home");
             }
         }
         public async Task<IActionResult> ListCustomer()
@@ -84,11 +84,11 @@ namespace View.Controllers
             var account = await _accountService.GetById(idAccount);
             if (account == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
             return View(account);
         }
-            
+
         // GET: AccountController/Create
         public IActionResult CreateEmployee()
         {
@@ -107,7 +107,7 @@ namespace View.Controllers
             try
             {
                 await _accountService.CreateCustomer(account);
-                return RedirectToAction("ListCustomer","Account");
+                return RedirectToAction("ListCustomer", "Account");
             }
             catch
             {
@@ -139,23 +139,23 @@ namespace View.Controllers
         public async Task<IActionResult> Edit(ApplicationUser idAccount)
         {
             var account = await _accountService.GetById(idAccount.Id);
-            if(account==null)
+            if (account == null)
             {
                 return NotFound();
-            }    
+            }
             return View(account);
         }
 
         // POST: AccountController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(ApplicationUser account , Guid idAccount)
+        public async Task<IActionResult> Update(ApplicationUser account, Guid idAccount)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    await _accountService.Update(account,idAccount);
+                    await _accountService.Update(account, idAccount);
                     //var userRole = await _userManager.GetRolesAsync(account);
                     //if (userRole.Contains("Employee"))
                     //{
@@ -173,7 +173,7 @@ namespace View.Controllers
             catch
             {
                 TempData["UpdateFail"] = "Cập nhật không thành công";
-                return View("Edit",account);
+                return View("Edit", account);
             }
         }
 
@@ -202,3 +202,4 @@ namespace View.Controllers
         }
     }
 }
+
