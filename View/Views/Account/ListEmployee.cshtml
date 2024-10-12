@@ -61,7 +61,6 @@
                             <th>Họ và tên</th>
                             <th>Email</th>
                             <th>SDT</th>
-                            <th>Ngày sinh</th>
                             <th>CIC</th>
                             <th>Thao tác</th>
                         </tr>
@@ -74,11 +73,10 @@
                             {
                                 <tr>
                                     <td>@index</td>
-                                    <td><img src="@item.ImageURL" alt="Ảnh nhân viên" width="50"></td>
+                                    <td><img src="https://via.placeholder.com/150" alt="Ảnh nhân viên" width="50"></td>
                                     <td>@item.Name</td>
                                     <td>@item.Email</td>
                                     <td>@item.PhoneNumber</td>
-                                    <td>@item.Birthday</td>
                                     <td>@item.CIC</td>
                                     <td>
                                         @Html.ActionLink("Edit", "Edit", new { idAccount = item.Id }) |
@@ -110,6 +108,13 @@
         </div>
     </div>
 </div>
+
+<style>
+    td{
+        text-align: center;
+        vertical-align: middle;
+    }
+</style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
