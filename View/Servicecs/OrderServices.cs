@@ -17,6 +17,19 @@ namespace View.Servicecs
 			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/PaymentHistories/", payment);
 		}
 
+		public async Task AddToOrder(OrderDetail order)
+		{
+			var data = GetAllOrderDetailsByOrderId(order.OrderId).Result.Where(o => o.ProductDetailId == order.ProductDetailId);
+			if (data.FirstOrDefault() != null)
+			{
+				if (data.FirstOrDefault().Quantity + order.Quantity > data.FirstOrDefault().ProductDetail.Stock)
+					order.Quantity = data.FirstOrDefault().ProductDetail.Stock;
+				else order.Quantity = data.FirstOrDefault().Quantity + order.Quantity;
+				await _httpClient.PutAsJsonAsync("https://localhost:7170/api/OrderDetails", order);
+			}else
+				await _httpClient.PostAsJsonAsync($"https://localhost:7170/api/OrderDetails", order);
+		}
+
 		public async Task BackStatus(Guid UserIdCreateThis, Guid OrderId)
 		{
 			var response = await _httpClient.GetStringAsync("https://localhost:7170/api/OrderHistories");
@@ -80,6 +93,14 @@ namespace View.Servicecs
 			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/OrderHistories", orderHistory);
 		}
 
+		public async Task ChangeStock(int stock, Guid orderDetailId)
+		{
+			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/OrderDetails/{orderDetailId}");
+			var data = JsonConvert.DeserializeObject<OrderDetail>(response);
+			data.Quantity += stock;
+			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/OrderDetails/{orderDetailId}", data);
+		}
+
 		public async Task Create(Guid UserIdCreateThis, Order order)
 		{
 			if (order.UserId == null) order.UserId = "Khách lẻ";
@@ -101,6 +122,11 @@ namespace View.Servicecs
 			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/Orders/{id}");
 			var data = JsonConvert.DeserializeObject<Order>(response);
 			if (data.TotalPrice == 0) await _httpClient.DeleteAsync($"https://localhost:7170/api/Orders/{id}");
+		}
+
+		public async Task DeleteFromOrder(Guid id)
+		{
+			await _httpClient.DeleteAsync($"https://localhost:7170/api/OrderDetails/{id}");
 		}
 
 		public async Task<IEnumerable<Order>?> GetAllOrderByUserId(Guid id)
@@ -142,6 +168,13 @@ namespace View.Servicecs
 		{
 			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/PaymentHistories/OrderId/{id}");
 			var result = JsonConvert.DeserializeObject<IEnumerable<PaymentHistory>>(response);
+			return result;
+		}
+
+		public async Task<IEnumerable<ProductDetail>?> GetProductDetails()
+		{
+			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/ProductDetail");
+			var result = JsonConvert.DeserializeObject<IEnumerable<ProductDetail>>(response);
 			return result;
 		}
 
