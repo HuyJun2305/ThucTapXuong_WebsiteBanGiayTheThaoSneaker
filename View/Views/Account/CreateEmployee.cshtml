@@ -21,6 +21,7 @@
 
             <!-- Form for creating an employee -->
             <form asp-action="CreateEmployee" enctype="multipart/form-data" class="pt-3">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row">
                     <!-- Left side: Profile Picture -->
                     @* <div class="col-md-4 text-center">
