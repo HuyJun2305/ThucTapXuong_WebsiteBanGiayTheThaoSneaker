@@ -26,14 +26,31 @@ namespace View.Controllers
             var vouchers = await _voucherService.GetAllVouchers();
             return vouchers != null ? View(vouchers) : Problem("Entity set 'Voucher' is null.");
         }
+
         // GET: Vouchers/Applicable
         public async Task<IActionResult> Applicable()
         {
             var vouchers = await _voucherService.GetAllVouchers();
-            var applicableVouchers = vouchers?.Where(v => v.Status && v.StartDate <= DateTime.Now && v.EndDate >= DateTime.Now && v.Stock > 0)
-                .OrderByDescending(v => v.DiscountAmount > 0 ? v.DiscountAmount : v.DiscountPercent).ToList();
-            return applicableVouchers != null ? View(applicableVouchers) : Problem("Entity set 'Voucher' is null");
+
+            if (vouchers == null)
+            {
+                return Problem("Entity set 'Voucher' is null");
+            }
+
+            var applicableVouchers = vouchers
+                .Where(v => v.Status
+                    && v.Stock > 0
+                    && (v.StartDate == null || v.StartDate <= DateTime.Now)  // Nếu có StartDate, nó phải nhỏ hơn hoặc bằng hiện tại
+                    && (v.EndDate == null || v.EndDate >= DateTime.Now))    // Nếu có EndDate, nó phải lớn hơn hoặc bằng hiện tại
+                .OrderByDescending(v => v.DiscountType == "Amount" ? v.DiscountAmount : v.DiscountPercent)
+                .ToList();
+
+
+            return View(applicableVouchers);
         }
+
+
+
         // GET: Vouchers/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
@@ -55,16 +72,25 @@ namespace View.Controllers
         // POST: Vouchers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,VoucherCode,Name,VoucherType,DiscountAmount,DiscountPercent,Condittion,Stock,StartDate,EndDate,Status,AccountId")] Voucher voucher)
+        public async Task<IActionResult> Create([Bind("Id,VoucherCode,Name,DiscountType,DiscountAmount,DiscountPercent,MaxDiscountValue,Stock,Condition,StartDate,EndDate,Type,Status,AccountId")] Voucher voucher)
         {
             if (ModelState.IsValid)
             {
                 voucher.Id = Guid.NewGuid();
-                await _voucherService.Create(voucher);
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _voucherService.Create(voucher);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (ArgumentException ex)
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
             }
             return View(voucher);
         }
+
+
 
         // GET: Vouchers/Edit/5
         public async Task<IActionResult> Edit(Guid id)
@@ -80,7 +106,7 @@ namespace View.Controllers
         // POST: Vouchers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,VoucherCode,Name,VoucherType,DiscountAmount,DiscountPercent,Condittion,Stock,StartDate,EndDate,Status,AccountId")] Voucher voucher)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,VoucherCode,Name,DiscountType,DiscountAmount,DiscountPercent,MaxDiscountValue,Stock,Condition,StartDate,EndDate,Type,Status,AccountId")] Voucher voucher)
         {
             if (id != voucher.Id)
             {
@@ -92,6 +118,7 @@ namespace View.Controllers
                 try
                 {
                     await _voucherService.Update(voucher);
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -104,7 +131,10 @@ namespace View.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (ArgumentException ex)
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
             }
             return View(voucher);
         }
@@ -126,7 +156,15 @@ namespace View.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            await _voucherService.Delete(id);
+            try
+            {
+                await _voucherService.Delete(id);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(await _voucherService.GetVoucherById(id));
+            }
             return RedirectToAction(nameof(Index));
         }
     }

@@ -57,9 +57,6 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ApplicationUserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -86,8 +83,6 @@ namespace API.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Addresses");
                 });
@@ -356,8 +351,6 @@ namespace API.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressId");
 
                     b.HasIndex("ShippingUnitID");
 
@@ -669,18 +662,25 @@ namespace API.Migrations
                     b.Property<Guid?>("AccountId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Condittion")
+                    b.Property<string>("Condition")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("DiscountAmount")
+                    b.Property<decimal?>("DiscountAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("DiscountPercent")
+                    b.Property<decimal?>("DiscountPercent")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("DiscountType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("MaxDiscountValue")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -696,11 +696,11 @@ namespace API.Migrations
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
-                    b.Property<string>("VoucherCode")
+                    b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("VoucherType")
+                    b.Property<string>("VoucherCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -862,14 +862,10 @@ namespace API.Migrations
             modelBuilder.Entity("DataProcessing.Models.Address", b =>
                 {
                     b.HasOne("DataProcessing.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("DataProcessing.Models.ApplicationUser", null)
                         .WithMany("Addresses")
-                        .HasForeignKey("ApplicationUserId");
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -917,12 +913,6 @@ namespace API.Migrations
 
             modelBuilder.Entity("DataProcessing.Models.Order", b =>
                 {
-                    b.HasOne("DataProcessing.Models.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("DataProcessing.Models.ShippingUnit", "ShippingUnit")
                         .WithMany("Orders")
                         .HasForeignKey("ShippingUnitID");
