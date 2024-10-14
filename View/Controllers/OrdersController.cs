@@ -11,6 +11,7 @@ using View.IServices;
 using View.ViewModel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using MailKit.Search;
 
 namespace View.Controllers
 {
@@ -237,15 +238,17 @@ namespace View.Controllers
 			return RedirectToAction("Details", new { id = OrderId });
 		}
 
-		public async Task ChangeStock(int stock, Guid OrderDetailId)
+		public async Task<IActionResult> ChangeStock(Guid id,int stock, Guid OrderDetailId)
 		{
 			try
 			{
 				await _orderServices.ChangeStock(stock, OrderDetailId);
 			}catch (Exception ex)
 			{
-				Problem(ex.Message);
+				return Problem(ex.Message);
 			}
+
+			return RedirectToAction("Details", new { id });
 		}
 	}
 }

@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
-    var quantity = 0;
+    var quantity = 1;
 }
 
 <h1>Details</h1>
@@ -132,13 +132,25 @@
         <tbody>
             @foreach (var item in Model.OrderDetails.ToList())
             {
+                <form action="OrderController/ChangeStock" method="post">
                 <tr>
                     <td>@item.ProductDetailId</td>
                     <td>@item.TotalPrice</td>
-                    <td>@item.Quantity</td>
+                    <td>
+                            <div class="input-group" style="max-width: 145px">
+                                <button type="button" class="btn btn-outline-secondary" onclick="adjustQuantity('stock',-1)">-</button>
+                                <input type="number" name="stock" value="@item.Quantity" min="1" class="form-control" style="text-align:center" />
+                                <button type="button" class="btn btn-outline-secondary" onclick="adjustQuantity('stock',1)">+</button>
+                                <input type="hidden" name="OrderDetailId" value="@item.Id"/>
+                            </div>
+                        </td>
                     <td>@item.ProductDetail.Product.Name</td>
-                    <td> <a class="btn btn-danger" asp-action="DeleteFromOrder" asp-route-id="@item.Id" asp-route-OrderId="@Model.Orders.Id">Xoá</a></td>
+                    <td>
+                        <button class="btn btn-primary" type="submit" asp-action="ChangeStock" asp-route-id="@Model.Orders.Id" asp-route-OrderDetailId="@item.Id">Lưu</button> |
+                        <a class="btn btn-danger" asp-action="DeleteFromOrder" asp-route-id="@item.Id" asp-route-OrderId="@Model.Orders.Id">Xoá</a>
+                    </td>
                 </tr>
+                </form>
             }
         </tbody>
     </table>
@@ -164,6 +176,7 @@
                             <th>Id</th>
                             <th>Name</th>
                             <th>Color</th>
+                            <th>Quantity</th>
                             <th>Size</th>
                             <th>Sole</th>
                             <th>Brand</th>
@@ -187,9 +200,9 @@
                                     <td>
 
                                         <div class="input-group" style="max-width: 145px">
-                                            <button type="button" class="btn btn-outline-secondary" onclick="adjustQuantity('@product.Id', -1)">-</button>
-                                            <input type="number" name="quantities[@product.Id]" value="@quantity" min="1" class="form-control" style="text-align:center" />
-                                            <button type="button" class="btn btn-outline-secondary" onclick="adjustQuantity('@product.Id', 1)">+</button>
+                                            <button type="button" class="btn btn-outline-secondary" onclick="adjustQuantity('Quantity',-1)">-</button>
+                                            <input type="number" name="Quantity" value="@quantity" min="1" class="form-control" style="text-align:center" />
+                                            <button type="button" class="btn btn-outline-secondary" onclick="adjustQuantity('Quantity',1)">+</button>
                                         </div>
                                     </td>
                                     <td>@product.Size?.Value</td>
@@ -202,7 +215,6 @@
                                         <button type="submit" class="btn btn-success" asp-action="AddOrderDetail"
                                                 asp-route-OrderId="@Model?.Orders.Id"
                                                 asp-route-productDetailId="@product.Id"
-                                                asp-route-Quantity="@quantity"
                                                 asp-route-Price="@product.Price">
                                             Add to Order
                                         </button>
@@ -231,8 +243,8 @@
 
 @section Scripts {
     <script>
-        function adjustQuantity(itemId, adjustment) {
-            var quantityInput = document.querySelector('input[name="quantities[' + itemId + ']"]');
+        function adjustQuantity(NameF ,adjustment) {
+            var quantityInput = document.querySelector(`input[name="${NameF}"]`);
             var currentQuantity = parseInt(quantityInput.value);
             var newQuantity = currentQuantity + adjustment;
 

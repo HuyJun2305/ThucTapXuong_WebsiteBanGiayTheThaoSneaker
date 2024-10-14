@@ -233,7 +233,7 @@ namespace API.Repositories
 		{
 			var data = await GetOrderDetailById(orderDetail.Id);
 			if (data is null) throw new KeyNotFoundException("Not found this orderDetail");
-			_context.Entry(data).State = EntityState.Modified;
+			_context.Entry(orderDetail).State = EntityState.Modified;
 		}
 	}
 }
