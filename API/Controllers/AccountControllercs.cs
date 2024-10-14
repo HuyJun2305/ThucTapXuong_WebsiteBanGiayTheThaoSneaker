@@ -25,7 +25,7 @@ namespace API.Controllers
             if (string.IsNullOrEmpty(result))
             {
                 return Unauthorized();
-            }
+                }
             return Ok(result);
         }
         [HttpPost("Register")]
