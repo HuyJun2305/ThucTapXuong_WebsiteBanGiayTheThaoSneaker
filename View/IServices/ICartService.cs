@@ -4,9 +4,13 @@ namespace View.IServices
 {
     public interface ICartService
     {
-        Task AddToCartAsync(Guid userId, string productDetailId, int quantity);
-        Task<IEnumerable<CartDetail>> GetUserCartAsync(Guid userId);
-        Task UpdateCartQuantityAsync(Guid cartDetailId, int quantity);
-        Task RemoveFromCartAsync(Guid cartDetailId);
+        Task CreateCartDetails(CartDetail cartDetails);
+        Task<List<CartDetail>> GetCartDetails();
+        Task<CartDetail> GetCartByIdAsync(Guid id);
+        Task UpdateCartQuantityAsync(CartDetail cartDetails, Guid cartDetailsId);
+        Task RemoveFromCartAsync(Guid cartDetailId); // xóa item khỏi cart 
+
+        Task AddToCart(Guid cartId, CartDetail cartDetails);
+
     }
 }

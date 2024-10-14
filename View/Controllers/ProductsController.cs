@@ -24,8 +24,10 @@ namespace View.Controllers
         private readonly IColorServices _colorServices;
         private readonly ISizeServices _sizeServices;
         private readonly IProductDetailService _productDetailService;
+        private readonly IAccountService _accountService;
+        private readonly IEmailSender _emailSender;
 
-        public ProductsController(IProductServices productService, ISoleServices soleServices, ICategoryServices categoryServices, IBrandServices brandServices, IMaterialServices materialServices, IColorServices colorServices, ISizeServices sizeServices, IProductDetailService productDetailService)
+        public ProductsController(IProductServices productService, ISoleServices soleServices, ICategoryServices categoryServices, IBrandServices brandServices, IMaterialServices materialServices, IColorServices colorServices, ISizeServices sizeServices, IProductDetailService productDetailService, IAccountService accountService , IEmailSender emailSender)
         {
             _productServices = productService;
             _soleServices = soleServices;
@@ -36,6 +38,8 @@ namespace View.Controllers
             _sizeServices = sizeServices;
             _productDetailService = productDetailService;
             _accountService = accountService;
+            _accountService = accountService;
+            _emailSender = emailSender;
         }
 
         // GET: Products

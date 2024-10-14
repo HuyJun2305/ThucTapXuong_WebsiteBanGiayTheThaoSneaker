@@ -38,12 +38,13 @@ internal class Program
         builder.Services.AddScoped<ISizeRepo, SizeRepo>();
         builder.Services.AddScoped<IImageRepo, ImageRepo>();
         builder.Services.AddScoped<ISelectedImageRepo, SelectedImageRepo>();
+        builder.Services.AddScoped<ICartDetailsRepo, CartDetailsRepo>();
         builder.Services.AddScoped<ICartRepo, CartRepo>();
         builder.Services.AddControllers()
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-                options.JsonSerializerOptions.MaxDepth = 64; // Tuỳ chọn này có thể điều chỉnh theo yêu cầu
+                options.JsonSerializerOptions.MaxDepth = 64; 
             });
         builder.Services.AddAuthentication(options =>
         {
@@ -61,7 +62,8 @@ internal class Program
                 ValidAudience = builder.Configuration["JWT:ValidAudience"],
                 ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"])),
-                RoleClaimType = ClaimTypes.Role
+                RoleClaimType = ClaimTypes.Role,
+                ClockSkew = TimeSpan.Zero
             };
         });
         builder.Services.AddSwaggerGen(option =>

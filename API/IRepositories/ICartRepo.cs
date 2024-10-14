@@ -4,9 +4,11 @@ namespace API.IRepositories
 {
     public interface ICartRepo
     {
-        Task AddToCartAsync(Guid userId, string productDetailId, int quantity);
-        Task<IEnumerable<CartDetail>> GetUserCartAsync(Guid userId);
-        Task UpdateCartQuantityAsync(Guid cartDetailId, int quantity);
-        Task RemoveFromCartAsync(Guid cartDetailId);
+         Task<List<Cart>> GetAllCart();
+        Task<Cart> GetById(Guid id);
+        Task Create(Cart cart);
+        Task Update(Guid id, Cart cart);
+        Task Delete(Guid id);
+
     }
 }

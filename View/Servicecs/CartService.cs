@@ -1,6 +1,7 @@
 ﻿using DataProcessing.Models;
 using Newtonsoft.Json;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using View.IServices;
 using JsonSerializer = Newtonsoft.Json.JsonSerializer;
@@ -15,31 +16,38 @@ namespace View.Servicecs
             _client= client;
         }
 
-        public async Task AddToCartAsync(Guid userId, string productDetailId, int quantity)
+        public async Task CreateCartDetails(CartDetail cartDetails)
         {
-            string requestURL = $"https://localhost:7170/api/Cart/AddProductToCart?userId={userId}&productDetailId={productDetailId}&quantity={quantity}";
-            var jsoncontent = JsonConvert.SerializeObject(new { userId, productDetailId, quantity });
-            var content = new StringContent(jsoncontent);
-            await _client.PostAsJsonAsync(requestURL, content);
+            await _client.PostAsJsonAsync("https://localhost:7170/api/Cart/CreateCartDetails" , cartDetails);
         }
 
-        public async Task<IEnumerable<CartDetail>> GetUserCartAsync(Guid userId)
-        {
-            string requestURL = $"https://localhost:7170/api/Cart/{userId}";
-            var response = await _client.GetStringAsync(requestURL);
-            return JsonConvert.DeserializeObject<IEnumerable<CartDetail>>(response);  
-
-        }      
-
-        public async Task RemoveFromCartAsync(Guid cartDetailId)
-        {
-            await _client.DeleteAsync($"https://localhost:7170/api/Cart/RemoveFromCart/{cartDetailId}");
-
-        }
-
-        public Task UpdateCartQuantityAsync(Guid cartDetailId, int quantity)
+        public Task<CartDetail> GetCartByIdAsync(Guid id)
         {
             throw new NotImplementedException();
+        }
+
+        public Task<List<CartDetail>> GetCartDetails()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveFromCartAsync(Guid cartDetailId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateCartQuantityAsync(CartDetail cartDetails, Guid cartDetailsId)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task AddToCart(Guid cartId, CartDetail cartDetails)
+        {
+            var cartDetail = _client.PostAsJsonAsync("https://localhost:7170/api/Cart/CreateCartDetails", cartDetails);
+            var cart = await _client.GetAsync($"https://localhost:7170/api/Cart/GetById-{cartId}");
+            if(cart.IsSuccessStatusCode)
+            {
+                var cartItem = await cart.Content.ReadAsStringAsync();
+            }    
         }
     }
 }
