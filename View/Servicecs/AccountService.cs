@@ -2,6 +2,8 @@
 using DataProcessing.Models;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
+using NuGet.Common;
+using System.Net.Http.Headers;
 using System.Text;
 using View.IServices;
 
@@ -10,10 +12,12 @@ namespace View.Servicecs
     public class AccountService:IAccountService
     {
         private readonly HttpClient _client;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AccountService(HttpClient client)
+        public AccountService(HttpClient client, IHttpContextAccessor httpContextAccessor)
         {
             _client = client;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task CreateCustomer(CreateAccountModelcs models)
@@ -71,15 +75,16 @@ namespace View.Servicecs
         //    var response = await _client.GetStringAsync(requestURL);
         //    return JsonConvert.DeserializeObject<ApplicationUser>(response);
         //}
-
         public async Task<string> SignInAsync(SignInModel signInModel)
         {
             string requestURL = "https://localhost:7170/api/AccountControllercs/Login";
             var response = await _client.PostAsJsonAsync(requestURL, signInModel);
+            var content = await response.Content.ReadAsStringAsync();
             if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
                 return null; 
             }
+
             return await response.Content.ReadAsStringAsync();
         }
         public async Task SignOutAsync()
