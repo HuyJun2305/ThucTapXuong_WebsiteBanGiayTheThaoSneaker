@@ -2,6 +2,7 @@
 using Data.ViewModels;
 using DataProcessing.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -47,8 +48,8 @@ namespace View.Controllers
                         var principal = new ClaimsPrincipal(identity);
 
                         // Đăng nhập người dùng với claims
-                        await HttpContext.SignInAsync(principal);
-
+                        //await HttpContext.SignInAsync(principal);
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
                         return RedirectToAction("Index", "Home");
                     }
                     else

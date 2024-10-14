@@ -1,4 +1,4 @@
-using View.IServices;
+﻿using View.IServices;
 using View.Servicecs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,6 +8,7 @@ using System.Text;
 using DataProcessing.Models;
 using Microsoft.AspNetCore.Identity;
 using API.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -46,12 +47,22 @@ builder.Services.AddHttpClient<IProductDetailService, ProductDetailService>();
 builder.Services.AddHttpClient<IShippingUnitServices,ShippingUnitServices>();
 builder.Services.AddHttpClient<IProductDetailPromotionServices, ProductDetailPromotionServices>();
 builder.Services.AddHttpContextAccessor();
+
+//
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
+    // Đặt cookie cho giao diện web
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme; // Mặc định cho MVC
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+})
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+{
+    options.LoginPath = "/Account/Login"; // Trang đăng nhập nếu người dùng chưa đăng nhập
+    options.LogoutPath = "/Account/Logout"; // Trang đăng xuất
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Thời gian tồn tại của cookie
+})
+.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
 {
     options.SaveToken = true;
     options.RequireHttpsMetadata = false;
@@ -66,6 +77,10 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero
     };
 });
+
+
+
+//
 builder.Services.AddAuthorization();
 builder.Services.AddCors(options =>
 {
