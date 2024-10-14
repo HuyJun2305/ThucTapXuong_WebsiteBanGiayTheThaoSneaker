@@ -140,6 +140,15 @@ namespace API.Controllers
             return NoContent();
         }
 
-
+        [HttpGet("product/{productId}")]
+        public async Task<ActionResult<ProductDetail>> GetProductDetailByProductId(Guid productId)
+        {
+            var productDetail = await _productDetailRepos.GetProductDetailByProductId(productId);
+            if (productDetail == null)
+            {
+                return NotFound(); // Trả về 404 nếu không tìm thấy
+            }
+            return Ok(productDetail); // Trả về chi tiết sản phẩm
+        }
     }
 }

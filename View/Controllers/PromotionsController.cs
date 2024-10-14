@@ -58,7 +58,7 @@ namespace View.Controllers
                 Id = p.Id,
                 Name = p.Name
             }).ToList();
-
+          
             ViewBag.ProductList = new SelectList(productList, "Id", "Name");
             
             return View();
@@ -78,6 +78,8 @@ namespace View.Controllers
                 await _PromotionSer.Create(promotion);
                 return RedirectToAction(nameof(Index));
             }
+
+
             return View(promotion);
         }
 

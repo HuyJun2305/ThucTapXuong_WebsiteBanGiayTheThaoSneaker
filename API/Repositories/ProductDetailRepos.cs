@@ -122,8 +122,13 @@ namespace API.Repositories
                 .FirstOrDefaultAsync();
         }
 
-
-
+        public async Task<ProductDetail> GetProductDetailByProductId(Guid productId)
+        {
+            return await _context.ProductDetails.Where(p => p.ProductId == productId).Include(p => p.Color)
+           .Include(p => p.Size)
+           .Include(p => p.Product)
+           .FirstOrDefaultAsync();
+        }
         public async Task SaveChanges()
         {
             await _context.SaveChangesAsync();
@@ -135,6 +140,7 @@ namespace API.Repositories
             _context.Entry(productDetail).State = EntityState.Modified;
 
         }
+
 
     }
 }

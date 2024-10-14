@@ -98,5 +98,12 @@ namespace View.Servicecs
             return productDetails?.ToList(); // Trả về danh sách sản phẩm
 
         }
+
+        public async Task<ProductDetail> GetProductDetailByProductId(Guid productId)
+        {
+            var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/ProductDetail/product/{productId}");
+            var productDetails = JsonConvert.DeserializeObject<ProductDetail>(response);
+            return productDetails;
+        }
     }
 }
