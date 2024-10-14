@@ -1,10 +1,17 @@
 ﻿using API.Data;
 using Data.ViewModels;
 using DataProcessing.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
+using System.Security.Claims;
 using View.IServices;
 
 namespace View.Controllers
@@ -33,13 +40,18 @@ namespace View.Controllers
                 try
                 {
                     var token = await _accountService.SignInAsync(model);
-                    if (!string.IsNullOrEmpty(token)) 
+                    if (!string.IsNullOrEmpty(token))
                     {
                         HttpContext.Session.SetString("AuthToken", token);
-                        TempData["Welcome"] = "Welcome " + token;
-                        return RedirectToAction("Index", "Home");                   
-                    }
+                        var claims = await GetClaimsFromToken(token);
+                        var identity = new ClaimsIdentity(claims, "Jwt");
+                        var principal = new ClaimsPrincipal(identity);
 
+                        // Đăng nhập người dùng với claims
+                        //await HttpContext.SignInAsync(principal);
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+                        return RedirectToAction("Index", "Home");
+                    }
                     else
                     {
                         ViewData["LoginError"] = "Tên đăng nhập hoặc mật khẩu không đúng.";
@@ -49,10 +61,22 @@ namespace View.Controllers
                 catch (Exception ex)
                 {
                     ModelState.AddModelError("", ex.Message);
-                }       
+                }
             }
-            return View(model); 
+            return View(model);
         }
+        private async Task<IEnumerable<Claim>> GetClaimsFromToken(string token)
+        {
+            var claims = new List<Claim>();
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+            claims.AddRange(jwtToken.Claims);
+
+            return claims;
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOut()
@@ -74,6 +98,7 @@ namespace View.Controllers
             var lstCustomer = await _accountService.GetAllCustomer();
             return View(lstCustomer);
         }
+        [Authorize]
         public async Task<IActionResult> ListEmployee()
         {
             var lstEmployee = await _accountService.GetAllEmployee();
@@ -94,12 +119,14 @@ namespace View.Controllers
         {
             return View();
         }
+        [Authorize]
         public IActionResult CreateCustomer()
         {
             return View();
         }
 
         // POST: AccountController/Create
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateCustomer(CreateAccountModelcs account)
