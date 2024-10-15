@@ -1,4 +1,4 @@
-﻿using API.Data;
+﻿    using API.Data;
 using API.IRepositories;
 using Data.ViewModels;
 using DataProcessing.Models;
@@ -48,6 +48,7 @@ namespace API.Repositories
             var authClaim = new List<Claim>
             {
                 // lưu thông tin người dùng vào claim token
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email), 
                 new Claim("Name", user.Name ?? ""),
                 new Claim("Birthday", user.Birthday?.ToString("yyyy-MM-dd") ?? ""), 
@@ -66,10 +67,11 @@ namespace API.Repositories
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:ValidIssuer"],
                 audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddMinutes(10), // time hết hạn token 
+                expires: DateTime.UtcNow.AddHours(1), // time hết hạn token 
                 claims: authClaim, // danh sách claim
                 signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha512) // MÃ HÓA
                 );
+
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
@@ -152,7 +154,7 @@ namespace API.Repositories
                     UserName = models.Email,
                     Email = models.Email,
                     CIC = models.CIC ,
-                    IsSubscribedToNews=false
+                    IsSubscribedToNews = false
 
                 };
                 var result = await _userManager.CreateAsync(account, models.Password);
@@ -284,7 +286,7 @@ namespace API.Repositories
                     UserName = models.Email,
                     Email = models.Email,
                     CIC = models.CIC,
-                    IsSubscribedToNews=false
+                    IsSubscribedToNews = false
                 };
 
                 var result = await _userManager.CreateAsync(account, models.Password);

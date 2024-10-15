@@ -22,7 +22,7 @@ namespace DataProcessing.Models
 
         //public Guid? PromotionId { get; set; }
         //public virtual Promotion Promotion { get; set; }
-        [JsonIgnore]
+        [JsonIgnore]  
         public Guid ProductId { get; set; }
         public virtual Product Product { get; set; }
         [JsonIgnore]

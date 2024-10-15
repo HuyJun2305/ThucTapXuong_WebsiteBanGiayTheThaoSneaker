@@ -1,4 +1,5 @@
 ﻿using API.IRepositories;
+using API.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,51 +11,22 @@ namespace API.Controllers
     {
         private readonly ICartRepo _cartRepo;
 
-        public CartController( ICartRepo cartRepo)
+        public CartController(ICartRepo cartRepo)
         {
-            _cartRepo=cartRepo;
+            _cartRepo= cartRepo;
         }
-        [HttpPost("AddProductToCart")]
-        public async Task<IActionResult> AddToCart(Guid userId, string productDetailId, int quantity)
+        [HttpGet("GetById-{id}")]
+        public async Task<IActionResult> GetById(Guid id)
         {
             try
             {
-                if (quantity <= 0)
-                {
-                    return BadRequest("ố lượng sản phẩm phải lớn hơn 0");
-                }
-                await _cartRepo.AddToCartAsync(userId, productDetailId, quantity);
-                return Ok();
+                var cart = await _cartRepo.GetById(id);
+                return Ok(cart);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-     
         }
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetUserCart(Guid userId)
-        {
-            var cartDetails = await _cartRepo.GetUserCartAsync(userId);
-            return Ok(cartDetails);
-        }
-        [HttpPatch("UpdateCartQuantity/{cartDetailId}")]
-        public async Task<IActionResult> UpdateCartQuantity(Guid cartDetailId, [FromBody] int quantity)
-        {
-            if (quantity <= 0)
-            {
-                return BadRequest("Số lượng sản phẩm phải lớn hơn 0");
-            }
-
-            await _cartRepo.UpdateCartQuantityAsync(cartDetailId, quantity);
-            return Ok();
-        }
-        [HttpDelete("RemoveFromCart/{cartDetailId}")]
-        public async Task<IActionResult> RemoveFromCart(Guid cartDetailId)
-        {
-            await _cartRepo.RemoveFromCartAsync(cartDetailId);
-            return Ok();
-        }
-
     }
 }

@@ -21,36 +21,6 @@ namespace API.Controllers
             _context = context;
         }
 
-        //[HttpGet("search")]
-        //public async Task<IActionResult> SearchProductDetails(string? searchString, List<ProductDetail> productDetails)
-        //{
-        //    var products = _context.ProductDetails
-        //                              .Include(p => p.Color)
-        //                              .Include(p => p.Product)
-        //                                  .ThenInclude(p => p.Brand)
-        //                              .Include(p => p.Product)
-        //                                  .ThenInclude(p => p.Category)
-        //                              .Include(p => p.Product)
-        //                                  .ThenInclude(p => p.Material)
-        //                              .Include(p => p.Product)
-        //                                  .ThenInclude(p => p.Sole)
-        //                              .AsQueryable();
-        //    if (!string.IsNullOrEmpty(searchString))
-        //    {
-        //        products = productDetails.AsQueryable().Where(p =>
-        //            p.Product.Name.Contains(searchString) ||       // Tìm theo tên Product
-        //            p.Color.Name.Contains(searchString) ||         // Tìm theo Color
-        //            p.Product.Brand.Name.Contains(searchString) || // Tìm theo Brand
-        //            p.Product.Material.Name.Contains(searchString) ||
-        //            p.Product.Sole.TypeName.Contains(searchString) ||
-        //            p.Product.Category.Name.Contains(searchString) ||
-        //            p.Id.Contains(searchString)
-        //        );
-        //    }
-
-
-        //    return Ok(await products.ToListAsync());
-        //}
         [HttpGet("filterAndsearch")]
         public async Task<ActionResult<List<ProductDetail>>> FilterProductDetails(string? searchQuery = null,
             Guid? colorId = null,
@@ -93,22 +63,10 @@ namespace API.Controllers
         // PUT: api/ProductDetail/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProductDetail(string id, ProductDetailDTO productDetailDTO)
+        public async Task<IActionResult> PutProductDetail(string id, ProductDetail productDetail)
         {
             try
             {
-                ProductDetail productDetail = new ProductDetail()
-                {
-                    Id = productDetailDTO.Id,
-                    Price = productDetailDTO.Price,
-                    Stock = productDetailDTO.Stock,
-                    Weight = productDetailDTO.Weight,
-
-                    ProductId = productDetailDTO.ProductId,
-                    ColorId = productDetailDTO.ColorId,
-                    SizeId = productDetailDTO.SizeId
-
-                };
                 await _productDetailRepos.Update(productDetail);
                 await _productDetailRepos.SaveChanges();
             }
@@ -117,40 +75,25 @@ namespace API.Controllers
                 return Problem(ex.Message);
             }
 
-            return CreatedAtAction("GetProductDetail", new { id = productDetailDTO.Id }, productDetailDTO);
+            return CreatedAtAction("GetProductDetailsDTO", new { id = productDetail.Id }, productDetail);
         }
 
         // POST: api/ProductDetail
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ProductDetailDTO>> PostProductDetail(ProductDetailDTO productDetailDTO)
+        public async Task<ActionResult<ProductDetail>> PostProductDetail(ProductDetail productDetail)
         {
             try
             {
                 // Lấy thông tin sản phẩm từ context, bao gồm thông tin thương hiệu
                 var product = await _context.Products
                     .Include(p => p.Brand) // Bao gồm thông tin thương hiệu
-                    .FirstOrDefaultAsync(p => p.Id == productDetailDTO.ProductId);
-
-                if (product == null)
-                {
-                    return NotFound($"Product with ID {productDetailDTO.ProductId} not found.");
-                }
+                    .FirstOrDefaultAsync(p => p.Id == productDetail.ProductId);
 
                 // Lấy thông tin màu sắc từ context
-                var color = await _context.Colors.FindAsync(productDetailDTO.ColorId);
-                if (color == null)
-                {
-                    return NotFound($"Color with ID {productDetailDTO.ColorId} not found.");
-                }
-
+                var color = await _context.Colors.FindAsync(productDetail.ColorId);
                 // Lấy thông tin kích cỡ từ context (Size là kiểu int)
-                var size = await _context.Sizes.FindAsync(productDetailDTO.SizeId);
-                if (size == null)
-                {
-                    return NotFound($"Size with ID {productDetailDTO.SizeId} not found.");
-                }
-
+                var size = await _context.Sizes.FindAsync(productDetail.SizeId);
                 // Ép kiểu giá trị size về string
                 string sizeValue = size.Value.ToString(); // Hoặc bạn có thể sử dụng size.Value.ToString() nếu size là Nullable<int>
 
@@ -164,16 +107,7 @@ namespace API.Controllers
                 // Tạo Id hoàn chỉnh với số tự sinh (bắt đầu từ 1)
                 string productDetailId = $"{baseId}{count + 1}";
 
-                ProductDetail productDetail = new ProductDetail()
-                {
-                    Id = productDetailId, // Sử dụng Id đã cấu hình
-                    Price = productDetailDTO.Price,
-                    Stock = productDetailDTO.Stock,
-                    Weight = productDetailDTO.Weight,
-                    ProductId = productDetailDTO.ProductId,
-                    ColorId = productDetailDTO.ColorId,
-                    SizeId = productDetailDTO.SizeId // SizeId là kiểu int, vẫn được lưu
-                };
+                productDetail.Id = productDetailId;
 
                 await _productDetailRepos.Create(productDetail);
                 await _productDetailRepos.SaveChanges();
@@ -183,7 +117,7 @@ namespace API.Controllers
                 return Problem(ex.Message);
             }
 
-            return CreatedAtAction("GetProductDetail", new { id = productDetailDTO.ProductId }, productDetailDTO);
+            return CreatedAtAction("GetProductDetailsDTO", new { id = productDetail.Id }, productDetail);
         }
 
         
