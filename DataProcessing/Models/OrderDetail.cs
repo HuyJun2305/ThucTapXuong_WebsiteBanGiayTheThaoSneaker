@@ -16,9 +16,8 @@ namespace DataProcessing.Models
 
         public Guid OrderId { get; set; }
         [JsonIgnore]
-        public virtual Order Order { get; set; }
+        public virtual Order? Order { get; set; }
         public string ProductDetailId { get; set; }
-        [JsonIgnore]
-        public virtual ProductDetail ProductDetail { get; set; }
+        public virtual ProductDetail? ProductDetail { get; set; }
     }
 }

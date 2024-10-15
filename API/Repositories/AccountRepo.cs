@@ -154,7 +154,7 @@ namespace API.Repositories
                     UserName = models.Email,
                     Email = models.Email,
                     CIC = models.CIC ,
-                    IsSubscribedToNews=false
+                    IsSubscribedToNews = false
 
                 };
                 var result = await _userManager.CreateAsync(account, models.Password);
@@ -239,7 +239,7 @@ namespace API.Repositories
                 {
                     throw new Exception("Not Found");
                 }
-                var hasOrders = _context.Orders.Any(o=>o.UserId == idAccount);
+                var hasOrders = _context.Orders.Any(o=>o.UserId == idAccount.ToString());
                 if(hasOrders)
                 {
                     throw new Exception("Tài khoản đã có hóa đơn, không thể xóa");
@@ -286,7 +286,7 @@ namespace API.Repositories
                     UserName = models.Email,
                     Email = models.Email,
                     CIC = models.CIC,
-                    IsSubscribedToNews=false
+                    IsSubscribedToNews = false
                 };
 
                 var result = await _userManager.CreateAsync(account, models.Password);

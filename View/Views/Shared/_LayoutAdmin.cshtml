@@ -119,7 +119,19 @@
                               <i class="ti ti-star"></i>
                               <span class="hide-menu"> Thương hiệu </span>
                           </a>
-                        </li>
+                       </li>
+                       <li class="sidebar-item">
+                          <a asp-controller="Colors" asp-action="Index" class="sidebar-link">
+                              <i class="ti ti-palette"></i> <!-- Icon cho Màu sắc -->
+                              <span class="hide-menu"> Màu sắc </span>
+                          </a>
+                       </li>
+                       <li class="sidebar-item">
+                          <a asp-controller="Sizes" asp-action="Index" class="sidebar-link">
+                              <i class="ti ti-ruler"></i> <!-- Icon cho Kích cỡ -->
+                              <span class="hide-menu"> Kích cỡ </span>
+                          </a>
+                       </li>
                       </ul>
                   </li>
           
@@ -154,7 +166,7 @@
                               </a>
                           </li>
                           <li class="sidebar-item">
-                              <a href="./discount-campaigns.html" class="sidebar-link">
+                                    <a asp-controller="Promotions" asp-action="Index" class="sidebar-link">
                                   <i class="ti ti-calendar"></i>
                                   <span class="hide-menu"> Đợt giảm giá </span>
                               </a>
@@ -183,7 +195,7 @@
                               </a>
                           </li>
                           <li class="sidebar-item">
-                              <a href="./Account_KH.html" class="sidebar-link">
+                              <a asp-controller="Account" asp-action="ListCustomer" class="sidebar-link">
                                   <i class="ti ti-id-badge"></i>
                                   <span class="hide-menu"> Khách hàng </span>
                               </a>

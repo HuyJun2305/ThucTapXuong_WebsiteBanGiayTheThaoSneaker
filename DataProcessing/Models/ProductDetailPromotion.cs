@@ -16,7 +16,11 @@ namespace Data.Models
         public string ProductDetailId { get; set; }
         
         public Guid PromotionId { get; set; }
+
+        public decimal PriceUpdate { get; set; }
+        [JsonIgnore]
         public virtual ProductDetail ProductDetail { get; set; }
+        [JsonIgnore]
         public virtual Promotion Promotion { get; set; }
     }
 }

@@ -31,7 +31,7 @@ namespace API.Controllers
 		}
 
 		[HttpGet("UserId/{id}")]
-		public async Task<ActionResult<IEnumerable<Order>>> GetOrdersByUserId(Guid id)
+		public async Task<ActionResult<IEnumerable<Order>>> GetOrdersByUserId(string id)
 		{
 			return await _orderRepo.GetAllOrderByUser(id);
 		}
@@ -57,22 +57,11 @@ namespace API.Controllers
 		// PUT: api/Orders/5
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 		[HttpPut("{id}")]
-		public async Task<IActionResult> PutOrder(Guid id, OrderDTO order)
+		public async Task<IActionResult> PutOrder(Guid id, Order order)
 		{
 			try
 			{
-				var data = new Order
-				{
-					Id = order.Id,
-					CreatedDate = DateTime.Now,
-					TotalPrice = order.TotalPrice,
-					PaymentMethod = order.PaymentMethod,
-					Status = order.Status,
-					UserId = order.UserId,
-					VoucherId = order.VoucherId,
-					ShippingUnitID = order.ShippingUnitID,
-				};
-				await _orderRepo.Update(data);
+				await _orderRepo.Update(order);
 				await _orderRepo.SaveChanges();
 			}
 			catch (DbUpdateConcurrencyException)
@@ -93,26 +82,16 @@ namespace API.Controllers
 		// POST: api/Orders
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 		[HttpPost]
-		public async Task<ActionResult<Order>> PostOrder(OrderDTO order)
+		public async Task<ActionResult<Order>> PostOrder(Order order)
 		{
 			try
 			{
-				var data = new Order { 
-					Id = order.Id,
-					CreatedDate = DateTime.Now,
-					TotalPrice = order.TotalPrice,
-					PaymentMethod = order.PaymentMethod,
-					Status = order.Status,
-					UserId = order.UserId,
-					VoucherId = order.VoucherId,
-					ShippingUnitID = order.ShippingUnitID,
-				};	
-				await _orderRepo.Create(data);
+				await _orderRepo.Create(order);
 				await _orderRepo.SaveChanges();
 			}
 			catch (Exception ex)
 			{
-				return Problem(ex.InnerException.Message);
+				return Problem(ex.Message);
 			}
 
 			return CreatedAtAction("GetOrder", new { id = order.Id }, order);

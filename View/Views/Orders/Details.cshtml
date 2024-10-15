@@ -1,0 +1,145 @@
+﻿@model View.ViewModel.OrderVM
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Order</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Orders.CreatedDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Orders.CreatedDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Orders.TotalPrice)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Orders.TotalPrice)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Orders.PaymentMethod)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Orders.PaymentMethod)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Orders.Status)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Orders.Status)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Orders.AddressId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Orders.AddressId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Orders.UserId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Orders.UserId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Orders.Voucher)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Orders.Voucher.Condittion)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Orders.ShippingUnit)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Orders.ShippingUnit.Address)
+        </dd>
+    </dl>
+    <hr />
+    <h5>Lịch sử trạng thái</h5>
+    <a class="btn btn-success" asp-action="ChangeStatus" asp-route-id="@Model?.Orders.Id">Chuyển trạng thái tiếp theo</a>
+    <a class="btn btn-danger" asp-action="BackStatus" asp-route-id="@Model?.Orders.Id">Quay lại trạng thái trước</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Trạng thái</th>
+                <th>Thời gian</th>
+                <th>Ghi chú</th>
+                <th>Nhân viên xử lý</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderHistories.OrderByDescending(oh => oh.TimeStamp).ToList())
+            {
+                <tr>
+                    <td>@item.StatusType</td>
+                    <td>@item.TimeStamp</td>
+                    <td>@item.Note</td>
+                    <td>@item.UpdatedByUserId</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <hr />
+    <h5>Lịch sử thanh toán</h5>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Thời gian thanh toán</th>
+                <th>Loại thanh toán</th>
+                <th>Mã giao dịch</th>
+                <th>Giá hoá đơn</th>
+                <th>Ghi chú</th>
+                <th>Phương thức thanh toán</th>
+                <th>Nhân viên xác nhận</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.PaymentHistories.ToList())
+            {
+                <tr>
+                    <td>@item.CreatedDate</td>
+                    <td>@item.PaymentType</td>
+                    <td>@item.PaymentCode</td>
+                    <td>@item.PaymentAmount</td>
+                    <td>@item.Note</td>
+                    <td>@item.PaymentMethod</td>
+                    <td>@item.ConfirmerId</td>
+                    <td>@item.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <hr />
+    <h5>Danh sách sản phẩm</h5>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã sản phẩm</th>
+                <th>Tổng tiền</th>
+                <th>Số lượng</th>
+                <th>Tên sản phẩm</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderDetails.ToList())
+            {
+                <tr>
+                    <td>@item.ProductDetailId</td>
+                    <td>@item.TotalPrice</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.ProductDetail.Product.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Orders.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

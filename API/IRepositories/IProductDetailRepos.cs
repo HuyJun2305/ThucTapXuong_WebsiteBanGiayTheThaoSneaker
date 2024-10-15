@@ -10,7 +10,7 @@ namespace API.IRepositories
         Task Create(ProductDetail productDetail);
         Task Update(ProductDetail productDetail);
         Task Delete(string id);
-
+        Task<ProductDetail> GetProductDetailByProductId (Guid productId);
         Task SaveChanges();
         Task<List<ProductDetail>> GetFilteredProductDetails(
             string? searchQuery = null,
