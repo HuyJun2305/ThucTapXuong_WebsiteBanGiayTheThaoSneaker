@@ -9,7 +9,7 @@ namespace View.IServices
         Task Create(ProductDetail productDetail);
         Task Update(ProductDetail productDetail);
         Task Delete(string id);
-
+        Task<ProductDetail> GetProductDetailByProductId(Guid productId);
         Task<List<ProductDetail>> GetFilteredProductDetails(string? searchQuery = null,
                Guid? colorId = null,
                Guid? sizeId = null,

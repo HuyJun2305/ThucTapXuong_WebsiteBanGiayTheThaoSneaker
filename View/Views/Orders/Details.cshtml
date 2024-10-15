@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    var quantity = 1;
 }
 
 <h1>Details</h1>
@@ -60,7 +61,9 @@
         </dd>
     </dl>
     <hr />
-    <h5>Lịch sử hoá đơn</h5>
+    <h5>Lịch sử trạng thái</h5>
+    <a class="btn btn-success" asp-action="ChangeStatus" asp-route-id="@Model?.Orders.Id">Chuyển trạng thái tiếp theo</a>
+    <a class="btn btn-danger" asp-action="BackStatus" asp-route-id="@Model?.Orders.Id">Quay lại trạng thái trước</a>
     <table class="table">
         <thead>
             <tr>
@@ -71,7 +74,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.OrderHistories.ToList())
+            @foreach (var item in Model.OrderHistories.OrderByDescending(oh => oh.TimeStamp).ToList())
             {
                 <tr>
                     <td>@item.StatusType</td>
@@ -113,8 +116,141 @@
             }
         </tbody>
     </table>
+    <hr />
+    <h5>Danh sách sản phẩm</h5>
+    <a class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Thêm sản phẩm</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã sản phẩm</th>
+                <th>Tổng tiền</th>
+                <th>Số lượng</th>
+                <th>Tên sản phẩm</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderDetails.ToList())
+            {
+                <form action="OrderController/ChangeStock" method="post">
+                <tr>
+                    <td>@item.ProductDetailId</td>
+                    <td>@item.TotalPrice</td>
+                    <td>
+                            <div class="input-group" style="max-width: 145px">
+                                <button type="button" class="btn btn-outline-secondary" onclick="adjustQuantity('stock',-1)">-</button>
+                                <input type="number" name="stock" value="@item.Quantity" min="1" class="form-control" style="text-align:center" />
+                                <button type="button" class="btn btn-outline-secondary" onclick="adjustQuantity('stock',1)">+</button>
+                                <input type="hidden" name="OrderDetailId" value="@item.Id"/>
+                            </div>
+                        </td>
+                    <td>@item.ProductDetail.Product.Name</td>
+                    <td>
+                        <button class="btn btn-primary" type="submit" asp-action="ChangeStock" asp-route-id="@Model.Orders.Id" asp-route-OrderDetailId="@item.Id">Lưu</button> |
+                        <a class="btn btn-danger" asp-action="DeleteFromOrder" asp-route-id="@item.Id" asp-route-OrderId="@Model.Orders.Id">Xoá</a>
+                    </td>
+                </tr>
+                </form>
+            }
+        </tbody>
+    </table>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Orders.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-xl">
+        <div class="modal-content" weight="600px">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Color</th>
+                            <th>Quantity</th>
+                            <th>Size</th>
+                            <th>Sole</th>
+                            <th>Brand</th>
+                            <th>Material</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.ProductDetails.Any())
+                        {
+                            foreach (var product in Model.ProductDetails.ToList())
+                            {
+                                <form action="OrderController/AddOrderDetail" method="post">
+                                <tr>
+
+                                    <td>@product.Id</td>
+                                    <td>@product.Product.Name</td>
+                                    <td>@product.Color?.Name</td>
+                                    <td>
+
+                                        <div class="input-group" style="max-width: 145px">
+                                            <button type="button" class="btn btn-outline-secondary" onclick="adjustQuantity('Quantity',-1)">-</button>
+                                            <input type="number" name="Quantity" value="@quantity" min="1" class="form-control" style="text-align:center" />
+                                            <button type="button" class="btn btn-outline-secondary" onclick="adjustQuantity('Quantity',1)">+</button>
+                                        </div>
+                                    </td>
+                                    <td>@product.Size?.Value</td>
+                                    <td>@product.Product.Sole?.TypeName</td>
+                                    <td>@product.Product.Brand?.Name</td>
+                                    <td>@product.Product.Material?.Name</td>
+                                    <td>@product.Product.Category?.Name</td>
+                                    <td>@product.Price</td>
+                                    <td>
+                                        <button type="submit" class="btn btn-success" asp-action="AddOrderDetail"
+                                                asp-route-OrderId="@Model?.Orders.Id"
+                                                asp-route-productDetailId="@product.Id"
+                                                asp-route-Price="@product.Price">
+                                            Add to Order
+                                        </button>
+                                    </td>
+
+                                </tr>
+                                </form>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="8">No products found.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function adjustQuantity(NameF ,adjustment) {
+            var quantityInput = document.querySelector(`input[name="${NameF}"]`);
+            var currentQuantity = parseInt(quantityInput.value);
+            var newQuantity = currentQuantity + adjustment;
+
+            if (newQuantity > 0) {
+                quantityInput.value = newQuantity;
+            }
+        }
+    </script>
+}

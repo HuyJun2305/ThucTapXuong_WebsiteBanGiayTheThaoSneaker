@@ -21,6 +21,19 @@
         <div class="brand-logo d-flex align-items-center justify-content-between">
           <a href="./index.html" class="text-nowrap logo-img" style="padding: 18px 0 0 18px; ">
             <h1>Snaker</h1>
+                        <div>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <div>
+                                    Hello, @User.FindFirst("Name")?.Value
+                                </div>
+                                <span>Welcome, @User.Identity.Name!</span> <!-- Hiển thị tên người dùng -->
+                            }
+                            else
+                            {
+                                <span>Welcome, Guest!</span>
+                            }
+                        </div>
           </a>
           <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
             <i class="ti ti-x fs-8"></i>
@@ -153,7 +166,7 @@
                               </a>
                           </li>
                           <li class="sidebar-item">
-                              <a href="./discount-campaigns.html" class="sidebar-link">
+                                    <a asp-controller="Promotions" asp-action="Index" class="sidebar-link">
                                   <i class="ti ti-calendar"></i>
                                   <span class="hide-menu"> Đợt giảm giá </span>
                               </a>
@@ -182,7 +195,7 @@
                               </a>
                           </li>
                           <li class="sidebar-item">
-                              <a href="./Account_KH.html" class="sidebar-link">
+                              <a asp-controller="Account" asp-action="ListCustomer" class="sidebar-link">
                                   <i class="ti ti-id-badge"></i>
                                   <span class="hide-menu"> Khách hàng </span>
                               </a>
@@ -230,6 +243,7 @@
                       <i class="ti ti-user fs-6"></i>
                       <p class="mb-0 fs-3">My Profile</p>
                     </a>
+                
                     <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
                       <i class="ti ti-mail fs-6"></i>
                       <p class="mb-0 fs-3">My Account</p>

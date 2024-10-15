@@ -91,7 +91,7 @@ namespace API.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Problem(ex.InnerException.Message);
+				return Problem(ex.Message);
 			}
 
 			return CreatedAtAction("GetOrder", new { id = order.Id }, order);

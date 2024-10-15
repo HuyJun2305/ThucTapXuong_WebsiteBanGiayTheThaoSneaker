@@ -17,6 +17,7 @@ namespace DataProcessing.Models
         [JsonIgnore]
         public virtual Cart Cart { get; set; }
         //test
+
         public string ProductDetailId { get; set; }
         [JsonIgnore]
         public virtual ProductDetail ProductDetail { get; set; }

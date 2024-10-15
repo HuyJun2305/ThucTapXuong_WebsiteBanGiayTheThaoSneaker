@@ -1,6 +1,7 @@
 ﻿using API.IRepositories;
 using Data.ViewModels;
 using DataProcessing.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.CompilerServices;
@@ -24,7 +25,7 @@ namespace API.Controllers
             if (string.IsNullOrEmpty(result))
             {
                 return Unauthorized();
-            }
+                }
             return Ok(result);
         }
         [HttpPost("Register")]
@@ -49,6 +50,7 @@ namespace API.Controllers
         {
             await _repo.SignOutAsync();
         }
+        [Authorize]
         [HttpPost("Create-Employee")]
         public async Task<IActionResult> CreateEmployee(CreateAccountModelcs models)
 
@@ -81,7 +83,7 @@ namespace API.Controllers
             }
         }
         [HttpGet("GetById")]
-        public async Task<IActionResult> GetById(Guid idAccount)
+        public async Task<IActionResult > GetById(Guid idAccount)
         {
             try
             {

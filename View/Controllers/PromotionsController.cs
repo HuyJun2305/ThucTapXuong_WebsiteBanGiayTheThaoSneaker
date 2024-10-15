@@ -9,19 +9,24 @@ using DataProcessing.Models;
 using View.Data;
 using View.IServices;
 using View.Servicecs;
+using View.ViewModel;
 
 namespace View.Controllers
 {
     public class PromotionsController : Controller
     {
         private readonly IPromotionServices _PromotionSer;
+        private readonly IProductDetailPromotionServices _ProductDetailPromotionSer;
+        private readonly IProductDetailService _ProductDetailService;
+        private readonly IProductServices _ProductServices;
 
-        public PromotionsController(IPromotionServices promotionSer)
+        public PromotionsController(IPromotionServices promotionSer, IProductDetailPromotionServices productDetailPromotionSer, IProductDetailService productDetailService, IProductServices productServices)
         {
             _PromotionSer = promotionSer;
+            _ProductDetailPromotionSer = productDetailPromotionSer;
+            _ProductDetailService = productDetailService;
+            _ProductServices = productServices;
         }
-
-
 
         // GET: Promotions
         [HttpGet]
@@ -45,10 +50,21 @@ namespace View.Controllers
         }
 
         // GET: Promotions/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var products = await _ProductServices.GetAllProducts();
+            var productList = products.Select(p => new ProductViewModel
+            {
+                Id = p.Id,
+                Name = p.Name
+            }).ToList();
+          
+            ViewBag.ProductList = new SelectList(productList, "Id", "Name");
+            
             return View();
+            
         }
+
 
         // POST: Promotions/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -62,6 +78,8 @@ namespace View.Controllers
                 await _PromotionSer.Create(promotion);
                 return RedirectToAction(nameof(Index));
             }
+
+
             return View(promotion);
         }
 
