@@ -31,7 +31,7 @@ namespace API.Repositories
 				.Include(o => o.Voucher)
 				.Include(o => o.ShippingUnit)
 				.Include(o => o.User)
-				.Include(o => o.OrderAdress)
+				.Include(o => o.OrderAddress)
 				.ToListAsync();
 			return data;
 		}
@@ -42,7 +42,7 @@ namespace API.Repositories
 				.Include(o => o.ShippingUnit)
 				.Include(o => o.Voucher)
 				.Include(o => o.User)
-				.Include(o => o.OrderAdress)
+				.Include(o => o.OrderAddress)
 				.ToListAsync();
 		}
 
@@ -52,7 +52,7 @@ namespace API.Repositories
 				.Include(o => o.ShippingUnit)
 				.Include(o => o.Voucher)
 				.Include(o => o.User)
-				.Include(o => o.OrderAdress)
+				.Include(o => o.OrderAddress)
 				.FirstOrDefaultAsync();
 		}
 
