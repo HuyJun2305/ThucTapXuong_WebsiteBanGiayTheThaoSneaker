@@ -93,6 +93,7 @@ internal class Program
         }
             });
         });
+
         builder.Services.AddScoped<IAccountRepo, AccountRepo>();
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
