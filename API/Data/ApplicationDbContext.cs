@@ -41,6 +41,7 @@ namespace API.Data
         public DbSet<SelectedImage> SelectedImages { get; set; }
         public DbSet<ProductDetailPromotion> ProductDetailPromotions { get; set; }
         public DbSet<ShippingUnit> ShippingUnits { get; set; }
+        public DbSet<OrderAdress> OrderAdresses { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

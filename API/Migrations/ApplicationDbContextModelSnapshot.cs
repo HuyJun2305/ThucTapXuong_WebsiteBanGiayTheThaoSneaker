@@ -41,7 +41,7 @@ namespace API.Migrations
 
                     b.HasIndex("PromotionId");
 
-                    b.ToTable("ProductDetailPromotions");
+                    b.ToTable("ProductDetailPromotions", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Address", b =>
@@ -81,7 +81,7 @@ namespace API.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Address");
+                    b.ToTable("Address", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.ApplicationUser", b =>
@@ -184,7 +184,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Brands");
+                    b.ToTable("Brands", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Cart", b =>
@@ -204,7 +204,7 @@ namespace API.Migrations
                     b.HasIndex("AccountId")
                         .IsUnique();
 
-                    b.ToTable("Carts");
+                    b.ToTable("Carts", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.CartDetail", b =>
@@ -232,7 +232,7 @@ namespace API.Migrations
 
                     b.HasIndex("ProductDetailId");
 
-                    b.ToTable("CartDetails");
+                    b.ToTable("CartDetails", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Category", b =>
@@ -251,7 +251,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Color", b =>
@@ -274,7 +274,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Colors");
+                    b.ToTable("Colors", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Image", b =>
@@ -294,7 +294,7 @@ namespace API.Migrations
 
                     b.HasIndex("ColorId");
 
-                    b.ToTable("Images");
+                    b.ToTable("Images", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Material", b =>
@@ -313,7 +313,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Materials");
+                    b.ToTable("Materials", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Order", b =>
@@ -322,11 +322,11 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AddressId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("OrderAddressId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("PaymentMethod")
                         .IsRequired()
@@ -344,6 +344,9 @@ namespace API.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("UserId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("VoucherId")
                         .HasColumnType("uniqueidentifier");
 
@@ -351,9 +354,52 @@ namespace API.Migrations
 
                     b.HasIndex("ShippingUnitID");
 
+                    b.HasIndex("UserId1");
+
                     b.HasIndex("VoucherId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.OrderAdress", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AddressDetail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Commune")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("District")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RecipientName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.ToTable("OrderAdresses", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.OrderDetail", b =>
@@ -381,7 +427,7 @@ namespace API.Migrations
 
                     b.HasIndex("ProductDetailId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.OrderHistory", b =>
@@ -410,7 +456,7 @@ namespace API.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderHistories");
+                    b.ToTable("OrderHistories", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.PaymentHistory", b =>
@@ -452,7 +498,7 @@ namespace API.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("PaymentHistories");
+                    b.ToTable("PaymentHistories", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Product", b =>
@@ -491,7 +537,7 @@ namespace API.Migrations
 
                     b.HasIndex("SoleId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.ProductDetail", b =>
@@ -525,7 +571,7 @@ namespace API.Migrations
 
                     b.HasIndex("SizeId");
 
-                    b.ToTable("ProductDetails");
+                    b.ToTable("ProductDetails", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Promotion", b =>
@@ -553,7 +599,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Promotions");
+                    b.ToTable("Promotions", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.SelectedImage", b =>
@@ -576,7 +622,7 @@ namespace API.Migrations
 
                     b.HasIndex("ColorId");
 
-                    b.ToTable("SelectedImages");
+                    b.ToTable("SelectedImages", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.ShippingUnit", b =>
@@ -612,7 +658,7 @@ namespace API.Migrations
 
                     b.HasKey("ShippingUnitID");
 
-                    b.ToTable("ShippingUnits");
+                    b.ToTable("ShippingUnits", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Size", b =>
@@ -629,7 +675,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sizes");
+                    b.ToTable("Sizes", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Sole", b =>
@@ -647,7 +693,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Soles");
+                    b.ToTable("Soles", (string)null);
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Voucher", b =>
@@ -696,7 +742,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Vouchers");
+                    b.ToTable("Vouchers", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -907,13 +953,30 @@ namespace API.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("ShippingUnitID");
 
+                    b.HasOne("DataProcessing.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId1");
+
                     b.HasOne("DataProcessing.Models.Voucher", "Voucher")
                         .WithMany()
                         .HasForeignKey("VoucherId");
 
                     b.Navigation("ShippingUnit");
 
+                    b.Navigation("User");
+
                     b.Navigation("Voucher");
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.OrderAdress", b =>
+                {
+                    b.HasOne("DataProcessing.Models.Order", "Order")
+                        .WithOne("OrderAdress")
+                        .HasForeignKey("DataProcessing.Models.OrderAdress", "OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("DataProcessing.Models.OrderDetail", b =>
@@ -1096,6 +1159,8 @@ namespace API.Migrations
 
             modelBuilder.Entity("DataProcessing.Models.Order", b =>
                 {
+                    b.Navigation("OrderAdress");
+
                     b.Navigation("paymentHistories");
                 });
 
