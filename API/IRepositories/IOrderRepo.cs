@@ -45,4 +45,14 @@ namespace API.IRepositories
 		Task Delete(Guid id);
 		Task SaveChanges();
 	}
+
+	public interface IOrderAddressRepo
+	{
+		Task<List<OrderAdress>?> GetAllOrderAdresses();
+		Task<OrderAdress> GetOrderAdressByOrderId(Guid id);
+		Task Create(OrderAdress orderAdress);
+		Task Update(OrderAdress orderAdress);
+		Task Delete(Guid id);
+		Task SaveChanges();
+	}
 }

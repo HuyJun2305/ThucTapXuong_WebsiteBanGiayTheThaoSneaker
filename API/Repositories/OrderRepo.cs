@@ -30,6 +30,8 @@ namespace API.Repositories
 			var data = await _context.Orders.Where(o => o.UserId == userId)
 				.Include(o => o.Voucher)
 				.Include(o => o.ShippingUnit)
+				.Include(o => o.User)
+				.Include(o => o.OrderAdress)
 				.ToListAsync();
 			return data;
 		}
@@ -39,6 +41,8 @@ namespace API.Repositories
 			return await _context.Orders
 				.Include(o => o.ShippingUnit)
 				.Include(o => o.Voucher)
+				.Include(o => o.User)
+				.Include(o => o.OrderAdress)
 				.ToListAsync();
 		}
 
@@ -47,6 +51,8 @@ namespace API.Repositories
 			return await _context.Orders.Where(o => o.Id == id)
 				.Include(o => o.ShippingUnit)
 				.Include(o => o.Voucher)
+				.Include(o => o.User)
+				.Include(o => o.OrderAdress)
 				.FirstOrDefaultAsync();
 		}
 
@@ -62,8 +68,6 @@ namespace API.Repositories
 			_context.Entry(order).State = EntityState.Modified;
 		}
 	}
-
-
 
 	public class OrderHistoryRepo : IOrderHistoryRepo
 	{
@@ -234,6 +238,52 @@ namespace API.Repositories
 			var data = await GetOrderDetailById(orderDetail.Id);
 			if (data is null) throw new KeyNotFoundException("Not found this orderDetail");
 			_context.Entry(orderDetail).State = EntityState.Modified;
+		}
+	}
+
+	public class OrderAddressRepo : IOrderAddressRepo
+	{
+		private readonly ApplicationDbContext _context;
+        public OrderAddressRepo(ApplicationDbContext context)
+        {
+			_context = context;
+        }
+        public async Task Create(OrderAdress orderAdress)
+		{
+			if (await _context.OrderAdresses.FindAsync(orderAdress.Id) != null) throw new DuplicateWaitObjectException("This Id already existed!");
+			await _context.OrderAdresses.AddAsync(orderAdress);
+		}
+
+		public async Task Delete(Guid id)
+		{
+			var data = _context.OrderAdresses.FindAsync(id).Result;
+			if (data == null) throw new KeyNotFoundException("This Id no found!");
+			_context.OrderAdresses.Remove(data);
+
+		}
+
+		public async Task<List<OrderAdress>?> GetAllOrderAdresses()
+		{
+			return await _context.OrderAdresses
+				.ToListAsync();
+		}
+
+		public async Task<OrderAdress?> GetOrderAdressByOrderId(Guid id)
+		{
+			return _context.OrderAdresses
+				.Where(oa => oa.OrderId == id)
+				.FirstOrDefaultAsync().Result;
+		}
+
+		public async Task SaveChanges()
+		{
+			await _context.SaveChangesAsync();
+		}
+
+		public async Task Update(OrderAdress orderAdress)
+		{
+			if (await _context.OrderAdresses.FindAsync(orderAdress.Id) == null) throw new KeyNotFoundException("This Id no found!");
+			_context.Entry(orderAdress).State = EntityState.Modified;
 		}
 	}
 }
