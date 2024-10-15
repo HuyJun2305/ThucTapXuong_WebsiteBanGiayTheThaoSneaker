@@ -50,7 +50,24 @@ namespace View.Controllers
                         // Đăng nhập người dùng với claims
                         //await HttpContext.SignInAsync(principal);
                         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-                        return RedirectToAction("Index", "Home");
+                        // kiểm tra role của người dùng 
+                        var roleUser = claims.FirstOrDefault(c=>c.Type==ClaimTypes.Role);
+                        if (roleUser != null)
+                        {
+                            if(roleUser.Value== "Admin")
+                            {
+                                return RedirectToAction("Index", "Home");
+                            }    
+                            if(roleUser.Value=="Customer")
+                            {
+                                return RedirectToAction("Index", "Customer");
+                            }
+                            if (roleUser.Value == "Employee")
+                            {
+                                return RedirectToAction("Index", "Home");
+                            }
+                        }
+                     
                     }
                     else
                     {

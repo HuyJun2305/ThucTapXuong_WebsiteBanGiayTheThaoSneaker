@@ -6,7 +6,7 @@ using View.Models;
 
 namespace View.Controllers
 {
-
+    [Authorize(Roles ="Admin,Employee")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
