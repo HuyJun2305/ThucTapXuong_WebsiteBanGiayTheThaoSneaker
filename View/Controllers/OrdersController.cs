@@ -11,6 +11,7 @@ using View.IServices;
 using View.ViewModel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using MailKit.Search;
 
 namespace View.Controllers
 {
@@ -40,7 +41,8 @@ namespace View.Controllers
 				Orders = _orderServices.GetOrderById(id).Result,
 				OrderHistories = _orderServices.GetOrderHistoriesByOrderId(id).Result,
 				PaymentHistories = _orderServices.GetPaymentHistoriesByOrderId(id).Result,
-				OrderDetails = _orderServices.GetAllOrderDetailsByOrderId(id).Result
+				OrderDetails = _orderServices.GetAllOrderDetailsByOrderId(id).Result,
+				ProductDetails = _orderServices.GetProductDetails().Result
 			};
 
 			return View(orderVM);
@@ -195,6 +197,53 @@ namespace View.Controllers
 				await _orderServices.BackStatus(Guid.Parse(userId), id);
 			}
 			catch (Exception ex)
+			{
+				return Problem(ex.Message);
+			}
+
+			return RedirectToAction("Details", new { id });
+		}
+
+		public async Task<IActionResult> AddOrderDetail(Guid OrderId, string productDetailId, int Quantity, decimal Price)
+		{
+			try
+			{
+				OrderDetail data = new OrderDetail()
+				{
+					Id = Guid.NewGuid(),
+					Quantity = Quantity,
+					TotalPrice = Quantity*Price,
+					OrderId = OrderId,
+					ProductDetailId = productDetailId,
+				};
+
+				await _orderServices.AddToOrder(data);
+			}catch (Exception ex)
+			{
+				return Problem(ex.Message);
+			}
+			return RedirectToAction("Details", new { id = OrderId });
+		}
+
+		public async Task<IActionResult> DeleteFromOrder(Guid id, Guid OrderId)
+		{
+			try
+			{
+				await _orderServices.DeleteFromOrder(id);
+			}
+			catch (Exception ex)
+			{
+				return Problem(ex.Message);
+			}
+			return RedirectToAction("Details", new { id = OrderId });
+		}
+
+		public async Task<IActionResult> ChangeStock(Guid id,int stock, Guid OrderDetailId)
+		{
+			try
+			{
+				await _orderServices.ChangeStock(stock, OrderDetailId);
+			}catch (Exception ex)
 			{
 				return Problem(ex.Message);
 			}
