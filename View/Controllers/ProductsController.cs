@@ -98,7 +98,7 @@ namespace View.Controllers
                  var subscribedUsers = (await _accountService.GetAllCustomer())
                                   .Where(u => u.IsSubscribedToNews)
                                   .ToList();
-
+                 
                 string emailSubject = "SẢN PHẨM MỚI HÓT HÒN HỌT ĐÂY !!!";
                 string emailMessage = $"Sản phẩm {product.Name} mới được ra lò";
                 foreach (var user in subscribedUsers)

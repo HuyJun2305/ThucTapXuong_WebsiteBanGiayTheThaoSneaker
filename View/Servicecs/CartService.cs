@@ -47,9 +47,11 @@ namespace View.Servicecs
             throw new NotImplementedException();
         }
 
-        public Task<List<CartDetail>> GetAllCartDetails()
+        public async Task<List<CartDetail>> GetAllCartDetails()
         {
-            throw new NotImplementedException();
+            var response = await _client.GetStringAsync("https://localhost:7170/api/CartDetails/GetAllCartDetails");
+            var result = JsonConvert.DeserializeObject<List<CartDetail>>(response);
+            return result;
         }
 
         public async Task<Cart> GetCartAsync(Guid id)
@@ -59,9 +61,11 @@ namespace View.Servicecs
             return result;
         }
 
-        public Task<Cart> GetCartByUserId(Guid userId)
+        public async Task<Cart> GetCartByUserId(Guid userId)
         {
-            throw new NotImplementedException();
+            var respone = await _client.GetStringAsync($"https://localhost:7170/api/Cart/GetCartByUserId?userId={userId}");
+            var result = JsonConvert.DeserializeObject<Cart>(respone);
+            return result;
         }
 
         public async Task<List<CartDetail>> GetCartDetailByCartId(Guid cartId)
@@ -71,9 +75,11 @@ namespace View.Servicecs
             return result;
         }
 
-        public Task<Cart> GetCartDetailById(Guid id)
+        public async Task<Cart> GetCartDetailById(Guid id)
         {
-            throw new NotImplementedException();
+            var response = await _client.GetStringAsync($"https://localhost:7170/api/CartDetails/GetCartDetailsById?id={id}");
+            var result = JsonConvert.DeserializeObject<Cart>(response);
+            return result;
         }
 
         public async Task Update(Cart cart, Guid id)
