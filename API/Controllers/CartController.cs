@@ -1,5 +1,6 @@
 ﻿using API.IRepositories;
 using API.Repositories;
+using DataProcessing.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,24 +10,37 @@ namespace API.Controllers
     [ApiController]
     public class CartController : ControllerBase
     {
-        private readonly ICartRepo _cartRepo;
+        private readonly ICartRepo _repo;
 
-        public CartController(ICartRepo cartRepo)
+        public CartController(ICartRepo repo)
         {
-            _cartRepo= cartRepo;
+            _repo = repo;
+        }     
+        [HttpGet("GetCartById")]
+        public async Task<IActionResult> GetCartById(Guid id)
+        {
+            var cart = await _repo.GetCartById(id);
+            if (cart == null)
+            {
+                return NotFound();
+            }
+            return Ok(cart);
         }
-        [HttpGet("GetById-{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        [HttpGet("GetCartByUserId")]
+        public async Task<IActionResult> GetCartByUserId(Guid userId)
         {
-            try
+            var cart = await _repo.GetCartByUserId(userId);
+            if(cart == null)
             {
-                var cart = await _cartRepo.GetById(id);
-                return Ok(cart);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+                return NotFound();
+            }    
+            return Ok(cart);
+        }
+        [HttpPut("UpdateCart")]
+        public async Task<IActionResult> Update(Guid id , Cart cart)
+        { 
+            await _repo.Update(id, cart);
+            return Ok();
         }
     }
 }

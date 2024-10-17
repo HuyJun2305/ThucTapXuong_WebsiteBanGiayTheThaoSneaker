@@ -103,7 +103,7 @@ namespace View.Controllers
                 string emailMessage = $"Sản phẩm {product.Name} mới được ra lò";
                 foreach (var user in subscribedUsers)
                 {
-                    await _emailSender.SendEmailAsync(user.Email, emailSubject, emailMessage);
+                        await _emailSender.SendEmailAsync(user.Email, emailSubject, emailMessage);
                 }
                 var productDetails = JsonConvert.DeserializeObject<List<ProductDetailViewModel>>(productDetailsJson);
                 var productid = product.Id;
