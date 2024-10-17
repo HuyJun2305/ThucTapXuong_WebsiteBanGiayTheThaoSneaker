@@ -140,15 +140,34 @@ namespace API.Controllers
             return NoContent();
         }
 
-        [HttpGet("product/{productId}")]
-        public async Task<ActionResult<ProductDetail>> GetProductDetailByProductId(Guid productId)
+        [HttpPost("GetProductVariants")]
+        public async Task<IActionResult> GetProductVariants([FromBody] List<Guid> selectedProductIds)
         {
-            var productDetail = await _productDetailRepos.GetProductDetailByProductId(productId);
-            if (productDetail == null)
+            if (selectedProductIds == null || !selectedProductIds.Any())
             {
-                return NotFound(); // Trả về 404 nếu không tìm thấy
+                return BadRequest("No products selected.");
             }
-            return Ok(productDetail); // Trả về chi tiết sản phẩm
+
+            try
+            {
+                // Gọi service để lấy danh sách biến thể dựa trên danh sách ProductIds
+                var productVariants = await _productDetailRepos.GetVariantsByProductIds(selectedProductIds);
+
+                // Nếu không có biến thể nào
+                if (productVariants == null || !productVariants.Any())
+                {
+                    return NotFound("No variants found for the selected products.");
+                }
+
+                // Trả về danh sách biến thể dưới dạng JSON
+                return Ok(productVariants);
+            }
+            catch (Exception ex)
+            {
+                // Xử lý ngoại lệ nếu có lỗi xảy ra
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }
+
