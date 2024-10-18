@@ -98,7 +98,7 @@ namespace View.Controllers
                                 Id = Guid.NewGuid(), // Tạo ID mới cho mối quan hệ
                                 ProductDetailId = productDetailId, // ID biến thể sản phẩm
                                 PromotionId = promotion.Id, // ID khuyến mãi
-                                PriceUpdate = productDetailPrice.Price*(promotion.DiscountValue/100)
+                                PriceUpdate = productDetailPrice.Price - productDetailPrice.Price * (promotion.DiscountValue / 100)
                             };
 
                             // Lưu thông tin mối quan hệ vào cơ sở dữ liệu
