@@ -17,8 +17,11 @@ namespace View.Servicecs
         {
             _client = client;
         }
-
-        public async Task Create(CartDetail cartDetail)
+        public async Task CreateCart(Cart cart)
+        {
+            await _client.PostAsJsonAsync("https://localhost:7170/api/Cart/CreateCart",cart);
+        }
+        public async Task CreateCartDetails(CartDetail cartDetail)
         {
             var cartDetailsItem = GetCartDetailByCartId(cartDetail.CartId).Result.Where(o => o.ProductDetailId == cartDetail.ProductDetailId).FirstOrDefault();
             if(cartDetailsItem != null)

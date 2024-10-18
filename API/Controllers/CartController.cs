@@ -36,6 +36,12 @@ namespace API.Controllers
             }    
             return Ok(cart);
         }
+        [HttpPost("CreateCart")]
+        public async Task<IActionResult> Create(Cart cart)
+        {
+            await _repo.Create(cart);
+            return Ok(cart);
+        }
         [HttpPut("UpdateCart")]
         public async Task<IActionResult> Update(Guid id , Cart cart)
         { 

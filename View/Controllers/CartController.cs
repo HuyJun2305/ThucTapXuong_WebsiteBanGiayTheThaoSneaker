@@ -48,23 +48,45 @@ namespace View.Controllers
         }
         public async Task<IActionResult> AddToCart(CartDetail cartDetail , Guid CartId , string productDetail , int quantity , decimal price)
         {
-            try
+            var token = HttpContext.Session.GetString("AuthToken");
+            Guid userId =Guid.Empty;
+            if (!string.IsNullOrEmpty(token))
             {
+                var tokenHander = new JwtSecurityTokenHandler();
+                var jwtToken = tokenHander.ReadJwtToken(token);
+                var claim = jwtToken.Claims.ToList();
+                var userIdClaim = claim.FirstOrDefault(c=>c.Type==ClaimTypes.NameIdentifier)?.Value;
+
+                if (Guid.TryParse(userIdClaim, out Guid parsedUserId))
+                {
+                    userId = parsedUserId;
+                }
+            }
+            if (userId != Guid.Empty)
+            {
+                var cart = await _cartServices.GetCartByUserId(userId);
+                if (cart == null)
+                {
+                    // Tạo giỏ hàng mới nếu chưa có
+                    cart = new Cart
+                    {
+                        Id = Guid.NewGuid(),
+                        AccountId = userId
+                    };
+                    await _cartServices.CreateCart(cart);
+                }
                 cartDetail = new CartDetail()
                 {
                     Id = Guid.NewGuid(),
-                    Quanlity = quantity,
-                    TotalPrice = quantity * price,
                     CartId = CartId,
-                    ProductDetailId = productDetail
+                    ProductDetailId = productDetail.ToString(),
+                    Quanlity = quantity,
+                    TotalPrice = quantity * price
                 };
-                await _cartServices.Create(cartDetail);
+                await _cartServices.CreateCartDetails(cartDetail);
+                return RedirectToAction("Index", new { cartId = cart.Id });
             }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message);
-            }
-            return RedirectToAction("Index","Cart");
+            return View("Error");
         }
     }
 }
