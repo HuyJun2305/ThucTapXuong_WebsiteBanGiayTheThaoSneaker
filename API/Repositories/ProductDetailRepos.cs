@@ -124,26 +124,24 @@ namespace API.Repositories
         }
 
       
-        public async Task<List<ProductDetailDTO>> GetVariantsByProductIds(List<Guid> productIds)
+        public async Task<List<ProductDetail>> GetVariantsByProductIds(List<Guid> productIds)
         {
             if (productIds == null || !productIds.Any())
             {
-                return new List<ProductDetailDTO>(); 
+                return new List<ProductDetail>(); 
             }
 
             var productVariants = await _context.ProductDetails
-                .Where(pd => productIds.Contains(pd.ProductId))
-                .Select(pd => new ProductDetailDTO
-                {
-                    Id = pd.Id,                             
-                    ProductName = pd.Product.Name,  
-                    PriceProductDetail = pd.Price,
-                    CategoryName = pd.Product.Category.Name, // Tên danh mục từ bảng Category
-                    BrandName = pd.Product.Brand.Name,      // Tên thương hiệu từ bảng Brand
-                    MaterialName = pd.Product.Material.Name, // Tên chất liệu từ bảng Material
-                    ColorName = pd.Color != null ? pd.Color.Name : "No color", // Tên màu từ bảng Color
-                    SoleName = pd.Product.Sole != null ? pd.Product.Sole.TypeName : "No sole" // Tên đế giày từ bảng Sole
-                })
+                .Where(pd => productIds.Contains(pd.ProductId)).Include(p => p.Color)
+                .Include(p => p.Size)
+                .Include(p => p.Product)
+                    .ThenInclude(p => p.Material)
+                .Include(p => p.Product)
+                    .ThenInclude(p => p.Sole)
+                .Include(p => p.Product)
+                    .ThenInclude(p => p.Brand)
+                .Include(p => p.Product)
+                    .ThenInclude(p => p.Category)
                 .ToListAsync();
 
             return productVariants;

@@ -11,7 +11,7 @@ namespace API.IRepositories
         Task Create(ProductDetail productDetail);
         Task Update(ProductDetail productDetail);
         Task Delete(string id);
-        Task<List<ProductDetailDTO>> GetVariantsByProductIds(List<Guid> productIds);
+        Task<List<ProductDetail>> GetVariantsByProductIds(List<Guid> productIds);
         Task SaveChanges();
         Task<List<ProductDetail>> GetFilteredProductDetails(
             string? searchQuery = null,
