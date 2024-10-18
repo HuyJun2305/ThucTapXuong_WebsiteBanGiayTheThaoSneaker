@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-<<<<<<<< HEAD:API/Migrations/20241012071222_updateVoucher.Designer.cs
     [Migration("20241012071222_updateVoucher")]
     partial class updateVoucher
-========
-    [Migration("20241012045352_3st")]
-    partial class _3st
->>>>>>>> Demo_2:API/Migrations/20241012045352_3st.Designer.cs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

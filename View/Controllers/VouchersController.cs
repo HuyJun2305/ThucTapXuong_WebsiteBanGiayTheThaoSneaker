@@ -21,11 +21,56 @@ namespace View.Controllers
         }
 
         // GET: Vouchers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchQuery, DateTime? fromDate, DateTime? toDate, string type, string status, int currentPage = 1, int rowsPerPage = 10)
         {
             var vouchers = await _voucherService.GetAllVouchers();
-            return vouchers != null ? View(vouchers) : Problem("Entity set 'Voucher' is null.");
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                searchQuery = searchQuery.ToLower();
+                vouchers = vouchers.Where(v => v.Name.ToLower().Contains(searchQuery) || v.VoucherCode.ToLower().Contains(searchQuery)).ToList();
+            }
+
+            if (fromDate.HasValue)
+            {
+                vouchers = vouchers.Where(v => v.StartDate >= fromDate.Value).ToList();
+            }
+
+            if (toDate.HasValue)
+            {
+                vouchers = vouchers.Where(v => v.EndDate <= toDate.Value).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(type))
+            {
+                vouchers = vouchers.Where(v => v.Type == type).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                bool isActive = status == "true";
+                vouchers = vouchers.Where(v => v.Status == isActive).ToList();
+            }
+
+            // Phân trang
+            int totalRecords = vouchers.Count();
+            int totalPages = (int)Math.Ceiling((double)totalRecords / rowsPerPage);
+            var paginatedVouchers = vouchers.Skip((currentPage - 1) * rowsPerPage).Take(rowsPerPage).ToList();
+
+            // Truyền thông tin phân trang vào ViewBag
+            ViewBag.CurrentPage = currentPage;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.RowsPerPage = rowsPerPage;
+
+            ViewData["CurrentSearchQuery"] = searchQuery;
+            ViewData["CurrentFromDate"] = fromDate?.ToString("yyyy-MM-dd");
+            ViewData["CurrentToDate"] = toDate?.ToString("yyyy-MM-dd");
+            ViewData["CurrentType"] = type;
+            ViewData["CurrentStatus"] = status;
+
+            return View(paginatedVouchers);
         }
+
 
         // GET: Vouchers/Applicable
         public async Task<IActionResult> Applicable()

@@ -96,7 +96,7 @@ namespace API.Repositories
             if (voucher.DiscountAmount.HasValue && voucher.DiscountPercent.HasValue)
             {
                 throw new ArgumentException("Chỉ được điền vào một trong hai giá trị giảm giá: phần trăm hoặc tiền mặt, không được điền cả hai.");
-            }
+            }  
 
         }
     }

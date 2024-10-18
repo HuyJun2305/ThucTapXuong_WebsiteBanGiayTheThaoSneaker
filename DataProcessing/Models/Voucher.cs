@@ -57,6 +57,7 @@ namespace DataProcessing.Models
         public string Type { get; set; }
 
         // Trạng thái của voucher (true/false)
+        [Required(ErrorMessage = "Kiểu phiếu giảm giá là bắt buộc")]
         public bool Status { get; set; }
 
         // ID của tài khoản (không bắt buộc)

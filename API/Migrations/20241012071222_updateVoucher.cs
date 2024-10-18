@@ -5,11 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-<<<<<<<< HEAD:API/Migrations/20241012071222_updateVoucher.cs
     public partial class updateVoucher : Migration
-========
-    public partial class _3st : Migration
->>>>>>>> Demo_2:API/Migrations/20241012045352_3st.cs
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
