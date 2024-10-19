@@ -36,10 +36,10 @@
             @Html.DisplayFor(model => model.Orders.Status)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Orders.OrderAddressId)
+            @Html.DisplayNameFor(model => model.Orders.OrderAddress.Id)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Orders.OrderAddressId)
+            @Html.DisplayFor(model => model.Orders.OrderAddress.Id)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Orders.UserId)
@@ -61,9 +61,46 @@
         </dd>
     </dl>
     <hr />
+    <h5>Địa chỉ giao hàng</h5>
+    @if (Model.OrderAdress != null)
+    {
+        string[] listStatus = new string[] { "Đang vận chuyển", "Đã giao hàng", "Hoàn thành" };
+        if (!listStatus.Contains(Model.Orders.Status))
+        {
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateAddressModal">Cập nhật địa chỉ</button>
+        }
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.OrderAdress.PhoneNumber)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.OrderAdress.PhoneNumber)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.OrderAdress.AddressDetail)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.OrderAdress.AddressDetail)-
+                @Html.DisplayFor(model => model.OrderAdress.Commune)-
+                @Html.DisplayFor(model => model.OrderAdress.District)-
+                @Html.DisplayFor(model => model.OrderAdress.City)
+            </dd>
+        </dl>
+    }
+    else
+    {
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addressModal">Thêm địa chỉ</button>
+        <dl class="row">
+            <dt class="col-sm-2">
+                Không có địa chỉ để giao hàng!
+            </dt>
+        </dl>
+    }
+    <hr />
     <h5>Lịch sử trạng thái</h5>
     <a class="btn btn-success" asp-action="ChangeStatus" asp-route-id="@Model?.Orders.Id">Chuyển trạng thái tiếp theo</a>
     <a class="btn btn-danger" asp-action="BackStatus" asp-route-id="@Model?.Orders.Id">Quay lại trạng thái trước</a>
+    <a class="btn btn-danger" asp-action="CancelOrder" asp-route-id="@Model?.Orders.Id">Huỷ hoá đơn</a>
     <table class="table">
         <thead>
             <tr>
@@ -137,13 +174,13 @@
                     <td>@item.ProductDetailId</td>
                     <td>@item.TotalPrice</td>
                     <td>
-                            <div class="input-group" style="max-width: 145px">
-                                <button type="button" class="btn btn-outline-secondary" onclick="adjustQuantity('stock',-1)">-</button>
-                                <input type="number" name="stock" value="@item.Quantity" min="1" class="form-control" style="text-align:center" />
-                                <button type="button" class="btn btn-outline-secondary" onclick="adjustQuantity('stock',1)">+</button>
-                                <input type="hidden" name="OrderDetailId" value="@item.Id"/>
-                            </div>
-                        </td>
+                        <div class="input-group" style="max-width: 145px">
+                            <button type="button" class="btn btn-outline-secondary" onclick="adjustQuantity('stock',-1)">-</button>
+                            <input type="number" name="stock" value="@item.Quantity" min="1" class="form-control" style="text-align:center" />
+                            <button type="button" class="btn btn-outline-secondary" onclick="adjustQuantity('stock',1)">+</button>
+                            <input type="hidden" name="OrderDetailId" value="@item.Id" />
+                        </div>
+                    </td>
                     <td>@item.ProductDetail.Product.Name</td>
                     <td>
                         <button class="btn btn-primary" type="submit" asp-action="ChangeStock" asp-route-id="@Model.Orders.Id" asp-route-OrderDetailId="@item.Id">Lưu</button> |
@@ -166,7 +203,7 @@
     <div class="modal-dialog  modal-xl">
         <div class="modal-content" weight="600px">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Danh sách sản phẩm</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -234,16 +271,81 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <br />
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-xl">
+        <div class="modal-content" weight="600px">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm địa chỉ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="OrderController/CreateOrderAddress" method="post">
+                <div class="modal-body">
+                    @*Validate this*@
+                    <input type="hidden" name="id" value="@Model.Orders.Id" />
+                    <label class="form-label" for="name">Tên người nhận</label>
+                    <input class="form-control" name="name" type="text" />
+                    <label class="form-label" for="addressDetail">Địa chỉ chi tiết</label>
+                    <input class="form-control" name="addressDetail" type="text" />
+                    <label class="form-label" for="phoneNumber">Số điện thoại</label>
+                    <input class="form-control" name="phoneNumber" type="text" />
+                    <label class="form-label" for="city">Thành phố</label>
+                    <input class="form-control" name="city" type="text" />
+                    <label class="form-label" for="district">Huyện</label>
+                    <input class="form-control" name="district" type="text" />
+                    <label class="form-label" for="commune">Xã</label>
+                    <input class="form-control" name="commune" type="text" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" asp-action="UpdateOrderAddress" asp-route-id="@Model?.Orders.Id">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateAddressModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-xl">
+        <div class="modal-content" weight="600px">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm địa chỉ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="OrderController/UpdateOrderAddress" method="post">
+                <div class="modal-body">
+                    @*Validate this*@
+                    <input type="hidden" name="id" value="@Model.Orders.Id" />
+                    <label class="form-label" for="name">Tên người nhận</label>
+                    <input class="form-control" name="name" value="@Model.Orders.OrderAddress.RecipientName" type="text" />
+                    <label class="form-label" for="addressDetail">Địa chỉ chi tiết</label>
+                    <input class="form-control" name="addressDetail" type="text" value="@Model.Orders.OrderAddress.AddressDetail" />
+                    <label class="form-label" for="phoneNumber">Số điện thoại</label>
+                    <input class="form-control" name="phoneNumber" type="text" value="@Model.Orders.OrderAddress.PhoneNumber" />
+                    <label class="form-label" for="city">Thành phố</label>
+                    <input class="form-control" name="city" type="text" value="@Model.Orders.OrderAddress.City" />
+                    <label class="form-label" for="district">Huyện</label>
+                    <input class="form-control" name="district" type="text" value="@Model.Orders.OrderAddress.District" />
+                    <label class="form-label" for="commune">Xã</label>
+                    <input class="form-control" name="commune" type="text" value="@Model.Orders.OrderAddress.Commune" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" asp-action="UpdateOrderAddress" asp-route-id="@Model?.Orders.Id">Save changes</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
-        function adjustQuantity(NameF ,adjustment) {
+        function adjustQuantity(NameF, adjustment) {
             var quantityInput = document.querySelector(`input[name="${NameF}"]`);
             var currentQuantity = parseInt(quantityInput.value);
             var newQuantity = currentQuantity + adjustment;

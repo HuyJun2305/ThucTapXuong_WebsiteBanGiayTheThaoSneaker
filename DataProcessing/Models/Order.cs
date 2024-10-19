@@ -18,11 +18,9 @@ namespace DataProcessing.Models
         [Required]
         public string PaymentMethod { get; set; }
         public string? Status { get; set; } = "Chờ xác nhận";
-        public Guid? OrderAddressId { get; set; }
         public virtual OrderAdress? OrderAddress { get; set; }
 
         public string? UserId { get; set; } = "Khách lẻ";
-        public virtual ApplicationUser? User { get; set; }
         public Guid? VoucherId { get; set; }
         [JsonIgnore]
         public virtual Voucher? Voucher { get; set; }
