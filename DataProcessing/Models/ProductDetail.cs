@@ -28,7 +28,7 @@ namespace DataProcessing.Models
 
 
         //[JsonIgnore]
-        public virtual Product Product { get; set; }
+        public virtual Product? Product { get; set; }
         //[JsonIgnore]
         public virtual Color? Color { get; set; }
         //[JsonIgnore]

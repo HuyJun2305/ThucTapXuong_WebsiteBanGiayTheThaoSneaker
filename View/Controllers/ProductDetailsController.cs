@@ -105,7 +105,8 @@ namespace View.Controllers
                 productDetail.Id = Guid.NewGuid().ToString();
                 await _productDetailService.Create(productDetail);
                 return RedirectToAction(nameof(Index));
-            }            return View(productDetail);
+            }
+            return View(productDetail);
         }
 
         // GET: ProductDetails/Edit/5

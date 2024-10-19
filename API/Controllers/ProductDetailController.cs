@@ -48,7 +48,7 @@ namespace API.Controllers
 
             // GET: api/ProductDetail
             [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDetail>>> GetProductDetailsDTO()
+        public async Task<ActionResult<IEnumerable<ProductDetail>>> GetProductDetails()
         {
             return await _productDetailRepos.GetAllProductDetail();
         }
@@ -75,7 +75,7 @@ namespace API.Controllers
                 return Problem(ex.Message);
             }
 
-            return CreatedAtAction("GetProductDetailsDTO", new { id = productDetail.Id }, productDetail);
+            return CreatedAtAction("GetProductDetails", new { id = productDetail.Id }, productDetail);
         }
 
         // POST: api/ProductDetail
@@ -117,7 +117,7 @@ namespace API.Controllers
                 return Problem(ex.Message);
             }
 
-            return CreatedAtAction("GetProductDetailsDTO", new { id = productDetail.Id }, productDetail);
+            return CreatedAtAction("GetProductDetails", new { id = productDetail.Id }, productDetail);
         }
 
         
