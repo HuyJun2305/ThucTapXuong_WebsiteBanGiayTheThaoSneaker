@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DataProcessing.Models;
 using View.IServices;
 using View.Servicecs;
+using View.ViewModel;
 
 namespace View.Controllers
 {
@@ -109,22 +110,29 @@ namespace View.Controllers
         }
 
         // GET: Vouchers/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var model = new VoucherViewModel
+            {
+                Voucher = new Voucher(),
+                Accounts = await _voucherService.GetAllAccounts(), // Lấy danh sách các tài khoản từ dịch vụ
+                CurrentPage = 1,
+                TotalPages = 1
+            };
+            return View(model);
         }
 
         // POST: Vouchers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,VoucherCode,Name,DiscountType,DiscountAmount,DiscountPercent,MaxDiscountValue,Stock,Condition,StartDate,EndDate,Type,Status,AccountId")] Voucher voucher)
+        public async Task<IActionResult> Create(VoucherViewModel model)
         {
             if (ModelState.IsValid)
             {
-                voucher.Id = Guid.NewGuid();
+                model.Voucher.Id = Guid.NewGuid();
                 try
                 {
-                    await _voucherService.Create(voucher);
+                    await _voucherService.Create(model.Voucher);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (ArgumentException ex)
@@ -132,8 +140,11 @@ namespace View.Controllers
                     ModelState.AddModelError(string.Empty, ex.Message);
                 }
             }
-            return View(voucher);
+            // Reload danh sách Accounts khi xảy ra lỗi
+            model.Accounts = await _voucherService.GetAllAccounts();
+            return View(model);
         }
+
 
 
 

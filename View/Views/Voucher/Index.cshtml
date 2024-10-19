@@ -20,7 +20,7 @@
 
 
                 <div class="mb-4">
-                    <a class="btn btn-warning" asp-action="Create" asp-controller="Voucher">+ Tạo mới</a>
+                    <a class="btn custom" asp-action="Create" asp-controller="Voucher">+ Tạo mới</a>
                 </div>
 
             </div>
@@ -82,7 +82,7 @@
                         </select>
                     </div>
                     <button class="btn btn-outline-secondary" type="submit">
-                        <i class="ti ti-filter"></i> Lọc
+                        <i class="ti ti-filter"></i>
                     </button>
                 </form>
             </div>
@@ -145,7 +145,7 @@
                                     <td class="text-center">
                                         <div class="dropdown">
                                             <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                Hành động
+                                                <i class="fa-solid fa-bars"></i>
                                             </button>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                 <li>
@@ -206,4 +206,16 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <style>
+        .custom {
+            background-color: none; /* Màu xám tối */
+            color: black; /* Chữ màu trắng để dễ đọc */
+            border-color: #FFCC33;
+        }
+
+            .custom:hover {
+                background-color: #FFCC33; /* Màu khi hover (xám tối hơn) */
+                color: white;
+            }
+    </style>
 }

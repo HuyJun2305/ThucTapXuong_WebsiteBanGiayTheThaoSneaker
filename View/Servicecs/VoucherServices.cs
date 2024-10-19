@@ -38,6 +38,22 @@ namespace View.Servicecs
             }
         }
 
+        // Phương thức lấy tất cả các tài khoản
+        public async Task<List<ApplicationUser>> GetAllAccounts()
+        {
+            var response = await _httpClient.GetAsync("https://localhost:7170/api/AccountControllercs/Get-All-Customer");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Failed to retrieve accounts. Status Code: {response.StatusCode}, Error: {errorContent}");
+            }
+
+            var responseString = await response.Content.ReadAsStringAsync();
+            var accounts = JsonConvert.DeserializeObject<List<ApplicationUser>>(responseString);
+            return accounts;
+        }
+
         // Get All Vouchers
         public async Task<IEnumerable<Voucher>?> GetAllVouchers()
         {
