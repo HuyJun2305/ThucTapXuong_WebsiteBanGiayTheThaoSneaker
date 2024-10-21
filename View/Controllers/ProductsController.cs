@@ -98,12 +98,12 @@ namespace View.Controllers
                  var subscribedUsers = (await _accountService.GetAllCustomer())
                                   .Where(u => u.IsSubscribedToNews)
                                   .ToList();
-
+                 
                 string emailSubject = "SẢN PHẨM MỚI HÓT HÒN HỌT ĐÂY !!!";
                 string emailMessage = $"Sản phẩm {product.Name} mới được ra lò";
                 foreach (var user in subscribedUsers)
                 {
-                    await _emailSender.SendEmailAsync(user.Email, emailSubject, emailMessage);
+                        await _emailSender.SendEmailAsync(user.Email, emailSubject, emailMessage);
                 }
                 var productDetails = JsonConvert.DeserializeObject<List<ProductDetailViewModel>>(productDetailsJson);
                 var productid = product.Id;

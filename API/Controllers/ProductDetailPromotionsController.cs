@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using API.IRepositories;
 using Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -30,12 +31,13 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                // Trả về thông báo lỗi chung
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
 
-        // GET: api/ProductDetailPromotions/{productDetailId}/{promotionId}
-        [HttpGet("{productDetailId}/{promotionId}")]
+        // GET: api/ProductDetailPromotions/{id}
+        [HttpGet("{id}")]
         public async Task<ActionResult<ProductDetailPromotion>> GetProductDetailPromotion(Guid id)
         {
             try
@@ -50,69 +52,81 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
 
-        // PUT: api/ProductDetailPromotions/{productDetailId}/{promotionId}
-        [HttpPut("{productDetailId}/{promotionId}")]
-        public async Task<IActionResult> PutProductDetailPromotion(string productDetailId, Guid promotionId, ProductDetailPromotion productDetailPromotion)
+        // PUT: api/ProductDetailPromotions/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutProductDetailPromotion(Guid id, ProductDetailPromotion productDetailPromotion)
         {
-            if (productDetailId != productDetailPromotion.ProductDetailId || promotionId != productDetailPromotion.PromotionId)
+            if (id != productDetailPromotion.Id) // Kiểm tra xem ID có khớp hay không
             {
-                return BadRequest(new { message = "Product Detail ID or Promotion ID mismatch." });
+                return BadRequest(new { message = "ID mismatch." });
             }
 
             try
             {
                 await _productDetailPromotionRepository.UpdateAsync(productDetailPromotion);
                 await _productDetailPromotionRepository.SaveChanges();
+                return NoContent(); // Trả về 204 No Content nếu thành công
             }
-            catch (KeyNotFoundException)
+            catch (DbUpdateConcurrencyException)
             {
-                return NotFound();
+                return NotFound(new { message = "ProductDetailPromotion not found." });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
-
-            return NoContent();
         }
 
         // POST: api/ProductDetailPromotions
         [HttpPost]
         public async Task<ActionResult<ProductDetailPromotion>> PostProductDetailPromotion(ProductDetailPromotion productDetailPromotion)
         {
+            if (productDetailPromotion == null)
+            {
+                return BadRequest(new { message = "Invalid input data." });
+            }
+
             try
             {
-               await _productDetailPromotionRepository.AddAsync(productDetailPromotion);
+                // Gọi phương thức AddAsync để thêm đối tượng
+                await _productDetailPromotionRepository.AddAsync(productDetailPromotion);
                 await _productDetailPromotionRepository.SaveChanges();
-                return Ok(productDetailPromotion);
+
+                // Trả về thông tin đối tượng vừa tạo
+                return CreatedAtAction(nameof(GetProductDetailPromotion), new { id = productDetailPromotion.Id }, productDetailPromotion);
+            }
+            catch (DbUpdateException dbEx)
+            {
+                // Xử lý lỗi liên quan đến cơ sở dữ liệu
+                return BadRequest(new { message = "Database error: " + dbEx.InnerException?.Message ?? dbEx.Message });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred: " + ex.Message });
             }
         }
 
-        // DELETE: api/ProductDetailPromotions/{productDetailId}/{promotionId}
-        [HttpDelete("{productDetailId}/{promotionId}")]
+        // DELETE: api/ProductDetailPromotions/{id}
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProductDetailPromotion(Guid id)
         {
             try
             {
                 await _productDetailPromotionRepository.DeleteAsync(id);
                 await _productDetailPromotionRepository.SaveChanges();
-                return NoContent();
+                return NoContent(); // Trả về 204 No Content nếu xóa thành công
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                return NotFound(new { message = "ProductDetailPromotion not found." });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
     }

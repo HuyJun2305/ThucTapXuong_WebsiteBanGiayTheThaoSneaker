@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -17,10 +18,11 @@ namespace DataProcessing.Models
         [Required]
         public string PaymentMethod { get; set; }
         public string? Status { get; set; } = "Chờ xác nhận";
-        public Guid? AddressId { get; set; }
-
+        public Guid? OrderAddressId { get; set; }
+        public virtual OrderAdress? OrderAddress { get; set; }
 
         public string? UserId { get; set; } = "Khách lẻ";
+        public virtual ApplicationUser? User { get; set; }
         public Guid? VoucherId { get; set; }
         [JsonIgnore]
         public virtual Voucher? Voucher { get; set; }

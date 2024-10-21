@@ -23,13 +23,17 @@ namespace DataProcessing.Models
         //public Guid? PromotionId { get; set; }
         //public virtual Promotion Promotion { get; set; }
         public Guid ProductId { get; set; }
-        public virtual Product? Product { get; set; }
         public Guid ColorId { get; set; }
-        public virtual Color? Color { get; set; }
         public Guid SizeId { get; set; }
-        public virtual Size? Size { get; set; }
-        [JsonIgnore]
 
+
+        //[JsonIgnore]
+        public virtual Product? Product { get; set; }
+        //[JsonIgnore]
+        public virtual Color? Color { get; set; }
+        //[JsonIgnore]
+        public virtual Size? Size { get; set; }
+        //[JsonIgnore]
         public ICollection<ProductDetailPromotion>? ProductDetailPromotions { get; set; }
 
     }

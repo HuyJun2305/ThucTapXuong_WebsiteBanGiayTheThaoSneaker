@@ -27,7 +27,6 @@
                                 <div>
                                     Hello, @User.FindFirst("Name")?.Value
                                 </div>
-                                <span>Welcome, @User.Identity.Name!</span> <!-- Hiển thị tên người dùng -->
                             }
                             else
                             {
@@ -35,9 +34,20 @@
                             }
                         </div>
                     </a>
-                    <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
-                        <i class="ti ti-x fs-8"></i>
-                    </div>
+                
+                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                      <i class="ti ti-mail fs-6"></i>
+                      <p class="mb-0 fs-3">My Account</p>
+                    </a>
+                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                      <i class="ti ti-list-check fs-6"></i>
+                      <p class="mb-0 fs-3">My Task</p>
+                    </a>
+                        <form asp-controller="Account" asp-action="LogOut" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</button>
+                        </form>
+
+                  </div>
                 </div>
                 <!-- Sidebar navigation-->
                 <nav class="sidebar-nav scroll-sidebar" data-simplebar="">

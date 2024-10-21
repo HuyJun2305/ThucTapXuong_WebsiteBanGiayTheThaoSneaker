@@ -1,4 +1,5 @@
 ﻿using API.Data;
+using API.DTO;
 using API.IRepositories;
 using DataProcessing.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -122,13 +123,30 @@ namespace API.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<ProductDetail> GetProductDetailByProductId(Guid productId)
+      
+        public async Task<List<ProductDetail>> GetVariantsByProductIds(List<Guid> productIds)
         {
-            return await _context.ProductDetails.Where(p => p.ProductId == productId).Include(p => p.Color)
-           .Include(p => p.Size)
-           .Include(p => p.Product)
-           .FirstOrDefaultAsync();
+            if (productIds == null || !productIds.Any())
+            {
+                return new List<ProductDetail>(); 
+            }
+
+            var productVariants = await _context.ProductDetails
+                .Where(pd => productIds.Contains(pd.ProductId)).Include(p => p.Color)
+                .Include(p => p.Size)
+                .Include(p => p.Product)
+                    .ThenInclude(p => p.Material)
+                .Include(p => p.Product)
+                    .ThenInclude(p => p.Sole)
+                .Include(p => p.Product)
+                    .ThenInclude(p => p.Brand)
+                .Include(p => p.Product)
+                    .ThenInclude(p => p.Category)
+                .ToListAsync();
+
+            return productVariants;
         }
+
         public async Task SaveChanges()
         {
             await _context.SaveChangesAsync();
