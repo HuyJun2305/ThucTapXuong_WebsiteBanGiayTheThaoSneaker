@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Index";
+    decimal totalAmount = 0;
 }
 
 <h1>Index</h1>
@@ -50,10 +51,12 @@
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Cart Details", "CartDetails", new { id = item.Id }) |
                 @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
             </td>
-        </tr>
-}
+            </tr>
+            totalAmount += item.TotalPrice;
+        }
     </tbody>
 </table>
+<h3>Tổng tiền: @totalAmount VND</h3>
