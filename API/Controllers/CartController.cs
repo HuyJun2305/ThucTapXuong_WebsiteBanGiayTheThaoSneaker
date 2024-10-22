@@ -32,7 +32,7 @@ namespace API.Controllers
             var cart = await _repo.GetCartByUserId(userId);
             if(cart == null)
             {
-                return NotFound();
+                return Ok(null);
             }    
             return Ok(cart);
         }
