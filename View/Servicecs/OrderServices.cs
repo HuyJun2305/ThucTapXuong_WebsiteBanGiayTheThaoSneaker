@@ -151,6 +151,7 @@ namespace View.Servicecs
 		{
 			if (order.UserId == null) order.UserId = "Khách lẻ";
 			if (order.Status == null) order.Status = "Tạo đơn hàng";
+			order.WhoCreateThis = UserIdCreateThis;
 			
 			OrderHistory orderHistory = new OrderHistory()
 			{
