@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-    public partial class updateVoucher : Migration
+    public partial class Toanton : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -104,6 +104,24 @@ namespace API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Materials", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderAdresses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RecipientName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AddressDetail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    District = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Commune = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderAdresses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -222,7 +240,8 @@ namespace API.Migrations
                     District = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Commune = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    ApplicationUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -232,7 +251,12 @@ namespace API.Migrations
                         column: x => x.AccountId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Addresses_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -325,7 +349,7 @@ namespace API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     AccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -428,14 +452,26 @@ namespace API.Migrations
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AddressId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    OrderAddressId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    OrderAddressId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     VoucherId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ShippingUnitID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_AspNetUsers_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Orders_OrderAdresses_OrderAddressId1",
+                        column: x => x.OrderAddressId1,
+                        principalTable: "OrderAdresses",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Orders_ShippingUnits_ShippingUnitID",
                         column: x => x.ShippingUnitID,
@@ -536,8 +572,8 @@ namespace API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    Quanlity = table.Column<int>(type: "int", nullable: true),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Quanlity = table.Column<int>(type: "int", nullable: false),
                     CartId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductDetailId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -591,7 +627,8 @@ namespace API.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductDetailId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PromotionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    PromotionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PriceUpdate = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -610,10 +647,35 @@ namespace API.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { new Guid("1d1b5755-f0c8-4529-8256-96c27d2c32b2"), "2d7e1bf6-2073-4603-b17d-12d450fdade0", "Customer", "CUSTOMER" },
+                    { new Guid("5c5d8502-5037-4b24-ae85-9474a57d36cb"), "73e7637d-7f49-45c6-8c07-cbb99bdaa4fb", "Admin", "ADMIN" },
+                    { new Guid("7dd3d023-9200-4060-b6a1-d64a9ec88581"), "e0761402-78d6-41eb-889a-b8d0da86e9c4", "Employee", "EMPLOYEE" },
+                    { new Guid("b9a7342a-df20-48d2-aff9-1f50c6e6eb50"), "861f9e5f-1fc0-4e49-bfdc-f4a09bb53fa3", "Guest", "GUEST" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "Birthday", "CIC", "ConcurrencyStamp", "Email", "EmailConfirmed", "ImageURL", "IsSubscribedToNews", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { new Guid("f7e252d9-557d-4cdc-8803-4c203e1d2d6f"), 0, null, "002204004364", "c667f890-e561-4408-9820-3aab598f0046", "admin@example.com", false, null, false, true, null, "Admin User", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAEAACcQAAAAEJl/O8P2j+OY1PVgK7l6znh73fxIGNKjOBzC4UJWilrWyznRUHNxfq34oWSjVUFbAA==", "0123456789", false, "fc5375dd-0a68-43e5-840e-9f190f37b2f2", false, "admin@example.com" },
+                    { new Guid("ff3239e9-f2be-40ae-b03b-afabc02a1cd4"), 0, null, "004204004364", "0db530d4-9ee0-401f-b640-e55ad07384f7", "user@example.com", false, null, false, true, null, "Regular User", "USER@EXAMPLE.COM", "USER@EXAMPLE.COM", "AQAAAAEAACcQAAAAENpIMNgkDvVxFWbCtk2kuzyadZIsWv1CsNFtUk7QKKOors48O9TJ2fqXrJ9K98ZdiA==", "0987654321", false, "afc87b35-d231-41dd-9002-f24723ff3f3c", false, "user@example.com" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_AccountId",
                 table: "Addresses",
                 column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_ApplicationUserId",
+                table: "Addresses",
+                column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -691,9 +753,19 @@ namespace API.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_OrderAddressId1",
+                table: "Orders",
+                column: "OrderAddressId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_ShippingUnitID",
                 table: "Orders",
                 column: "ShippingUnitID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_UserId1",
+                table: "Orders",
+                column: "UserId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_VoucherId",
@@ -814,6 +886,9 @@ namespace API.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "OrderAdresses");
 
             migrationBuilder.DropTable(
                 name: "ShippingUnits");
