@@ -68,7 +68,7 @@
     </dl>
     <hr />
     <h5>Địa chỉ giao hàng</h5>
-    @if (Model.OrderAdress != null)
+    @* @if (Model.OrderAdress != null)
     {
         string[] listStatus = new string[] { "Đang vận chuyển", "Đã giao hàng", "Hoàn thành" };
         if (!listStatus.Contains(Model.Orders.Status))
@@ -100,7 +100,7 @@
             <dt class="col-sm-2">
                 Không có địa chỉ để giao hàng!
             </dt>
-        </dl>
+        </dl> *@
     }
     <hr />
     <h5>Lịch sử trạng thái</h5>
