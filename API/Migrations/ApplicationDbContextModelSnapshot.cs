@@ -350,6 +350,9 @@ namespace API.Migrations
                     b.Property<Guid?>("VoucherId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("WhoCreateThis")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ShippingUnitID");

@@ -21,6 +21,7 @@ namespace DataProcessing.Models
         public virtual OrderAdress? OrderAddress { get; set; }
 
         public string? UserId { get; set; } = "Khách lẻ";
+        public Guid? WhoCreateThis { get; set; }
         public Guid? VoucherId { get; set; }
         [JsonIgnore]
         public virtual Voucher? Voucher { get; set; }
