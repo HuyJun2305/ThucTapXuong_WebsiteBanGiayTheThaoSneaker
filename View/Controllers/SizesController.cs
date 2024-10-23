@@ -161,5 +161,21 @@ namespace View.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ToggleStatus(Guid id)
+        {
+            // Tìm kiếm vật liệu theo ID
+            var material = await _sizeServices.GetSizeById(id);
+            if (material == null)
+            {
+                return NotFound();
+            }
+
+            material.Status = !material.Status;
+            await _sizeServices.Update(material);
+
+            return RedirectToAction("Index");
+        }
     }
 }
