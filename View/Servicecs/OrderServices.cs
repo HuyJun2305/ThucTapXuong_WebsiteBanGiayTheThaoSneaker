@@ -12,9 +12,36 @@ namespace View.Servicecs
 			_httpClient = httpClient;
 		}
 
+		public async Task AddOrderAddress(OrderAdress orderAdress)
+		{
+			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/OrderAdresses", orderAdress);
+		}
+
 		public async Task AddPayment(PaymentHistory payment)
 		{
 			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/PaymentHistories/", payment);
+		}
+
+		public async Task AddToOrder(OrderDetail orderDetail)
+		{
+			var data = GetAllOrderDetailsByOrderId(orderDetail.OrderId).Result.Where(o => o.ProductDetailId == orderDetail.ProductDetailId).FirstOrDefault();
+			if (data != null)
+			{
+				if (data.Quantity + orderDetail.Quantity < data.ProductDetail.Stock)
+					data.Quantity = data.Quantity + orderDetail.Quantity;
+				else data.Quantity = data.ProductDetail.Stock;
+
+				data.TotalPrice  = data.ProductDetail.Price * data.Quantity;
+				data.ProductDetail = null;
+				await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/OrderDetails/{data.Id}", data);
+			}
+			else
+			{
+				await _httpClient.PostAsJsonAsync($"https://localhost:7170/api/OrderDetails", orderDetail);
+			}
+
+			//Update price of Order
+			await UpdatePriceOrder(orderDetail.OrderId);
 		}
 
 		public async Task BackStatus(Guid UserIdCreateThis, Guid OrderId)
@@ -42,6 +69,11 @@ namespace View.Servicecs
 			orderData.Status = StatusValue;
 			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/Orders/{OrderId}", orderData);
 			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/OrderHistories", orderHistory);
+		}
+
+		public async Task ChangeOrderAddress(OrderAdress orderAdress)
+		{
+			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/OrderAdresses/{orderAdress.Id}", orderAdress);
 		}
 
 		public async Task ChangeStatus(Guid UserIdCreateThis, Guid OrderId)
@@ -80,11 +112,46 @@ namespace View.Servicecs
 			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/OrderHistories", orderHistory);
 		}
 
+		public async Task CancelOrder(Guid UserIdCreateThis, Guid OrderId)
+		{
+			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/Orders/{OrderId}");
+			var data = JsonConvert.DeserializeObject<Order>(response);
+			OrderHistory orderHistory = new OrderHistory()
+			{
+				Id = Guid.NewGuid(),
+				StatusType = "Đã huỷ",
+				TimeStamp = DateTime.Now,
+				UpdatedByUserId = UserIdCreateThis,
+				OrderId = OrderId,
+			};
+			data.Status = "Đã huỷ";
+			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/Orders/{OrderId}", data);
+			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/OrderHistories", orderHistory);
+		}
+
+		public async Task ChangeStock(int stock, Guid orderDetailId)
+		{
+			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/OrderDetails/{orderDetailId}");
+			var data = JsonConvert.DeserializeObject<OrderDetail>(response);
+			if (data != null)
+			{
+				if (stock >= data.ProductDetail.Stock) data.Quantity = data.ProductDetail.Stock;
+				else data.Quantity = stock;
+
+				data.TotalPrice = data.ProductDetail.Price * data.Quantity;
+				data.ProductDetail = null;
+				await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/OrderDetails/{data.Id}", data);
+
+				//Update price of Order
+				await UpdatePriceOrder(data.OrderId);
+			}
+		}
+
 		public async Task Create(Guid UserIdCreateThis, Order order)
 		{
 			if (order.UserId == null) order.UserId = "Khách lẻ";
 			if (order.Status == null) order.Status = "Tạo đơn hàng";
-			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/Orders", order);
+			
 			OrderHistory orderHistory = new OrderHistory()
 			{
 				Id = Guid.NewGuid(),
@@ -93,6 +160,8 @@ namespace View.Servicecs
 				UpdatedByUserId = UserIdCreateThis,
 				OrderId = order.Id,
 			};
+
+			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/Orders", order);
 			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/OrderHistories", orderHistory);
 		}
 
@@ -101,6 +170,16 @@ namespace View.Servicecs
 			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/Orders/{id}");
 			var data = JsonConvert.DeserializeObject<Order>(response);
 			if (data.TotalPrice == 0) await _httpClient.DeleteAsync($"https://localhost:7170/api/Orders/{id}");
+		}
+
+		public async Task DeleteFromOrder(Guid id)
+		{
+			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/OrderDetails/{id}");
+			var OrderId = JsonConvert.DeserializeObject<OrderDetail>(response).OrderId;
+			await _httpClient.DeleteAsync($"https://localhost:7170/api/OrderDetails/{id}");
+
+			//Update price of Order
+			await UpdatePriceOrder(OrderId);
 		}
 
 		public async Task<IEnumerable<Order>?> GetAllOrderByUserId(Guid id)
@@ -124,6 +203,13 @@ namespace View.Servicecs
 			return result!=null ? result.OrderBy(x => x.Status) : result;
 		}
 
+		public async Task<OrderAdress?> GetOrderAddressByOrderId(Guid id)
+		{
+			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/OrderAdresses/OrderId/{id}");
+			var result = JsonConvert.DeserializeObject<OrderAdress?>(response);
+			return result;
+		}
+
 		public async Task<Order?> GetOrderById(Guid id)
 		{
 			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/Orders/{id}");
@@ -145,9 +231,33 @@ namespace View.Servicecs
 			return result;
 		}
 
+		public async Task<IEnumerable<ProductDetail>?> GetProductDetails()
+		{
+			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/ProductDetail");
+			var result = JsonConvert.DeserializeObject<IEnumerable<ProductDetail>>(response);
+			return result;
+		}
+
 		public async Task Update(Order order)
 		{
 			await _httpClient.PutAsJsonAsync("https://localhost:7170/api/Orders", order);
+		}
+
+		public async Task UpdatePriceOrder(Guid OrderId)
+		{
+			//Update price of Order
+			var orderDetails = await GetAllOrderDetailsByOrderId(OrderId);
+			decimal totalPrice = 0;
+			if (orderDetails != null)
+			{
+				foreach (var item in orderDetails)
+				{
+					totalPrice += item.TotalPrice;
+				};
+			}
+			var order = await GetOrderById(OrderId);
+			order.TotalPrice = totalPrice;
+			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/Orders/{OrderId}", order);
 		}
 	}
 }

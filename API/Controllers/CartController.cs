@@ -1,4 +1,6 @@
 ﻿using API.IRepositories;
+using API.Repositories;
+using DataProcessing.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,53 +10,43 @@ namespace API.Controllers
     [ApiController]
     public class CartController : ControllerBase
     {
-        private readonly ICartRepo _cartRepo;
+        private readonly ICartRepo _repo;
 
-        public CartController( ICartRepo cartRepo)
+        public CartController(ICartRepo repo)
         {
-            _cartRepo=cartRepo;
-        }
-        [HttpPost("AddProductToCart")]
-        public async Task<IActionResult> AddToCart(Guid userId, string productDetailId, int quantity)
+            _repo = repo;
+        }     
+        [HttpGet("GetCartById")]
+        public async Task<IActionResult> GetCartById(Guid id)
         {
-            try
+            var cart = await _repo.GetCartById(id);
+            if (cart == null)
             {
-                if (quantity <= 0)
-                {
-                    return BadRequest("ố lượng sản phẩm phải lớn hơn 0");
-                }
-                await _cartRepo.AddToCartAsync(userId, productDetailId, quantity);
-                return Ok();
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-     
+            return Ok(cart);
         }
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetUserCart(Guid userId)
+        [HttpGet("GetCartByUserId")]
+        public async Task<IActionResult> GetCartByUserId(Guid userId)
         {
-            var cartDetails = await _cartRepo.GetUserCartAsync(userId);
-            return Ok(cartDetails);
-        }
-        [HttpPatch("UpdateCartQuantity/{cartDetailId}")]
-        public async Task<IActionResult> UpdateCartQuantity(Guid cartDetailId, [FromBody] int quantity)
-        {
-            if (quantity <= 0)
+            var cart = await _repo.GetCartByUserId(userId);
+            if(cart == null)
             {
-                return BadRequest("Số lượng sản phẩm phải lớn hơn 0");
-            }
-
-            await _cartRepo.UpdateCartQuantityAsync(cartDetailId, quantity);
+                return Ok(null);
+            }    
+            return Ok(cart);
+        }
+        [HttpPost("CreateCart")]
+        public async Task<IActionResult> Create(Cart cart)
+        {
+            await _repo.Create(cart);
+            return Ok(cart);
+        }
+        [HttpPut("UpdateCart")]
+        public async Task<IActionResult> Update(Guid id , Cart cart)
+        { 
+            await _repo.Update(id, cart);
             return Ok();
         }
-        [HttpDelete("RemoveFromCart/{cartDetailId}")]
-        public async Task<IActionResult> RemoveFromCart(Guid cartDetailId)
-        {
-            await _cartRepo.RemoveFromCartAsync(cartDetailId);
-            return Ok();
-        }
-
     }
 }

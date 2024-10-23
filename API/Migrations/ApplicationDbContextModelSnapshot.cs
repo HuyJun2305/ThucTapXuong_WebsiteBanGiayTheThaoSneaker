@@ -28,6 +28,9 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<decimal>("PriceUpdate")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("ProductDetailId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -199,7 +202,7 @@ namespace API.Migrations
                     b.Property<Guid>("AccountId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal?>("TotalPrice")
+                    b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -223,10 +226,10 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("Quanlity")
+                    b.Property<int>("Quanlity")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("TotalPrice")
+                    b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -325,9 +328,6 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AddressId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -357,6 +357,47 @@ namespace API.Migrations
                     b.HasIndex("VoucherId");
 
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.OrderAdress", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AddressDetail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Commune")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("District")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RecipientName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.ToTable("OrderAdresses");
                 });
 
             modelBuilder.Entity("DataProcessing.Models.OrderDetail", b =>
@@ -919,6 +960,15 @@ namespace API.Migrations
                     b.Navigation("Voucher");
                 });
 
+            modelBuilder.Entity("DataProcessing.Models.OrderAdress", b =>
+                {
+                    b.HasOne("DataProcessing.Models.Order", null)
+                        .WithOne("OrderAddress")
+                        .HasForeignKey("DataProcessing.Models.OrderAdress", "OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("DataProcessing.Models.OrderDetail", b =>
                 {
                     b.HasOne("DataProcessing.Models.Order", "Order")
@@ -1099,6 +1149,8 @@ namespace API.Migrations
 
             modelBuilder.Entity("DataProcessing.Models.Order", b =>
                 {
+                    b.Navigation("OrderAddress");
+
                     b.Navigation("paymentHistories");
                 });
 

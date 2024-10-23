@@ -1,4 +1,5 @@
 ﻿using API.Data;
+using API.DTO;
 using API.IRepositories;
 using DataProcessing.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -123,6 +124,31 @@ namespace API.Repositories
         }
 
 
+        public async Task<List<ProductDetailDTO>> GetVariantsByProductIds(List<Guid> productIds)
+        {
+            if (productIds == null || !productIds.Any())
+            {
+                return new List<ProductDetailDTO>();
+            }
+
+            var productVariants = await _context.ProductDetails
+                .Where(pd => productIds.Contains(pd.ProductId))
+                .Select(pd => new ProductDetailDTO
+                {
+                    Id = pd.Id,
+                    ProductName = pd.Product.Name,
+                    PriceProductDetail = pd.Price,
+                    CategoryName = pd.Product.Category.Name, // Tên danh mục từ bảng Category
+                    BrandName = pd.Product.Brand.Name,      // Tên thương hiệu từ bảng Brand
+                    MaterialName = pd.Product.Material.Name, // Tên chất liệu từ bảng Material
+                    ColorName = pd.Color != null ? pd.Color.Name : "No color", // Tên màu từ bảng Color
+                    SoleName = pd.Product.Sole != null ? pd.Product.Sole.TypeName : "No sole" // Tên đế giày từ bảng Sole
+                })
+                .ToListAsync();
+
+            return productVariants;
+        }
+
 
         public async Task SaveChanges()
         {
@@ -135,6 +161,7 @@ namespace API.Repositories
             _context.Entry(productDetail).State = EntityState.Modified;
 
         }
+
 
     }
 }

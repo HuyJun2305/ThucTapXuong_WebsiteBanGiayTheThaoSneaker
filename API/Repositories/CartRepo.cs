@@ -1,122 +1,110 @@
 ﻿using API.Data;
 using API.IRepositories;
+using Data.ViewModels;
 using DataProcessing.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories
 {
-    public class CartRepo:ICartRepo
+    public class CartRepo : ICartRepo
     {
         private readonly ApplicationDbContext _context;
+
         public CartRepo(ApplicationDbContext context)
         {
-            _context=context;
+            _context = context;
         }
-        public async Task AddToCartAsync(Guid userId, string productDetailId, int quantity)
-        { 
-            var user = await _context.Users.Include(u => u.Cart)
-                                             .ThenInclude(c => c.CartDetails)
-                                             .FirstOrDefaultAsync(u => u.Id == userId);
-            if (user == null)
+        public async Task Create (Cart cart)
+        {
+            bool exists = await _context.Carts.AnyAsync(c => c.Id == cart.Id);
+            if (exists)
             {
-                throw new Exception("User not found.");
+                throw new DuplicateWaitObjectException("This cartDetails is existed!");
             }
-            else
-            {
-                var product = await _context.ProductDetails.FindAsync(productDetailId);
-                if (product == null)
-                {
-                    throw new Exception("Product not found.");
-                }
-                if(product.Stock < quantity)
-                {
-                    throw new Exception("Not enough stock available.");
-                }
-                // Kiểm tra giỏ hàng của người dùng (nếu chưa có thì tạo mới)
-                var cart = user.Cart ?? new Cart
-                {
-                    Id = Guid.NewGuid(),
-                    AccountId = userId,
-                    CartDetails = new List<CartDetail>()
-                };
-                // check sản phẩm đã tồn tại trong cart chưa 
-                var cartItem = await _context.CartDetails.FirstOrDefaultAsync(c => c.ProductDetailId == productDetailId);
-                if (cartItem == null)
-                {
-                    CartDetail newCartDetails = new CartDetail()
-                    {
-                        Id = Guid.NewGuid(),
-                        CartId = cart.Id,
-                        ProductDetailId = productDetailId,
-                        Quanlity = quantity,
-                        TotalPrice = product.Price * quantity,
-                    
-                    };
-                    _context.CartDetails.Add(newCartDetails);         
-                }
-                else
-                {
-                    if (product.Stock < cartItem.Quanlity + quantity)
-                    // nếu số lượng sản phẩm trong kho nhỏ hơn số lượng sản phẩm thêm vào 
-                    {
-                        throw new Exception("Not enough stock to add the additional quantity.");
-                    }
-                    cartItem.Quanlity = cartItem.Quanlity + quantity; // cộng dồn
-                    cartItem.TotalPrice += product.Price * quantity;       
-                    _context.CartDetails.Update(cartItem);          
-                }
-                if (user.Cart == null)
-                {
-                    _context.Carts.Add(cart);
-                }
-                // sửa lại số lượng sản phẩm trong kho 
-                product.Stock = product.Stock - quantity;
-                _context.ProductDetails.Update(product);
-
-            }
+            await _context.Carts.AddAsync(cart);
             await _context.SaveChangesAsync();
         }
-        public async Task<IEnumerable<CartDetail>> GetUserCartAsync(Guid userId)
+        public async Task<Cart?> GetCartByUserId(Guid userId)
         {
-            
-            var cart = await _context.Carts
-                .Include(c => c.CartDetails) // Bao gồm thông tin CartDetails
-                    .ThenInclude(cd => cd.ProductDetail) // Bao gồm thông tin ProductDetail
-                .FirstOrDefaultAsync(c => c.AccountId == userId);
+            var cart = await _context.Carts.Where(c => c.AccountId == userId).FirstOrDefaultAsync();
+            return cart;
+        } 
 
-
-            return cart?.CartDetails ?? Enumerable.Empty<CartDetail>();
+        public async Task<Cart> GetCartById(Guid id)
+        {
+            var item = await _context.Carts.FindAsync(id);
+            return item;
         }
 
-        public async Task UpdateCartQuantityAsync(Guid cartDetailId, int quantity)
+        public async Task Update(Guid id, Cart cart)
         {
-            if(quantity<0)
+            var updateItem = await _context.Carts.FindAsync(id);
+            if (updateItem != null)
             {
-                throw new Exception("Số lượng phải lớn hơn 0");
-            }    
-            var cartDetail = await _context.CartDetails
-                                    .Include(cd => cd.ProductDetail)  // Bao gồm ProductDetail để nạp thông tin sản phẩm
-                                    .FirstOrDefaultAsync(cd => cd.Id == cartDetailId);
-            if (cartDetail == null)
-            {
-                throw new ArgumentException("Không tìm thấy sản phẩm trong giỏ hàng");
+                updateItem.TotalPrice=cart.TotalPrice;
             }
-            cartDetail.Quanlity = quantity;
-            if (cartDetail.ProductDetail != null)
+            _context.Carts.Update(updateItem);
+            await _context.SaveChangesAsync();      
+        }
+    }
+    public class CartDetailsRepo :ICartDetailsRepo
+    {
+        private readonly ICartDetailsRepo _repo;
+        private readonly ApplicationDbContext _context;
+
+        public CartDetailsRepo(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task Create(CartDetail cartDetails)
+        {
+            bool exists = await _context.CartDetails.AnyAsync(c => c.Id == cartDetails.Id);
+            if (exists)
             {
-                cartDetail.TotalPrice = cartDetail.ProductDetail.Price * quantity;
+                throw new DuplicateWaitObjectException("This cartDetails is existed!");
             }
-            _context.CartDetails.Update(cartDetail);
+            await _context.CartDetails.AddAsync(cartDetails);
             await _context.SaveChangesAsync();
         }
-        public async Task RemoveFromCartAsync(Guid cartDetailId)
+
+        public async Task Delete(Guid id)
         {
-            var cartDetail = await _context.CartDetails.FindAsync(cartDetailId);
-            if (cartDetail != null)
+            var deleteItem = await _context.CartDetails.FindAsync(id);
+            if (deleteItem == null)
             {
-                _context.CartDetails.Remove(cartDetail);
-                await _context.SaveChangesAsync();
+                throw new KeyNotFoundException($"CartDetail with Id {id} not found.");
             }
+            _context.CartDetails.Remove(deleteItem);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<CartDetail>?> GetAllCartDetails()
+        {
+            var lstCartDetails = await _context.CartDetails.ToListAsync();
+            return lstCartDetails; 
+        }
+
+        public async Task<List<CartDetail>?> GetCartDetailByCartId(Guid cartId)
+        {
+            return await _context.CartDetails.Where(cd=>cd.CartId==cartId).ToListAsync();
+        }
+
+        public async Task<CartDetail> GetCartDetailById(Guid id)
+        {
+            return await _context.CartDetails.FindAsync(id);
+        }
+
+        public async Task Update(CartDetail cartDetails, Guid id)
+        {
+            var updateItem = await _context.CartDetails.FindAsync(id);  
+            if(cartDetails!=null)
+            {
+                updateItem.Quanlity = cartDetails.Quanlity;
+                updateItem.TotalPrice = cartDetails.TotalPrice;
+            }
+            _context.CartDetails.Update(updateItem);
+            await _context.SaveChangesAsync();
         }
     }
 }

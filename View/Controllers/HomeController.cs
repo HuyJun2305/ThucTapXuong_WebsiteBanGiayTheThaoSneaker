@@ -1,24 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using View.IServices;
+using System.Net.Http.Headers;
 using View.Models;
 
 namespace View.Controllers
 {
+    //[Authorize(Roles ="Admin,Employee")]
     public class HomeController : Controller
     {
-        private readonly IProductServices productServices;
+        private readonly ILogger<HomeController> _logger;
 
-        public HomeController(IProductServices _productServices)
+        public HomeController(ILogger<HomeController> logger)
         {
-            productServices = _productServices;
+            _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var viewContext = productServices.GetAllProducts().Result;
-            if (viewContext == null) return View("'Product is null!'");
-            return View(viewContext.ToList());
+            // Kiểm tra xem session có tồn tại không
+            var token = HttpContext.Session.GetString("AuthToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Login", "Account"); 
+            }
+            return View();
         }
 
         public IActionResult Privacy()
@@ -32,4 +38,5 @@ namespace View.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
+
 }

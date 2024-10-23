@@ -1,4 +1,5 @@
-﻿using DataProcessing.Models;
+﻿using API.DTO;
+using DataProcessing.Models;
 using MailKit.Search;
 using Newtonsoft.Json;
 using View.IServices;
@@ -98,5 +99,37 @@ namespace View.Servicecs
             return productDetails?.ToList(); // Trả về danh sách sản phẩm
 
         }
+
+        public async Task<List<ProductDetailDTO>> GetVariantsByProductIds(List<Guid> productIds)
+        {
+            // Kiểm tra đầu vào
+            if (productIds == null || !productIds.Any())
+            {
+                throw new ArgumentException("Product IDs cannot be null or empty.");
+            }
+
+            // Địa chỉ URL của API
+            var url = "https://localhost:7170/api/ProductDetail/GetProductVariants";
+
+            // Gửi yêu cầu POST với danh sách productIds
+            var response = await _httpClient.PostAsJsonAsync(url, productIds);
+
+            // Kiểm tra phản hồi từ API
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Response content: {content}"); // Ghi log nội dung phản hồi
+
+                var productVariants = JsonConvert.DeserializeObject<List<ProductDetailDTO>>(content);
+                return productVariants ?? new List<ProductDetailDTO>();
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Error fetching variants: {response.ReasonPhrase} - Content: {errorContent}");
+            }
+        }
+
+
     }
 }
