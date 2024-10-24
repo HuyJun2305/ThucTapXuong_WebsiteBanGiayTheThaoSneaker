@@ -119,6 +119,7 @@
                             <th>Category</th>
                             <th>Brand</th>
                             <th>Material</th>
+                            <th>Sale</th>
                             <th>Color</th>
                             <th>Sole</th>
                         </tr>
@@ -190,25 +191,30 @@
                 tableBody.empty();
 
                 // Kiểm tra nếu có biến thể sản phẩm
-                if (variants && variants.length > 0) {
+                if (Array.isArray(variants) && variants.length > 0) {
                     variants.forEach(function (variant, index) {
+                        console.log('Variant:', variant); // Ghi lại toàn bộ đối tượng variant
+                        const SizeValue = variant.sizeValue != null ? variant.sizeValue.toString() : '0';
                         var row = `<tr>
-                                    <td>
-                                        <input type="checkbox" name="selectedVariantIds" value="${variant.id}" />
-                                    </td>
-                                    <td>${index + 1}</td>
-                                    <td>${variant.productName}</td>
-                                    <td>${variant.categoryName}</td>
-                                    <td>${variant.brandName}</td>
-                                    <td>${variant.materialName}</td>
-                                    <td>${variant.colorName}</td>
-                                    <td>${variant.soleName}</td>
-                                </tr>`;
+                    <td>
+                        <input type="checkbox" name="selectedVariantIds" value="${variant.id}" />
+                    </td>
+                    <td>${index + 1}</td>
+                    <td>${variant.productName}</td>
+                    <td>${variant.categoryName}</td>
+                    <td>${variant.brandName}</td>
+                    <td>${variant.materialName}</td>
+                    <td>${SizeValue}</td>
+                    <td>${variant.colorName}</td>
+                    <td>${variant.soleName}</td>
+                    </tr>`;
                         tableBody.append(row);
                     });
                 } else {
                     tableBody.append('<tr><td colspan="8">No variants found for the selected products.</td></tr>');
                 }
+
+
             }
         });
 
