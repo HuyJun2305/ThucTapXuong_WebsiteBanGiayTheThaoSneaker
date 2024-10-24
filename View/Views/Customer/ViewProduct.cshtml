@@ -120,7 +120,7 @@
                             <input type="number" id="quantity_@product.Id" name="quantity" min="1" max="10" value="1" class="form-select" />
                         </td>
                         <td>
-                            <form asp-controller="" asp-action="AddToCart" method="post">
+                            <form asp-controller ="Cart" asp-action="AddToCart" method="post">
                                 <input type="hidden" name="productDetailId" value="@product.Id" />
                                 <input type="hidden" name="quantity" id="hiddenQuantity_@product.Id" value="1" />
                                 <button type="submit" class="btn btn-primary" onclick="setQuantity('@product.Id')">Add to Cart</button>
