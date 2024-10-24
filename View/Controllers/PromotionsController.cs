@@ -12,6 +12,7 @@ using View.Servicecs;
 using View.ViewModel;
 using API.DTO;
 using Data.Models;
+using Data.ViewModels;
 
 namespace View.Controllers
 {
@@ -121,19 +122,6 @@ namespace View.Controllers
             return View(promotion);
         }
 
-
-
-
-        public async Task AddRangeAsync(IEnumerable<ProductDetailPromotion> productDetailPromotions)
-        {
-            foreach (var promotion in productDetailPromotions)
-            {
-                await _ProductDetailPromotionSer.AddAsync(promotion); 
-            }
-        }
-
-
-
         // GET: Promotions/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
@@ -212,6 +200,24 @@ namespace View.Controllers
 
                 // Trả về kết quả dưới dạng JSON
                 return Json(variants);
+            }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi nếu cần thiết
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+        // GET: Promotions/ProductDetailsPromotion
+        
+        public async Task<IActionResult> ProductDetailsPromotion()
+        {
+            try
+            {
+                // Gọi dịch vụ để lấy danh sách chi tiết khuyến mãi sản phẩm
+                var productDetailsPromotion = await _PromotionSer.GetAllProductDetailsPromotion();
+
+                // Trả về view với danh sách chi tiết khuyến mãi
+                return View(productDetailsPromotion);
             }
             catch (Exception ex)
             {
