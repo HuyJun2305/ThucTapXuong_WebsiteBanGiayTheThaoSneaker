@@ -56,16 +56,10 @@ namespace API.Repositories
 		{
 			_context = ImageRepo;
 		}
-		public async Task Create(ImageDTO Image)
+		public async Task Create(Image Image)
 		{
 			if (await GetImageById(Image.Id) != null) throw new DuplicateWaitObjectException($"Image : {Image.Id} is existed!");
-			Image data = new Image()
-			{
-				Id = Image.Id,
-				ColorId = Image.ColorId,
-				URL = Image.URL,
-			};
-			await _context.Images.AddAsync(data);
+			await _context.Images.AddAsync(Image);
 		}
 
 		public async Task Delete(Guid id)
@@ -90,16 +84,10 @@ namespace API.Repositories
 			await _context.SaveChangesAsync();
 		}
 
-		public async Task Update(ImageDTO Image)
+		public async Task Update(Image Image)
 		{
 			if (await GetImageById(Image.Id) == null) throw new KeyNotFoundException("Not found this Image!");
-			Image data = new Image()
-			{
-				Id = Image.Id,
-				ColorId = Image.ColorId,
-				URL = Image.URL,
-			};
-			_context.Entry(data).State = EntityState.Modified;
+			_context.Entry(Image).State = EntityState.Modified;
 		}
 	}
 

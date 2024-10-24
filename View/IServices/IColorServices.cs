@@ -25,7 +25,7 @@ namespace View.IServices
 	public interface ISelectedImageServices
 	{
 		Task<IEnumerable<SelectedImage>?> GetAllSelectedImages();
-		Task<IEnumerable<SelectedImage>?> GetSelectedImagesByProductId(Guid id);
+		Task<IEnumerable<SelectedImage>?> GetSelectedImagesByProductId(Guid id, Guid colorId);
 		Task<SelectedImage?> GetSelectedImageById(Guid id);
 		Task Create(SelectedImage selectedImage);
 		Task Update(SelectedImage selectedImage);

@@ -118,10 +118,10 @@ namespace View.Servicecs
 			return SelectedImage;
 		}
 
-		public async Task<IEnumerable<SelectedImage>?> GetSelectedImagesByProductId(Guid id)
+		public async Task<IEnumerable<SelectedImage>?> GetSelectedImagesByProductId(Guid id, Guid colorId)
 		{
 			var SelectedImages = GetAllSelectedImages().Result;
-			return SelectedImages != null ? SelectedImages.Where(si => si.ProductId == id) : SelectedImages;
+			return SelectedImages != null ? SelectedImages.Where(si => si.ProductId == id && si.ColorId == colorId) : SelectedImages;
 		}
 
 		public async Task Update(SelectedImage SelectedImage)

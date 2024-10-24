@@ -17,8 +17,8 @@ namespace API.IRepositories
 	{
 		Task<List<Image>> GetAllImage();
 		Task<Image> GetImageById(Guid id);
-		Task Create(ImageDTO image);
-		Task Update(ImageDTO image);
+		Task Create(Image image);
+		Task Update(Image image);
 		Task Delete(Guid id);
 		Task SaveChanges();
 	}
