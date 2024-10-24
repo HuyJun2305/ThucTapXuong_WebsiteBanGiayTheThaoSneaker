@@ -1,5 +1,4 @@
 ﻿@model IEnumerable<DataProcessing.Models.CartDetail>
-
 @{
     ViewData["Title"] = "Index";
     decimal totalAmount = 0;
@@ -16,6 +15,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Id)
             </th>
+            <th>Giá</th>
             <th>
                 @Html.DisplayNameFor(model => model.TotalPrice)
             </th>
@@ -37,12 +37,13 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Id)
             </td>
+                <td>@Html.DisplayFor(modelItem => item.ProductDetail.Price) VND</td>
             <td>
                 @Html.DisplayFor(modelItem => item.TotalPrice)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quanlity)
-            </td>
+                <td>
+                    <input type="number" id="quantity_@item.Id" name="quantity" min="1" max="10" value="1" class="form-select" />
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CartId)
             </td>
@@ -52,10 +53,10 @@
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
                     @Html.ActionLink("Cart Details", "CartDetails", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    @Html.ActionLink("Delete", "DeleteCartDetail", new { id = item.Id })
             </td>
             </tr>
-            totalAmount += item.TotalPrice;
+            totalAmount += (decimal)item.TotalPrice;
         }
     </tbody>
 </table>
