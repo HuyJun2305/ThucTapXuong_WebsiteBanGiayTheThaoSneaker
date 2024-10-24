@@ -261,10 +261,17 @@ namespace View.Controllers
 					ColorId = Guid.Parse(colorId),
 					URL = dataPath,
 				};
-				await _imageServices.Create(img);
-				using (var stream = new FileStream(filePath, FileMode.Create))
+				try
 				{
-					await imageFile.CopyToAsync(stream);
+					using (var stream = new FileStream(filePath, FileMode.Create))
+					{
+						await _imageServices.Create(img);
+						await imageFile.CopyToAsync(stream);
+					}
+				}
+				catch (Exception ex)
+				{
+					return Json(new { success = false, message = $"{ex.Message}" });
 				}
 
 				return Json(new { success = true });
@@ -298,6 +305,14 @@ namespace View.Controllers
 			{
 				return Json(new { success = false, message = "Không thể xoá ảnh: Không tìm thấy ảnh" });
 			}
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> GetImages(Guid colorId)
+		{
+			var images = _imageServices.GetAllImages().Result.Where(i => i.ColorId == colorId);
+
+			return Json(new { success = true, images });
 		}
 	}
 }
