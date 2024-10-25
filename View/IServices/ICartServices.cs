@@ -6,11 +6,12 @@ namespace View.IServices
     {
         Task<Cart> GetCartAsync(Guid id);
         Task<Cart> GetCartByUserId(Guid userId);
+        Task CreateCart(Cart cart);
         Task Update(Cart cart , Guid id);
         Task <List<CartDetail>> GetAllCartDetails();
         Task<List<CartDetail>> GetCartDetailByCartId(Guid cartId);
         Task<Cart> GetCartDetailById(Guid id);
-        Task Create(CartDetail cartDetail);
+        Task CreateCartDetails(CartDetail cartDetail);
         Task Update(CartDetail cartDetail,Guid id);
         Task Delete(Guid id);
 

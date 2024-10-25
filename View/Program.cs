@@ -33,6 +33,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient<IProductServices, ProductServices>();
 builder.Services.AddHttpClient<ISoleServices, SoleServices>();
 builder.Services.AddHttpClient<IBrandServices, BrandServices>();
+builder.Services.AddHttpClient<ICartServices, CartService>();
 builder.Services.AddHttpClient<ICategoryServices, CategoryServices>();
 builder.Services.AddHttpClient<IMaterialServices, MaterialServices>();
 builder.Services.AddHttpClient<IPromotionServices, PromotionServices>();

@@ -1,4 +1,5 @@
-﻿using DataProcessing.Models;
+﻿using API.DTO;
+using DataProcessing.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.IRepositories
@@ -10,7 +11,7 @@ namespace API.IRepositories
         Task Create(ProductDetail productDetail);
         Task Update(ProductDetail productDetail);
         Task Delete(string id);
-        Task<ProductDetail> GetProductDetailByProductId (Guid productId);
+        Task<List<ProductDetailDTO>> GetVariantsByProductIds(List<Guid> productIds);
         Task SaveChanges();
         Task<List<ProductDetail>> GetFilteredProductDetails(
             string? searchQuery = null,

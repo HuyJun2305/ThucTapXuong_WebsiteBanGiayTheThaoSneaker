@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.IRepositories;
+using Data.ViewModels;
 using DataProcessing.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,16 @@ namespace API.Repositories
         public CartRepo(ApplicationDbContext context)
         {
             _context = context;
+        }
+        public async Task Create (Cart cart)
+        {
+            bool exists = await _context.Carts.AnyAsync(c => c.Id == cart.Id);
+            if (exists)
+            {
+                throw new DuplicateWaitObjectException("This cartDetails is existed!");
+            }
+            await _context.Carts.AddAsync(cart);
+            await _context.SaveChangesAsync();
         }
         public async Task<Cart?> GetCartByUserId(Guid userId)
         {

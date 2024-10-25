@@ -15,11 +15,32 @@ namespace API.Repositories
             _context = context;
         }
 
-        public async  Task AddAsync(ProductDetailPromotion productDetailPromotion)
+        public async Task AddAsync(ProductDetailPromotion productDetailPromotion)
         {
-            if (await GetByIdAsync(productDetailPromotion.Id) != null) throw new DuplicateWaitObjectException($"productDetailPromotion : {productDetailPromotion.Id} is existed!");
+            // Kiểm tra sự tồn tại của ProductDetail và Promotion
+            var productDetailExists = await _context.ProductDetails.AnyAsync(pd => pd.Id == productDetailPromotion.ProductDetailId);
+            var promotionExists = await _context.Promotions.AnyAsync(p => p.Id == productDetailPromotion.PromotionId);
+
+            if (!productDetailExists)
+            {
+                throw new InvalidOperationException($"ProductDetail with ID {productDetailPromotion.ProductDetailId} does not exist.");
+            }
+
+            if (!promotionExists)
+            {
+                throw new InvalidOperationException($"Promotion with ID {productDetailPromotion.PromotionId} does not exist.");
+            }
+
+            // Kiểm tra xem productDetailPromotion có tồn tại hay không
+            if (await GetByIdAsync(productDetailPromotion.Id) != null)
+            {
+                throw new InvalidOperationException($"ProductDetailPromotion with ID {productDetailPromotion.Id} already exists.");
+            }
+
             await _context.ProductDetailPromotions.AddAsync(productDetailPromotion);
+            await _context.SaveChangesAsync(); // Lưu thay đổi vào cơ sở dữ liệu
         }
+
 
         public Task DeleteAsync(Guid id)
         {
