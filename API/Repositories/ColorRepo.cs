@@ -64,7 +64,7 @@ namespace API.Repositories
 
 		public async Task Delete(Guid id)
 		{
-			var Image = await GetImageById(id);
+			var Image = await _context.Images.FindAsync(id);
 			if (Image == null) throw new KeyNotFoundException("Not found this Image!");
 			_context.Images.Remove(Image);
 		}
