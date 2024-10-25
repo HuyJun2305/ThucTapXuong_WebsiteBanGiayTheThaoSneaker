@@ -213,15 +213,15 @@ namespace View.Controllers
         {
             try
             {
-                // Gọi dịch vụ để lấy danh sách chi tiết khuyến mãi sản phẩm
+                
                 var productDetailsPromotion = await _PromotionSer.GetAllProductDetailsPromotion();
 
-                // Trả về view với danh sách chi tiết khuyến mãi
+               
                 return View(productDetailsPromotion);
             }
             catch (Exception ex)
             {
-                // Ghi log lỗi nếu cần thiết
+              
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }

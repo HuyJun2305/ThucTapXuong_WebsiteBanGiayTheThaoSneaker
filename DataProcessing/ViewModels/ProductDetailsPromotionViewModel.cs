@@ -19,6 +19,7 @@ namespace Data.ViewModels
         public string? SoleName { get; set; }
         public decimal PriceProductDetail { get; set; }
         public decimal PricePromotion { get; set; }
+        public decimal DiscountValue { get; set; }  
 
     }
 }

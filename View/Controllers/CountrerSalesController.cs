@@ -10,14 +10,14 @@ using View.ViewModel;
 
 namespace View.Controllers
 {
-    public class CounterSalesController : Controller
+    public class CounrterSalesController : Controller
     {
         private readonly IOrderServices _orderServices;
         private readonly IShippingUnitServices _shippingUnitServices;
         private readonly IVoucherServices _voucherServices;
         private readonly IAccountService _accountService;
         private readonly IProductDetailService _productDetailService;
-        public CounterSalesController(IOrderServices orderServices, IShippingUnitServices shippingUnitServices, IVoucherServices voucherServices, IAccountService accountService, IProductDetailService productDetailService)
+        public CounrterSalesController(IOrderServices orderServices, IShippingUnitServices shippingUnitServices, IVoucherServices voucherServices, IAccountService accountService, IProductDetailService productDetailService)
         {
             _orderServices = orderServices;
             _shippingUnitServices = shippingUnitServices;
