@@ -159,18 +159,18 @@ namespace API.Data
 
             );
 
-            //modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
-            //    new IdentityUserRole<Guid>
-            //    {
-            //        UserId = adminUserId,
-            //        RoleId = adminRoleId
-            //    },
-            //    new IdentityUserRole<Guid>
-            //    {
-            //        UserId = CustomerUserId,
-            //        RoleId = customerRoleId
-            //    }
-            //);
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
+                new IdentityUserRole<Guid>
+                {
+                    UserId = adminUserId,
+                    RoleId = adminRoleId
+                },
+                new IdentityUserRole<Guid>
+                {
+                    UserId = CustomerUserId,
+                    RoleId = customerRoleId
+                }
+            );
         }
 
 
