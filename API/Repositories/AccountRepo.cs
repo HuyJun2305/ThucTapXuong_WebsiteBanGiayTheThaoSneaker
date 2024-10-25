@@ -87,7 +87,6 @@ namespace API.Repositories
                     PhoneNumber = model.PhoneNumber,
                     UserName = model.Email,
                     Email = model.Email,
-                    CIC = model.CIC,
                     IsSubscribedToNews = false
                     
                 };
