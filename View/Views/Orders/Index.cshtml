@@ -31,6 +31,9 @@
                 @Html.DisplayNameFor(model => model.UserId)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.WhoCreateThis)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Voucher)
             </th>
             <th>
@@ -61,7 +64,10 @@
                 @Html.DisplayFor(modelItem => item.UserId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Voucher.Condittion)
+                @Html.DisplayFor(modelItem => item.WhoCreateThis)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Voucher.Condition)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ShippingUnit.Address)

@@ -33,7 +33,7 @@ namespace API.Controllers
 
 		// POST api/<ImagesController>
 		[HttpPost]
-		public async Task<IActionResult> Post(ImageDTO image)
+		public async Task<IActionResult> Post(Image image)
 		{
 			try
 			{
@@ -49,7 +49,7 @@ namespace API.Controllers
 
 		// PUT api/<ImagesController>/5
 		[HttpPut("{id}")]
-		public async Task<IActionResult> Put(ImageDTO image)
+		public async Task<IActionResult> Put(Image image)
 		{
 			try
 			{

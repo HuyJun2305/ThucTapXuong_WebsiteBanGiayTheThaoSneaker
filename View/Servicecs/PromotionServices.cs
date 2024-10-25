@@ -1,4 +1,5 @@
 ﻿using Data.Models;
+using Data.ViewModels;
 using DataProcessing.Models;
 using Newtonsoft.Json;
 using View.IServices;
@@ -22,6 +23,13 @@ namespace View.Servicecs
         public async Task Delete(Guid id)
         {
             await _httpClient.DeleteAsync($"https://localhost:7170/api/Promotions/{id}");
+        }
+
+        public async Task<List<ProductDetailsPromotionViewModel>> GetAllProductDetailsPromotion()
+        {
+            var response = await _httpClient.GetStringAsync("https://localhost:7170/api/Promotions/ProductDetailsPromotion");
+            var listProductDetailsPromotion = JsonConvert.DeserializeObject<List<ProductDetailsPromotionViewModel>>(response);
+            return listProductDetailsPromotion;
         }
 
         public async Task<List<Promotion>?> GetAllPromotion()

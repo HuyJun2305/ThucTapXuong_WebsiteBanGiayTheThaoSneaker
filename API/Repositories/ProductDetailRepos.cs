@@ -139,6 +139,7 @@ namespace API.Repositories
                     ProductName = pd.Product.Name,
                     PriceProductDetail = pd.Price,
                     CategoryName = pd.Product.Category.Name, // Tên danh mục từ bảng Category
+                    sizeValue = pd.Size != null ? pd.Size.Value :0,
                     BrandName = pd.Product.Brand.Name,      // Tên thương hiệu từ bảng Brand
                     MaterialName = pd.Product.Material.Name, // Tên chất liệu từ bảng Material
                     ColorName = pd.Color != null ? pd.Color.Name : "No color", // Tên màu từ bảng Color

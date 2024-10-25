@@ -74,6 +74,12 @@ namespace View.Servicecs
 			return Image;
 		}
 
+		public async Task<IEnumerable<Image>?> GetImagesByColorId(Guid id)
+		{
+			var Images = GetAllImages().Result;
+			return Images != null ? Images.Where(i => i.ColorId == id) : Images;
+		}
+
 		public async Task Update(Image Image)
 		{
 			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/Images/{Image.Id}", Image);
@@ -110,6 +116,12 @@ namespace View.Servicecs
 			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/SelectedImages/{id}");
 			var SelectedImage = JsonConvert.DeserializeObject<SelectedImage>(response);
 			return SelectedImage;
+		}
+
+		public async Task<IEnumerable<SelectedImage>?> GetSelectedImagesByProductId(Guid id, Guid colorId)
+		{
+			var SelectedImages = GetAllSelectedImages().Result;
+			return SelectedImages != null ? SelectedImages.Where(si => si.ProductId == id && si.ColorId == colorId) : SelectedImages;
 		}
 
 		public async Task Update(SelectedImage SelectedImage)
