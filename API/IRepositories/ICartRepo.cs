@@ -4,8 +4,10 @@ namespace API.IRepositories
 {
     public interface ICartRepo
     {
+
         Task<Cart> GetCartById(Guid id);
         Task<Cart?> GetCartByUserId(Guid userId);
+        Task Create (Cart cart);
         Task Update(Guid id, Cart cart);
 
     }

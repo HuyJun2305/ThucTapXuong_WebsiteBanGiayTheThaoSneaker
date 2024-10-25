@@ -1,6 +1,6 @@
-﻿using API.Migrations;
-using DataProcessing.Models;
+﻿using DataProcessing.Models;
 using Newtonsoft.Json;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -17,39 +17,52 @@ namespace View.Servicecs
         {
             _client = client;
         }
-
-        public async Task Create(CartDetail cartDetail)
+        public async Task CreateCart(Cart cart)
         {
-            var cartDetailsItem = GetCartDetailByCartId(cartDetail.CartId).Result.Where(o => o.ProductDetailId == cartDetail.ProductDetailId).FirstOrDefault();
-            if(cartDetailsItem != null)
+            await _client.PostAsJsonAsync("https://localhost:7170/api/Cart/CreateCart",cart);
+        }
+        public async Task CreateCartDetails(CartDetail cartDetail)
+        {
+            var cartDetailsItem = (await GetCartDetailByCartId(cartDetail.CartId))
+                .Where(o => o.ProductDetailId == cartDetail.ProductDetailId)
+                .FirstOrDefault();
+
+            if (cartDetailsItem != null)
             {
-                if (cartDetailsItem.Quanlity + cartDetail.Quanlity < cartDetailsItem.ProductDetail.Stock)
+                cartDetailsItem.Quanlity += cartDetail.Quanlity;
+
+                // Kiểm tra nếu số lượng vượt quá tồn kho thì giới hạn lại bằng số lượng tồn kho
+                if (cartDetailsItem.Quanlity > cartDetail.ProductDetail.Stock)
                 {
-                    cartDetail.Quanlity += cartDetail.Quanlity;
-                }    
-                else
-                {
-                    cartDetailsItem.Quanlity = cartDetailsItem.ProductDetail.Stock;
+                    cartDetailsItem.Quanlity = cartDetail.ProductDetail.Stock;
                 }
-                // cập nhật tổng tiền của giỏ hàng chi tiết 
-                cartDetailsItem.TotalPrice = cartDetailsItem.Quanlity * cartDetailsItem.ProductDetail.Price;
+
+                // Tính lại tổng giá
+                cartDetailsItem.TotalPrice = cartDetail.ProductDetail.Price * cartDetailsItem.Quanlity;
+
+                // Loại bỏ ProductDetail để tránh gửi dữ liệu không cần thiết
                 cartDetailsItem.ProductDetail = null;
-                await _client.PutAsJsonAsync($"https://localhost:7170/api/CartDetails/Update?id={cartDetailsItem.Id}", cartDetailsItem);              
-            }    
+
+                // Gửi yêu cầu cập nhật
+                await _client.PutAsJsonAsync($"https://localhost:7170/api/CartDetails/Update?id={cartDetailsItem.Id}", cartDetailsItem);
+            }
             else
             {
                 await _client.PostAsJsonAsync($"https://localhost:7170/api/CartDetails/Create", cartDetail);
-            }    
+            }
         }
+
 
         public Task Delete(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<CartDetail>> GetAllCartDetails()
+        public async Task<List<CartDetail>> GetAllCartDetails()
         {
-            throw new NotImplementedException();
+            var response = await _client.GetStringAsync("https://localhost:7170/api/CartDetails/GetAllCartDetails");
+            var result = JsonConvert.DeserializeObject<List<CartDetail>>(response);
+            return result;
         }
 
         public async Task<Cart> GetCartAsync(Guid id)
@@ -59,21 +72,47 @@ namespace View.Servicecs
             return result;
         }
 
-        public Task<Cart> GetCartByUserId(Guid userId)
+        public async Task<Cart> GetCartByUserId(Guid userId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var response = await _client.GetStringAsync($"https://localhost:7170/api/Cart/GetCartByUserId?userId={userId}");
+                var result = JsonConvert.DeserializeObject<Cart>(response);
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                if (ex.StatusCode == HttpStatusCode.NotFound)
+                {
+                    // Nếu API trả về 404, trả về null thay vì lỗi
+                    return null;
+                }
+                throw;
+            }
         }
 
         public async Task<List<CartDetail>> GetCartDetailByCartId(Guid cartId)
         {
-            var response = await _client.GetStringAsync($"https://localhost:7170/api/CartDetails/GetCartDetailsByCartId?cartId={cartId}");
-            var result = JsonConvert.DeserializeObject<List<CartDetail>>(response);
-            return result;
+            try
+            {
+                var response = await _client.GetStringAsync($"https://localhost:7170/api/CartDetails/GetCartDetailsByCartId?cartId={cartId}");
+                var result = JsonConvert.DeserializeObject<List<CartDetail>>(response);
+
+                // Kiểm tra xem kết quả có null hay rỗng không
+                return result ?? new List<CartDetail>(); // Trả về danh sách rỗng nếu không có dữ liệu
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Error fetching cart details: {ex.Message}");
+                return new List<CartDetail>(); 
+            }
         }
 
-        public Task<Cart> GetCartDetailById(Guid id)
+        public async Task<Cart> GetCartDetailById(Guid id)
         {
-            throw new NotImplementedException();
+            var response = await _client.GetStringAsync($"https://localhost:7170/api/CartDetails/GetCartDetailsById?id={id}");
+            var result = JsonConvert.DeserializeObject<Cart>(response);
+            return result;
         }
 
         public async Task Update(Cart cart, Guid id)

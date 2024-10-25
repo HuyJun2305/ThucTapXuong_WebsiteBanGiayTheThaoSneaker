@@ -19,8 +19,8 @@ namespace Data.Models
 
         public decimal PriceUpdate { get; set; }
         [JsonIgnore]
-        public virtual ProductDetail ProductDetail { get; set; }
+        public virtual ProductDetail? ProductDetail { get; set; }
         [JsonIgnore]
-        public virtual Promotion Promotion { get; set; }
+        public virtual Promotion? Promotion { get; set; }
     }
 }

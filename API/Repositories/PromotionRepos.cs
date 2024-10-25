@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.IRepositories;
+using Data.ViewModels;
 using DataProcessing.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +33,44 @@ namespace API.Repositories
             }
               _context.Promotions.Remove (deleteItem);
         }
+
+        public async Task<List<ProductDetailsPromotionViewModel>> GetAllProductDetailsPromotion()
+        {
+            var result = await _context.ProductDetailPromotions
+               .Include(pdp => pdp.ProductDetail)
+                   .ThenInclude(pd => pd.Product)
+                       .ThenInclude(p => p.Category)
+               .Include(pdp => pdp.ProductDetail)
+                   .ThenInclude(pd => pd.Product)
+                       .ThenInclude(p => p.Brand)
+               .Include(pdp => pdp.ProductDetail)
+                   .ThenInclude(pd => pd.Product)
+                       .ThenInclude(p => p.Material)
+               .Include(pdp => pdp.ProductDetail)
+                   .ThenInclude(pd => pd.Color)
+               .Include(pdp => pdp.ProductDetail)
+                   .ThenInclude(pd => pd.Product)
+                       .ThenInclude(p => p.Sole)
+               .Include(pdp => pdp.Promotion)
+               .Select(pdp => new ProductDetailsPromotionViewModel
+               {
+                   promotionId = pdp.PromotionId, 
+                   ProductDetailsID = pdp.ProductDetailId,
+                   ProductName = pdp.ProductDetail.Product.Name,
+                   CategoryName = pdp.ProductDetail.Product.Category.Name,
+                   BrandName = pdp.ProductDetail.Product.Brand.Name,
+                   MaterialName = pdp.ProductDetail.Product.Material.Name,
+                   SizeValue = pdp.ProductDetail.Size != null ? pdp.ProductDetail.Size.Value : 0,
+                   ColorName = pdp.ProductDetail.Color != null ? pdp.ProductDetail.Color.Name : "No color",
+                   SoleName = pdp.ProductDetail.Product.Sole != null ? pdp.ProductDetail.Product.Sole.TypeName : "No sole",
+                   PriceProductDetail = pdp.ProductDetail.Price,
+                   PricePromotion = pdp.PriceUpdate
+               })
+               .ToListAsync();
+
+            return result;
+        }
+
 
         public async Task<List<Promotion>> GetAllPromotion()
         {

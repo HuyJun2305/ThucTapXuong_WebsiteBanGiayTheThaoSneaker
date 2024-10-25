@@ -4,6 +4,7 @@ using DataProcessing.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -45,8 +46,19 @@ namespace API.Controllers
             if (voucher == null)
                 return BadRequest(new { Message = "Invalid voucher data." });
 
-            await _voucherRepos.create(voucher);
-            return CreatedAtAction(nameof(GetVoucherById), new { id = voucher.Id }, voucher);
+            try
+            {
+                await _voucherRepos.create(voucher);
+                return CreatedAtAction(nameof(GetVoucherById), new { id = voucher.Id }, voucher);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = ex.Message });
+            }
         }
 
         // PUT: api/voucher/{id}
@@ -62,8 +74,19 @@ namespace API.Controllers
                 return NotFound(new { Message = "Voucher not found." });
             }
 
-            await _voucherRepos.update(voucher);
-            return NoContent();
+            try
+            {
+                await _voucherRepos.update(voucher);
+                return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = ex.Message });
+            }
         }
 
         // DELETE: api/voucher/{id}
@@ -76,15 +99,24 @@ namespace API.Controllers
                 return NotFound(new { Message = "Voucher not found." });
             }
 
-            await _voucherRepos.delete(id);
-            return NoContent();
+            try
+            {
+                await _voucherRepos.delete(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
+
         // GET: api/voucher/applicable
         [HttpGet("applicable")]
         public async Task<ActionResult<IEnumerable<Voucher>>> GetApplicableVouchers()
         {
             var vouchers = await _voucherRepos.GetAll();
-            var applicableVouchers = vouchers.Where(v => v.Status && v.StartDate <= DateTime.Now && v.EndDate >= DateTime.Now && v.Stock > 0)
+            var applicableVouchers = vouchers
+                .Where(v => v.Status && v.StartDate <= DateTime.Now && v.EndDate >= DateTime.Now && v.Stock > 0)
                 .OrderByDescending(v => v.DiscountAmount > 0 ? v.DiscountAmount : v.DiscountPercent)
                 .ToList();
             return Ok(applicableVouchers);
