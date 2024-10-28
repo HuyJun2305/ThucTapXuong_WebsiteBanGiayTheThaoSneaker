@@ -74,7 +74,27 @@ namespace View.Controllers
             return View("Error");
         }
 
-
+        public async Task<IActionResult> DeleteCartDetail(Guid id)
+        {
+            var cartDetail = await _cartServices.GetCartDetailById(id);
+            if (cartDetail != null)
+            {
+                await _cartServices.Delete(cartDetail.Id);
+                return RedirectToAction("Index", new { cartId = cartDetail.Id });
+            }
+            return View("Error");
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateCartDetail(Guid id, CartDetail cartDetail)
+        {
+            var item = await _cartServices.GetCartDetailById(id);
+            if (item != null)
+            {
+                await _cartServices.UpdateCartDetails(cartDetail,item.Id);
+                return RedirectToAction("Index", new { cartId = cartDetail.Id });
+            }
+            return View("Error");
+        }
         private Guid GetUserIdFromToken()
         {
             var token = HttpContext.Session.GetString("AuthToken");
