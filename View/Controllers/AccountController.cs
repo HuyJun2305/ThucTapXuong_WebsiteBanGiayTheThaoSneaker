@@ -13,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using View.IServices;
+using View.Servicecs;
 
 namespace View.Controllers
 {
@@ -241,6 +242,24 @@ namespace View.Controllers
             catch
             {
                 TempData["DeleteFail"] = "Xóa Thất bại";
+                return View();
+            }
+        }
+        public IActionResult SignUp()
+        {
+            return View();
+        }
+        // thêm các thông báo lỗi khi đăng ký thất bại 
+        [HttpPost]
+        public async Task<IActionResult> SignUp(SignUpModel account)
+        {
+            try
+            {             
+                await _accountService.SignUpAsync(account);
+                return RedirectToAction("Login", "Account");
+            }
+            catch
+            {
                 return View();
             }
         }

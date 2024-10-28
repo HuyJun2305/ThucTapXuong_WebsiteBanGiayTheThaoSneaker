@@ -120,11 +120,14 @@
                             <input type="number" id="quantity_@product.Id" name="quantity" min="1" max="10" value="1" class="form-select" />
                         </td>
                         <td>
-                            <form asp-controller ="Cart" asp-action="AddToCart" method="post">
+                        <td>
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post" onsubmit="setQuantity('@product.Id')">
                                 <input type="hidden" name="productDetailId" value="@product.Id" />
                                 <input type="hidden" name="quantity" id="hiddenQuantity_@product.Id" value="1" />
-                                <button type="submit" class="btn btn-primary" onclick="setQuantity('@product.Id')">Add to Cart</button>
+                                <button type="submit" class="btn btn-primary">Add to Cart</button>
                             </form>
+                        </td>
+
                         </td>
 
                     </tr>
@@ -182,6 +185,7 @@
                 var quantity = document.getElementById("quantity_" + productId).value;
                 document.getElementById("hiddenQuantity_" + productId).value = quantity;
             }
+
             // Hàm cập nhật danh sách sản phẩm hiển thị
             function updateProductList(data) {
                 var productListHtml = '';
