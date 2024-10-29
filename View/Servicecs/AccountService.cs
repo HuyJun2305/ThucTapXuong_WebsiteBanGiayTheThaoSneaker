@@ -42,11 +42,6 @@ namespace View.Servicecs
             await _client.DeleteAsync(requestURL);
         }
 
-        //public async Task DeleteEmployee(Guid idEmployee)
-        //{
-        //    string requestURL = $"https://localhost:7170/api/AccountControllercs/Delete-Employee?idEmployee={idEmployee}";
-        //    await _client.DeleteAsync(requestURL);
-        //}
 
         public async Task<List<ApplicationUser>> GetAllCustomer()
         {
@@ -69,12 +64,6 @@ namespace View.Servicecs
             return JsonConvert.DeserializeObject<ApplicationUser>(response);
         }
 
-        //public async Task<ApplicationUser> GetEmployeeById(Guid idEmployee)
-        //{
-        //    string requestURL = $"https://localhost:7170/api/AccountControllercs/GetById-Employee?idEmployee={idEmployee}";
-        //    var response = await _client.GetStringAsync(requestURL);
-        //    return JsonConvert.DeserializeObject<ApplicationUser>(response);
-        //}
         public async Task<string> SignInAsync(SignInModel signInModel)
         {
             string requestURL = "https://localhost:7170/api/AccountControllercs/Login";
@@ -95,18 +84,53 @@ namespace View.Servicecs
         public async Task<IdentityResult> SignUpAsync(SignUpModel signUpModel)
         {
             string requestURL = "https://localhost:7170/api/AccountControllercs/Register";
-            var response = await _client.PostAsJsonAsync(requestURL , signUpModel);
-            var error = await response.Content.ReadFromJsonAsync<IEnumerable<string>>();
-            return IdentityResult.Failed(error.Select(error=>new IdentityError { Description =error }).ToArray());
+            var response = await _client.PostAsJsonAsync(requestURL, signUpModel);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return IdentityResult.Success;
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var errors = new List<string>();
+
+            try
+            {
+                // Kiểm tra cấu trúc JSON trả về
+                var errorResponse = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(responseContent);
+
+                if (errorResponse != null)
+                {
+                    if (errorResponse.TryGetValue("errors", out var errorList))
+                    {
+                        errors.AddRange(errorList);
+                    }
+                    else if (errorResponse.TryGetValue("message", out var messageList))
+                    {
+                        errors.AddRange(messageList);
+                    }
+                    else
+                    {
+                        errors.Add("Đã xảy ra lỗi không xác định từ API.");
+                    }
+                }
+                else
+                {
+                    errors.Add("Không thể đọc phản hồi lỗi từ API.");
+                }
+            }
+            catch (JsonException ex)
+            {
+                errors.Add($"Lỗi JSON: {ex.Message}");
+            }
+
+            // Trả về danh sách lỗi
+            return IdentityResult.Failed(errors.Select(e => new IdentityError { Description = e }).ToArray());
         }
 
-        //public async Task UpdateCustomer(ApplicationUser customer)
-        //{
-        //    string requestURL = $"https://localhost:7170/api/AccountControllercs/Update-Customer-{customer.Id}";
-        //    var jsonContent = JsonConvert.SerializeObject(customer);
-        //    var content = new StringContent(jsonContent);
-        //    await _client.PutAsync(requestURL, content);
-        //}
+
+
+
 
         public async Task<ApplicationUser> Update(ApplicationUser account, Guid idAccount)
         {
