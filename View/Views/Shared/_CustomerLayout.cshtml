@@ -55,57 +55,55 @@
                 </a>
 
                 <ul class="navbar-list">
-
                     <li class="navbar-item">
                         <a href="#" class="navbar-link">Home</a>
                     </li>
-
                     <li class="navbar-item">
                         <a href="#" class="navbar-link">About</a>
                     </li>
-
                     <li class="navbar-item">
                         <a href="#" class="navbar-link">Products</a>
                     </li>
-
                     <li class="navbar-item">
                         <a href="#" class="navbar-link">Shop</a>
                     </li>
-
-                    <li class="navbar-item">
-                        <a href="#" class="navbar-link">Blog</a>
-                    </li>
-
                     <li class="navbar-item">
                         <a href="#" class="navbar-link">Contact</a>
                     </li>
-
+                    <li class="navbar-item">
+                        <a href="#" class="navbar-link">Sale</a>
+                    </li>
                 </ul>
 
                 <ul class="nav-action-list">
 
                     <li>
-                        <button class="nav-action-btn">
+                        <button class="nav-action-btn search-btn">
                             <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
-
                             <span class="nav-action-text">Search</span>
                         </button>
+                        <!-- Search input hidden by default -->
+                        <div class="search-input">
+                            <input type="text" placeholder="Search..." />
+                        </div>
                     </li>
 
-                    <li>
-                        <a href="#" class="nav-action-btn">
+                    <li class="dropdown">
+                        <a class="nav-action-btn">
                             <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
-
                             <span class="nav-action-text">Login / Register</span>
                         </a>
+                        <!-- Dropdown content hidden by default -->
+                        <div class="dropdown-content">
+                            <a href="/login">Login</a>
+                            <a href="/register">Register</a>
+                        </div>
                     </li>
 
                     <li>
                         <button class="nav-action-btn">
                             <ion-icon name="heart-outline" aria-hidden="true"></ion-icon>
-
                             <span class="nav-action-text">Wishlist</span>
-
                             <data class="nav-action-badge" value="5" aria-hidden="true">5</data>
                         </button>
                     </li>
@@ -113,19 +111,17 @@
                     <li>
                         <a asp-controller="Cart" asp-action="Index" class="nav-action-btn">
                             <ion-icon name="bag-outline" aria-hidden="true"></ion-icon>
-
                             <data class="nav-action-text" value="318.00">Basket: <strong>$318.00</strong></data>
-
                             <data class="nav-action-badge" value="4" aria-hidden="true">4</data>
                         </a>
                     </li>
 
                 </ul>
-
             </nav>
 
         </div>
     </header>
+
 
     <div class="container">
         <main role="main" class="pb-3">
