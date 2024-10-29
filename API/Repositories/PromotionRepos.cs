@@ -34,42 +34,56 @@ namespace API.Repositories
               _context.Promotions.Remove (deleteItem);
         }
 
-        public async Task<List<ProductDetailsPromotionViewModel>> GetAllProductDetailsPromotion()
-        {
-            var result = await _context.ProductDetailPromotions
-               .Include(pdp => pdp.ProductDetail)
-                   .ThenInclude(pd => pd.Product)
-                       .ThenInclude(p => p.Category)
-               .Include(pdp => pdp.ProductDetail)
-                   .ThenInclude(pd => pd.Product)
-                       .ThenInclude(p => p.Brand)
-               .Include(pdp => pdp.ProductDetail)
-                   .ThenInclude(pd => pd.Product)
-                       .ThenInclude(p => p.Material)
-               .Include(pdp => pdp.ProductDetail)
-                   .ThenInclude(pd => pd.Color)
-               .Include(pdp => pdp.ProductDetail)
-                   .ThenInclude(pd => pd.Product)
-                       .ThenInclude(p => p.Sole)
-               .Include(pdp => pdp.Promotion)
-               .Select(pdp => new ProductDetailsPromotionViewModel
-               {
-                   promotionId = pdp.PromotionId, 
-                   ProductDetailsID = pdp.ProductDetailId,
-                   ProductName = pdp.ProductDetail.Product.Name,
-                   CategoryName = pdp.ProductDetail.Product.Category.Name,
-                   BrandName = pdp.ProductDetail.Product.Brand.Name,
-                   MaterialName = pdp.ProductDetail.Product.Material.Name,
-                   SizeValue = pdp.ProductDetail.Size != null ? pdp.ProductDetail.Size.Value : 0,
-                   ColorName = pdp.ProductDetail.Color != null ? pdp.ProductDetail.Color.Name : "No color",
-                   SoleName = pdp.ProductDetail.Product.Sole != null ? pdp.ProductDetail.Product.Sole.TypeName : "No sole",
-                   PriceProductDetail = pdp.ProductDetail.Price,
-                   PricePromotion = pdp.PriceUpdate
-               })
-               .ToListAsync();
+       
+            public async Task<List<ProductDetailsPromotionViewModel>> GetAllProductDetailsPromotion()
+            {
+                // Lấy tất cả dữ liệu từ database trước
+                var productDetailsPromotions = await _context.ProductDetailPromotions
+                    .Include(pdp => pdp.ProductDetail)
+                        .ThenInclude(pd => pd.Product)
+                            .ThenInclude(p => p.Category)
+                    .Include(pdp => pdp.ProductDetail)
+                        .ThenInclude(pd => pd.Product)
+                            .ThenInclude(p => p.Brand)
+                    .Include(pdp => pdp.ProductDetail)
+                        .ThenInclude(pd => pd.Product)
+                        .ThenInclude(p => p.Material)
+                    .Include(pdp => pdp.ProductDetail)
+                        .ThenInclude(pd => pd.Color)
+                        .Include(pdp => pdp.ProductDetail)
+                        .ThenInclude(pd => pd.Size)
+                    .Include(pdp => pdp.ProductDetail)
+                        .ThenInclude(pd => pd.Product)
+                            .ThenInclude(p => p.Sole)
+                    .Include(pdp => pdp.Promotion)
+                    .Where(pdp => pdp.Promotion.Status == true) // Lọc các promotion có Status = true
+                    .ToListAsync(); // Lấy dữ liệu từ DB trước
 
-            return result;
-        }
+                // Thực hiện GroupBy và sắp xếp phía client
+                var result = productDetailsPromotions
+                    .GroupBy(pdp => pdp.ProductDetailId) // Nhóm theo ProductDetailId
+                    .Select(g => g.OrderBy(pdp => pdp.PriceUpdate).FirstOrDefault()) // Chọn bản ghi có PriceUpdate nhỏ nhất
+                    .Select(pdp => new ProductDetailsPromotionViewModel
+                    {
+                        promotionId = pdp.PromotionId,
+                        ProductDetailsID = pdp.ProductDetailId,
+                        ProductName = pdp.ProductDetail.Product.Name,
+                        CategoryName = pdp.ProductDetail.Product.Category.Name,
+                        BrandName = pdp.ProductDetail.Product.Brand.Name,
+                        MaterialName = pdp.ProductDetail.Product.Material.Name,
+                        SizeValue = pdp.ProductDetail.Size != null ? pdp.ProductDetail.Size.Value : 0,
+                        ColorName = pdp.ProductDetail.Color != null ? pdp.ProductDetail.Color.Name : "No color",
+                        SoleName = pdp.ProductDetail.Product.Sole != null ? pdp.ProductDetail.Product.Sole.TypeName : "No sole",
+                        PriceProductDetail = pdp.ProductDetail.Price,
+                        PricePromotion = pdp.PriceUpdate,
+                        DiscountValue = pdp.Promotion.DiscountValue
+                    })
+                    .ToList(); // Thực hiện truy vấn phía client
+
+                return result;
+            }
+
+        
 
 
         public async Task<List<Promotion>> GetAllPromotion()

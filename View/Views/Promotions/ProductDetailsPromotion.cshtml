@@ -8,7 +8,8 @@ x
 <table class="table">
     <thead>
         <tr>
-            <th>Promotion ID</th>
+           @*  <th>Promotion ID</th> *@
+            <th>ProductDetailsID</th>
             <th>Tên sản phẩm</th>
             <th>Tên danh mục</th>
             <th>Tên thương hiệu</th>
@@ -18,13 +19,15 @@ x
             <th>Size</th>
             <th>Màu sắc</th>
             <th>Tên đế</th>
+            <th>% giảm giá</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.promotionId</td>
+               @*  <td>@item.promotionId</td> *@
+                <td>@item.ProductDetailsID</td>
                 <td>@item.ProductName</td>
                 <td>@item.CategoryName</td>
                 <td>@item.BrandName</td>
@@ -34,6 +37,7 @@ x
                 <td>@item.SizeValue</td>
                 <td>@item.ColorName</td>
                 <td>@item.SoleName</td>
+                <td>@item.DiscountValue</td>
             </tr>
         }
     </tbody>

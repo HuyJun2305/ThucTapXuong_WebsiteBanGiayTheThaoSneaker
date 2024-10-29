@@ -15,8 +15,7 @@ namespace Data.ViewModels
         public string Email { get; set; } = null!;
         [Required]
         public string PhoneNumber { get; set; } = null!;
-        [Required]
-        public string CIC { get; set; } = null!;
+        public string? CIC { get; set; } = null!;
         [Required]
         public DateTime BirthDay { get; set; }
         [Required]

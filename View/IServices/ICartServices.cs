@@ -12,7 +12,7 @@ namespace View.IServices
         Task<List<CartDetail>> GetCartDetailByCartId(Guid cartId);
         Task<Cart> GetCartDetailById(Guid id);
         Task CreateCartDetails(CartDetail cartDetail);
-        Task Update(CartDetail cartDetail,Guid id);
+        Task UpdateCartDetails(CartDetail cartDetail,Guid id);
         Task Delete(Guid id);
 
     }
