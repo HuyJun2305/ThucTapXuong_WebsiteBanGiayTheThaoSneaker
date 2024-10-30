@@ -40,12 +40,6 @@ namespace View.Servicecs
             return productDetails;
         }
 
-
-        
-
-
-
-
         public async Task Update(ProductDetail productDetail)
         {
             await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/ProductDetail/{productDetail.Id}", productDetail);
@@ -130,6 +124,12 @@ namespace View.Servicecs
             }
         }
 
+        public async Task<List<ProductDetail?>> GetAllProductDetailByProductId(Guid id)
+        {
+            var response =  await _httpClient.GetStringAsync($"https://localhost:7170/api/ProductDetail/productid{id}");
+            var productDetails = JsonConvert.DeserializeObject<IEnumerable<ProductDetail>>(response);
+            return productDetails?.ToList(); // Trả về danh sách sản phẩm
 
+        }
     }
 }
