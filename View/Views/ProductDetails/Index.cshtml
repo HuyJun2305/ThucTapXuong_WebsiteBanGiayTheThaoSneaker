@@ -88,7 +88,7 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Id</th>
+                <th>Id</th> 
                 <th>Name</th>
                 <th>Color</th>
                 <th>Size</th>
@@ -97,6 +97,7 @@
                 <th>Material</th>
                 <th>Category</th>
                 <th>Price</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -114,6 +115,9 @@
                         <td>@product.Product.Material?.Name</td>
                         <td>@product.Product.Category?.Name</td>
                         <td>@product.Price</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@product.Id">Edit</a>
+                        </td>
                         <td>
                             <input type="number" id="quantity_@product.Id" name="quantity" min="1" max="10" value="1" class="form-select" />
                         </td>

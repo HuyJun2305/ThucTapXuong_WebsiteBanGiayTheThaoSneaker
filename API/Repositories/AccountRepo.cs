@@ -75,27 +75,44 @@ namespace API.Repositories
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public async Task<IdentityResult> SignUpAsync(SignUpModel model  )
+        public async Task<IdentityResult> SignUpAsync(SignUpModel model)
         {
             try
             {
+                var existingUser = await _userManager.Users
+                           .FirstOrDefaultAsync(u => u.Email == model.Email ||
+                                                     u.PhoneNumber == model.PhoneNumber
+                                                    );
+                if (existingUser != null)
+                {
+                    var errors = new List<IdentityError>();
+
+                    if (existingUser.Email == model.Email)
+                        errors.Add(new IdentityError { Description = "Email đã tồn tại." });
+
+                    if (existingUser.PhoneNumber == model.PhoneNumber)
+                        errors.Add(new IdentityError { Description = "Số điện thoại đã tồn tại." });
+
+                    return IdentityResult.Failed(errors.ToArray());
+                }
+
                 var account = new ApplicationUser
                 {
                     Id = Guid.NewGuid(),
                     Name = model.Name,
-                    Birthday=model.BirthDay,
+                    Birthday = model.BirthDay,
                     PhoneNumber = model.PhoneNumber,
                     UserName = model.Email,
                     Email = model.Email,
                     CIC = model.CIC,
                     IsSubscribedToNews = false
-                    
+
                 };
                 var result = await _userManager.CreateAsync(account, model.Password);
                 if (result.Succeeded)
                 {
-                    await CreateCartForUser(account.Id);
-                    var roleResult = await _userManager.AddToRoleAsync(account, "Customer");
+                    //await CreateCartForUser(account.Id);
+                    var roleResult = await _userManager.AddToRoleAsync(account, "Employee");
                 }
                 return result;
             }
@@ -104,7 +121,7 @@ namespace API.Repositories
                 var innerException = ex.InnerException != null ? ex.InnerException.Message : "No inner exception";
                 Console.WriteLine($"Xảy ra lỗi khi tạo tài khoản: {ex.Message}\nInner Exception: {innerException}");
                 throw;
-                
+
             }
         }
         public async Task SignOutAsync()

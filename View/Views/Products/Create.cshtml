@@ -177,7 +177,10 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <button id="uploadBtn+@color.Value">Chọn ảnh và tải lên</button>
+                        <div class="row row-cols-1 row-cols-md-5 g-4" id="selectedImageForModal-@color.Value">
+                            
+                        </div>
+                        <button class="btn btn-success" id="uploadBtn+@color.Value">Chọn ảnh và tải lên</button>
                         <input type="file" id="imageFile+@color.Value" style="display: none;" />
                         <button id="reloadBtn+@color.Value" style="display: none;"></button>
                         <input type="text" id="colorId+@color.Value" value="@color.Value" style="display: none;">
@@ -189,10 +192,14 @@
                             {
                                 <div class="col">
                                     <div class="card" style="width: 12rem;">
-                                        <btn class="btn btn-danger delete-btn" id="deleteImage+@item.Id" data-image-id="@item.Id">Delete</btn>
+
                                         <img src="@item.URL" class="card-img-top" alt="...">
                                         <div class="card-body">
                                             <p class="card-text">Id : @item.Id</p>
+                                        </div>
+                                        <btn class="btn btn-danger delete-btn" id="deleteImage+@item.Id" data-image-id="@item.Id">Delete</btn>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="selectedImage-@color.Value" value="@item.URL" onchange="updateImages('@color.Value')" />
                                         </div>
                                     </div>
                                 </div>
@@ -300,11 +307,15 @@
                                 newDiv.className = "card";
                                 newDiv.style.width = "12rem";
                                 newDiv.innerHTML = `
-                                <btn class="btn btn-danger delete-btn" id="deleteImage+${img.id}" data-image-id="${img.id}">Delete</btn>
                                 <img src="${img.url}" class="card-img-top" alt="...">
                                 <div class="card-body">
                                     <p class="card-text">Id : ${img.id}</p>
-                                </div>`;
+                                </div>
+                                <btn class="btn btn-danger delete-btn" id="deleteImage+${img.id}" data-image-id="${img.id}">Delete</btn>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="selectedImage-@color.Value" value="${img.url}"  onchange="updateImages('@color.Value')" />
+                                </div>
+                                `;
                                 rowDiv.appendChild(newDiv);
                                 imageGallery.appendChild(rowDiv);
                             });
@@ -329,6 +340,52 @@
         let selectedSizes = [];
         let deletedVariants = [];
         let variants = [];
+        //Màu của biến thể
+        let selectedImage = [];
+
+        function updateImages(id) {
+            const urlImage = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+                .filter(checkbox => checkbox.id.startsWith(`selectedImage-${id}`))
+                .map(checkbox => ({
+                    value: checkbox.value,
+                    text: id
+                }));
+            const urlForControllers = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+                .filter(checkbox => checkbox.id.startsWith(`selectedImage-`))
+                .map(checkbox => ({
+                    value: checkbox.value,
+                    text: id
+                }));
+
+            const ImageContainerModal = document.getElementById(`selectedImageForModal-${id}`);
+            const ImageContainer = document.getElementById(`selectedImages-${id}`);
+            ImageContainerModal.innerHTML = '';
+            ImageContainer.innerHTML = '';
+
+            if (urlImage.length === 0) { return; };
+
+            selectedImage = [];
+            urlForControllers.forEach(img => {
+                selectedImage.push({
+                    url: img.value,
+                    colorId: img.text
+                });
+            });
+
+            urlImage.forEach(img => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = "col";
+                const newDiv = document.createElement('div');
+                newDiv.className = "card";
+                rowDiv.style.width = "10rem";
+                newDiv.innerHTML = `<img src="${img.value}" class="card-img-top" alt="...">`;
+                rowDiv.appendChild(newDiv);
+
+                // Thêm `rowDiv` vào cả hai container bằng cách tạo bản sao
+                ImageContainer.appendChild(rowDiv.cloneNode(true));
+                ImageContainerModal.appendChild(rowDiv.cloneNode(true));
+            });
+        }
 
         function updateVariants() {
             const productName = document.getElementById('productName').value;
@@ -357,51 +414,55 @@
 
             selectedColors.forEach(color => {
                 const colorRow = document.createElement('div');
-                colorRow.className = 'variant-color-row';
+                colorRow.className = 'variant-color-row p-3 overflow-hidden w-100';
                 colorRow.style.position = 'relative';
 
                 const headerRow = document.createElement('div');
                 headerRow.innerHTML = `
-                                                                                <h6 style="display: inline;">Danh mục sản phẩm màu ${color.text}</h6>
-                                                                                <span class="restore-btn" style="display:none; position: absolute; right: 0; top: 0;" onclick="restoreVariants(this)">Khôi phục</span>
-                                                                            `;
+                                                                                        <h6 style="display: inline;">Danh mục sản phẩm màu ${color.text}</h6>
+                                                                                        <span class="restore-btn" style="display:none; position: absolute; right: 0; top: 0;" onclick="restoreVariants(this)">Khôi phục</span>
+                                                                                    `;
 
                 colorRow.appendChild(headerRow);
                 const variantTable = document.createElement('table');
                 variantTable.className = 'table table-bordered';
                 variantTable.innerHTML = `
-                                                                                <thead>
-                                                                                    <tr>
-                                                                                        <th><input type="checkbox" id="select-all-${color.value}" onclick="toggleSelectAll(this)"> Chọn Tất Cả</th>
-                                                                                        <th>Tên Sản Phẩm</th>
-                                                                                        <th>Kích Cỡ</th>
-                                                                                        <th>Cân Nặng</th>
-                                                                                        <th>Số Lượng</th>
-                                                                                        <th>Giá</th>
-                                                                                        <th class="table-action">Hành Động</th>
-                                                                                    </tr>
-                                                                                </thead>
-                                                                                <tbody>
-                                                                                    ${selectedSizes.map((size, index) => {
-                    return `
-                                                                                            <tr data-variant-index="${index}">
-                                                                                                <td><input type="checkbox" class="select-item"></td>
-                                                                                                <td>${productName}</td>
-                                                                                                <td>${size.text}</td>
-                                                                                                <td><input type="number" class="form-control weight" min="0" required onchange="syncInputs(this)" /></td>
-                                                                                                <td><input type="number" class="form-control stock" min="0" required onchange="syncInputs(this)" /></td>
-                                                                                                <td><input type="number" class="form-control price" min="0" required onchange="syncInputs(this)" /></td>
-                                                                                                <td class="table-action">
-                                                                                                    <span class="remove-btn" onclick="removeVariant(this)">Xóa</span>
-                                                                                                </td>
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                                <th><input type="checkbox" id="select-all-${color.value}" onclick="toggleSelectAll(this)"> Chọn Tất Cả</th>
+                                                                                                <th>Tên Sản Phẩm</th>
+                                                                                                <th>Kích Cỡ</th>
+                                                                                                <th>Cân Nặng</th>
+                                                                                                <th>Số Lượng</th>
+                                                                                                <th>Giá</th>
+                                                                                                <th class="table-action">Hành Động</th>
                                                                                             </tr>
-                                                                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#${color.value}">Thêm ảnh</button>
-                                                                                        `;
-                }).join('')}
-                                                                                </tbody>
-                                                                                        `;
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                            ${selectedSizes.map((size, index) => {
+                                                                                                return `
+                                                                                                    <tr data-variant-index="${index}">
+                                                                                                        <td><input type="checkbox" class="select-item"></td>
+                                                                                                        <td>${productName}</td>
+                                                                                                        <td>${size.text}</td>
+                                                                                                        <td><input type="number" class="form-control weight" min="0" required onchange="syncInputs(this)" /></td>
+                                                                                                        <td><input type="number" class="form-control stock" min="0" required onchange="syncInputs(this)" /></td>
+                                                                                                        <td><input type="number" class="form-control price" min="0" required onchange="syncInputs(this)" /></td>
+                                                                                                        <td class="table-action">
+                                                                                                            <span class="remove-btn" onclick="removeVariant(this)">Xóa</span>
+                                                                                                        </td>
+                                                                                                    </tr>
+                                                                                                `;
+                                                                                            }).join('')}
+                                                                                        </tbody>
+                                                                                                `;
 
                 colorRow.appendChild(variantTable);
+                const Images = document.createElement('div');
+                Images.className = "d-flex flex-column gap-5 align-items-start w-100";
+                Images.innerHTML = `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#${color.value}">Thêm ảnh</button>
+                                    <div class="row row-cols-5 row-cols-md-5 g-5" id="selectedImages-${color.value}"></div>`;
+                colorRow.appendChild(Images);
                 variantContainer.appendChild(colorRow);
 
                 // Lưu biến thể sản phẩm vào danh sách
@@ -489,16 +550,16 @@
                 const variantTable = colorRow.querySelector('table tbody');
                 const newRow = document.createElement('tr');
                 newRow.innerHTML = `
-                                                                                <td><input type="checkbox" class="select-item"></td>
-                                                                                <td>${variant.name}</td>
-                                                                                <td>${variant.size}</td>
-                                                                                <td><input type="number" class="form-control weight" min="0" value="${variant.weight}" required onchange="syncInputs(this)" /></td>
-                                                                                <td><input type="number" class="form-control stock" min="0" value="${variant.quantity}" required onchange="syncInputs(this)" /></td>
-                                                                                <td><input type="number" class="form-control price" min="0" value="${variant.price}" required onchange="syncInputs(this)" /></td>
-                                                                                <td class="table-action">
-                                                                                    <span class="remove-btn" onclick="removeVariant(this)">Xóa</span>
-                                                                                </td>
-                                                                            `;
+                                                                                        <td><input type="checkbox" class="select-item"></td>
+                                                                                        <td>${variant.name}</td>
+                                                                                        <td>${variant.size}</td>
+                                                                                        <td><input type="number" class="form-control weight" min="0" value="${variant.weight}" required onchange="syncInputs(this)" /></td>
+                                                                                        <td><input type="number" class="form-control stock" min="0" value="${variant.quantity}" required onchange="syncInputs(this)" /></td>
+                                                                                        <td><input type="number" class="form-control price" min="0" value="${variant.price}" required onchange="syncInputs(this)" /></td>
+                                                                                        <td class="table-action">
+                                                                                            <span class="remove-btn" onclick="removeVariant(this)">Xóa</span>
+                                                                                        </td>
+                                                                                    `;
                 variantTable.appendChild(newRow);
             });
             deletedVariants = []; // Reset lại danh sách đã xóa
@@ -522,15 +583,21 @@
 
             // Chuyển đổi danh sách biến thể thành JSON
             const productDetailsJson = JSON.stringify(variants);
+            const selectedImagesJson = JSON.stringify(selectedImage);
 
             // Tạo một input hidden để lưu JSON của chi tiết sản phẩm
             const hiddenInput = document.createElement('input');
             hiddenInput.type = 'hidden';
             hiddenInput.name = 'productDetailsJson'; // Tên phải khớp với bên controller
             hiddenInput.value = productDetailsJson;
+            const imageInput = document.createElement('input');
+            imageInput.type = 'hidden';
+            imageInput.name = 'selectedImagesJson';
+            imageInput.value = selectedImagesJson;
 
             // Gắn input ẩn vào form
             this.appendChild(hiddenInput);
+            this.appendChild(imageInput);
 
             // Submit form
             this.submit();

@@ -57,13 +57,16 @@ namespace View.Controllers
 
 		// GET: Products/Details/5
 		public async Task<IActionResult> Details(Guid id)
-		{
-			var product = _productServices.GetProductById(id);
-			return View(product);
-		}
+		{	
 
-		// GET: Products/Create
-		public IActionResult Create()
+            var productDetails =  await _productDetailService.GetAllProductDetailByProductId(id);
+            return Json( new { success = true, productDetails });
+        }
+
+
+        
+        // GET: Products/Create
+        public IActionResult Create()
 		{
 			ViewData["BrandId"] = new SelectList(_brandServices.GetAllBrands().Result.Where(x => x.Status), "Id", "Name");
 			ViewData["CategoryId"] = new SelectList(_categoryServices.GetAllCategories().Result.Where(x => x.Status), "Id", "Name");
@@ -84,7 +87,7 @@ namespace View.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create(ProductAndDetailViewModel viewModel, string productDetailsJson)
+		public async Task<IActionResult> Create(ProductAndDetailViewModel viewModel, string productDetailsJson, string selectedImagesJson)
 		{
 			if (ModelState.IsValid)
 			{
@@ -117,6 +120,7 @@ namespace View.Controllers
 					await _emailSender.SendEmailAsync(user.Email, emailSubject, emailMessage);
 				}
 				var productDetails = JsonConvert.DeserializeObject<List<ProductDetailViewModel>>(productDetailsJson);
+				var selectedImages = JsonConvert.DeserializeObject<List<selectedImageVM>>(selectedImagesJson);
 				var productid = product.Id;
 
 				if (productDetails == null || !productDetails.Any())
@@ -140,6 +144,26 @@ namespace View.Controllers
 					};
 
 					await _productDetailService.Create(productDetail);
+				}
+
+				if (selectedImages == null || !selectedImages.Any())
+				{
+					ModelState.AddModelError("", "Images are invalid or empty.");
+					return View(viewModel);
+				}
+
+				//lưu ảnh đã được chọn
+				foreach (var img in selectedImages)
+				{
+					var selectedImage = new SelectedImage()
+					{
+						Id = Guid.NewGuid(),
+						URL = img.Url,
+						ProductId = productid,
+						ColorId = Guid.Parse(img.colorId)
+					};
+
+					await _selectedImageServices.Create(selectedImage);
 				}
 
 				return RedirectToAction(nameof(Index));
@@ -227,6 +251,12 @@ namespace View.Controllers
 			{
 				return Problem("Entity set 'Product'  is null.");
 			}
+			var images = _selectedImageServices.GetAllSelectedImages().Result.Where(si => si.ProductId == id);
+			foreach(var image in images)
+			{
+				await _selectedImageServices.Delete(image.Id);
+			}
+
 			await _productServices.Delete(id);
 
 			return RedirectToAction(nameof(Index));

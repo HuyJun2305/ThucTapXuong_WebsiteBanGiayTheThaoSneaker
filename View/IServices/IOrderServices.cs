@@ -25,5 +25,8 @@ namespace View.IServices
 		Task<OrderAdress?> GetOrderAddressByOrderId(Guid id);
 		Task ChangeOrderAddress(OrderAdress orderAdress);
 		Task AddOrderAddress(OrderAdress orderAdress);
+
+		//Customer
+		Task<IEnumerable<ApplicationUser>> GetAllCustomers();
 	}
 }
