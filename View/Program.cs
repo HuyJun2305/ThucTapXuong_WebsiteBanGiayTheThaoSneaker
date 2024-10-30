@@ -47,6 +47,7 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddHttpClient<IProductDetailService, ProductDetailService>();
 builder.Services.AddHttpClient<IShippingUnitServices,ShippingUnitServices>();
 builder.Services.AddHttpClient<IProductDetailPromotionServices, ProductDetailPromotionServices>();
+builder.Services.AddHttpClient<IOrderServices, OrderServices>();
 builder.Services.AddHttpContextAccessor();
 
 //

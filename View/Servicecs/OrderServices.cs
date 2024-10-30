@@ -12,6 +12,11 @@ namespace View.Servicecs
 			_httpClient = httpClient;
 		}
 
+		public async Task AddOrderAddress(OrderAdress orderAdress)
+		{
+			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/OrderAdresses", orderAdress);
+		}
+
 		public async Task AddPayment(PaymentHistory payment)
 		{
 			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/PaymentHistories/", payment);
@@ -38,7 +43,7 @@ namespace View.Servicecs
 			//Update price of Order
 			await UpdatePriceOrder(orderDetail.OrderId);
 		}
-
+		// cập nhật trạng thái về trạng thái trước đó
 		public async Task BackStatus(Guid UserIdCreateThis, Guid OrderId)
 		{
 			var response = await _httpClient.GetStringAsync("https://localhost:7170/api/OrderHistories");
@@ -66,6 +71,11 @@ namespace View.Servicecs
 			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/OrderHistories", orderHistory);
 		}
 
+		public async Task ChangeOrderAddress(OrderAdress orderAdress)
+		{
+			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/OrderAdresses/{orderAdress.Id}", orderAdress);
+		}
+		// thay đổi trạng thái đơn hàng 
 		public async Task ChangeStatus(Guid UserIdCreateThis, Guid OrderId)
 		{
 			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/Orders/{OrderId}");
@@ -85,7 +95,7 @@ namespace View.Servicecs
 				case "Đang vận chuyển":
 					result = "Đã giao hàng";
 					break;
-				case "Đã giao hàng":
+				case "Đã giao hàng": 
 					result = "Hoàn thành";
 					break;
 			}
@@ -98,6 +108,23 @@ namespace View.Servicecs
 				OrderId = OrderId,
 			};
 			data.Status = result;
+			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/Orders/{OrderId}", data);
+			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/OrderHistories", orderHistory);
+		}
+		// hủy đơn hàng 
+		public async Task CancelOrder(Guid UserIdCreateThis, Guid OrderId)
+		{
+			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/Orders/{OrderId}");
+			var data = JsonConvert.DeserializeObject<Order>(response);
+			OrderHistory orderHistory = new OrderHistory()
+			{
+				Id = Guid.NewGuid(),
+				StatusType = "Đã huỷ",
+				TimeStamp = DateTime.Now,
+				UpdatedByUserId = UserIdCreateThis,
+				OrderId = OrderId,
+			};
+			data.Status = "Đã huỷ";
 			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/Orders/{OrderId}", data);
 			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/OrderHistories", orderHistory);
 		}
@@ -133,6 +160,8 @@ namespace View.Servicecs
 				UpdatedByUserId = UserIdCreateThis,
 				OrderId = order.Id,
 			};
+
+			order.WhoCreateThis = UserIdCreateThis;
 
 			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/Orders", order);
 			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/OrderHistories", orderHistory);
@@ -176,6 +205,13 @@ namespace View.Servicecs
 			return result!=null ? result.OrderBy(x => x.Status) : result;
 		}
 
+		public async Task<OrderAdress?> GetOrderAddressByOrderId(Guid id)
+		{
+			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/OrderAdresses/OrderId/{id}");
+			var result = JsonConvert.DeserializeObject<OrderAdress?>(response);
+			return result;
+		}
+
 		public async Task<Order?> GetOrderById(Guid id)
 		{
 			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/Orders/{id}");
@@ -206,7 +242,7 @@ namespace View.Servicecs
 
 		public async Task Update(Order order)
 		{
-			await _httpClient.PutAsJsonAsync("https://localhost:7170/api/Orders", order);
+			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/Orders/{order.Id}", order);
 		}
 
 		public async Task UpdatePriceOrder(Guid OrderId)
@@ -224,6 +260,13 @@ namespace View.Servicecs
 			var order = await GetOrderById(OrderId);
 			order.TotalPrice = totalPrice;
 			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/Orders/{OrderId}", order);
+		}
+
+		public async Task<IEnumerable<ApplicationUser>> GetAllCustomers()
+		{
+			var response = await _httpClient.GetStringAsync("https://localhost:7170/api/AccountControllercs/Get-All-Customer");
+			var result = JsonConvert.DeserializeObject<IEnumerable<ApplicationUser>>(response);
+			return result;
 		}
 	}
 }

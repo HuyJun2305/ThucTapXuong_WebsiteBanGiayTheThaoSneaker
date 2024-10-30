@@ -7,6 +7,7 @@
         public string CategoryName { get; set; }
         public string BrandName { get; set; }
         public string MaterialName { get; set; }
+        public int sizeValue { get; set; }
         public string ColorName { get; set; }
         public string SoleName { get; set; }
         public decimal PriceProductDetail { get; set; }

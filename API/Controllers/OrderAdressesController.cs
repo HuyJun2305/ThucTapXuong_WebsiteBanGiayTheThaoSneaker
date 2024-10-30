@@ -45,7 +45,7 @@ namespace API.Controllers
 		}
 
 		// PUT api/<OrderAdressesController>/5
-		[HttpPut("OrderId/{id}")]
+		[HttpPut("{id}")]
 		public async Task<ActionResult<OrderAdress>> Put(Guid id, OrderAdress orderAdress)
 		{
 			try

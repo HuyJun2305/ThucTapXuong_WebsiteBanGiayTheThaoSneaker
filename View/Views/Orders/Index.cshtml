@@ -25,10 +25,13 @@
                 @Html.DisplayNameFor(model => model.Status)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OrderAddressId)
+                @Html.DisplayNameFor(model => model.OrderAddress.Id)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WhoCreateThis)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Voucher)
@@ -55,10 +58,13 @@
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.OrderAddressId)
+                @Html.DisplayFor(modelItem => item.OrderAddress.Id)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.UserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WhoCreateThis)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Voucher.Condition)

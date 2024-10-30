@@ -1,4 +1,6 @@
-﻿namespace View.ViewModel
+﻿using DataProcessing.Models;
+
+namespace View.ViewModel
 {
     public class ProductAndDetailViewModel
     {
@@ -16,7 +18,10 @@
 
         // Danh sách chi tiết sản phẩm
         public List<ProductDetailViewModel> ProductDetails { get; set; } = new List<ProductDetailViewModel>();
-    }
+
+        // Danh sách ảnh của màu
+        public IEnumerable<Image>? Images { get; set; }
+	}
 
     public class ProductDetailViewModel
     {
@@ -27,5 +32,11 @@
         public float Weight { get; set; }
         public Guid ColorId { get; set; }
         public Guid SizeId { get; set; }
+    }
+
+    public class selectedImageVM
+    {
+        public string Url { get; set; }
+        public string colorId { get; set; }
     }
 }

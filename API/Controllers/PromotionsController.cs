@@ -9,6 +9,7 @@ using API.Data;
 using DataProcessing.Models;
 using API.IRepositories;
 using API.Repositories;
+using Data.ViewModels;
 
 namespace API.Controllers
 {
@@ -66,15 +67,8 @@ namespace API.Controllers
            
             try
             {
-                var promotionupdate = await _PromorionRepos.GetPromotionById(promotion.Id);
-                promotionupdate.Name = promotion.Name;
-                promotionupdate.ProductDetailPromotions = promotion.ProductDetailPromotions;
-                promotionupdate.StartDate = promotion.StartDate;
-                promotionupdate.EndDate = promotion.EndDate;
-                promotionupdate.DiscountValue = promotion.DiscountValue;
-                promotionupdate.Status = promotion.Status;
 
-                await _PromorionRepos.Update(promotionupdate);
+                await _PromorionRepos.Update(promotion);
                 await _PromorionRepos.SaveChanges();
             }
             catch (KeyNotFoundException)
@@ -119,6 +113,20 @@ namespace API.Controllers
             catch (KeyNotFoundException)
             {
                 return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+        [HttpGet("ProductDetailsPromotion")]
+        public async Task<ActionResult<IEnumerable<ProductDetailsPromotionViewModel>>> GetAllProductDetailsPromotion()
+        {
+            try
+            {
+                var ProductDetailsPromotion = await _PromorionRepos.GetAllProductDetailsPromotion();
+                return Ok(ProductDetailsPromotion);
+
             }
             catch (Exception ex)
             {

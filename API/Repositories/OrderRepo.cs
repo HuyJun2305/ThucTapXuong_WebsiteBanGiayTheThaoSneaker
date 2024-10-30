@@ -30,7 +30,6 @@ namespace API.Repositories
 			var data = await _context.Orders.Where(o => o.UserId == userId)
 				.Include(o => o.Voucher)
 				.Include(o => o.ShippingUnit)
-				.Include(o => o.User)
 				.Include(o => o.OrderAddress)
 				.ToListAsync();
 			return data;
@@ -41,7 +40,6 @@ namespace API.Repositories
 			return await _context.Orders
 				.Include(o => o.ShippingUnit)
 				.Include(o => o.Voucher)
-				.Include(o => o.User)
 				.Include(o => o.OrderAddress)
 				.ToListAsync();
 		}
@@ -51,7 +49,6 @@ namespace API.Repositories
 			return await _context.Orders.Where(o => o.Id == id)
 				.Include(o => o.ShippingUnit)
 				.Include(o => o.Voucher)
-				.Include(o => o.User)
 				.Include(o => o.OrderAddress)
 				.FirstOrDefaultAsync();
 		}

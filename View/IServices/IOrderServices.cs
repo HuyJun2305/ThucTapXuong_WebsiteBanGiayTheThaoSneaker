@@ -14,12 +14,19 @@ namespace View.IServices
 		Task AddPayment(PaymentHistory payment);
 		Task ChangeStatus(Guid UserIdCreateThis, Guid OrderId); // OrderHistory
 		Task BackStatus(Guid UserIdCreateThis, Guid OrderId); // OrderHistory
+		Task CancelOrder(Guid UserIdCreateThis, Guid OrderId); // OrderHistory
 		Task<IEnumerable<OrderHistory>> GetOrderHistoriesByOrderId(Guid id);
 		Task<IEnumerable<OrderDetail>> GetAllOrderDetailsByOrderId(Guid id);
 		Task AddToOrder(OrderDetail order);
 		Task DeleteFromOrder(Guid id);
 		Task ChangeStock(int stock, Guid orderDetailId);
-
 		Task<IEnumerable<ProductDetail>> GetProductDetails();
+
+		Task<OrderAdress?> GetOrderAddressByOrderId(Guid id);
+		Task ChangeOrderAddress(OrderAdress orderAdress);
+		Task AddOrderAddress(OrderAdress orderAdress);
+
+		//Customer
+		Task<IEnumerable<ApplicationUser>> GetAllCustomers();
 	}
 }

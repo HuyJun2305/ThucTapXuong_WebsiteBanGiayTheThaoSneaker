@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-    public partial class Toanton : Migration
+    public partial class all_db : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -104,24 +104,6 @@ namespace API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Materials", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrderAdresses",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RecipientName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AddressDetail = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    District = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Commune = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderAdresses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -452,26 +434,14 @@ namespace API.Migrations
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OrderAddressId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    OrderAddressId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    WhoCreateThis = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     VoucherId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ShippingUnitID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Orders_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Orders_OrderAdresses_OrderAddressId1",
-                        column: x => x.OrderAddressId1,
-                        principalTable: "OrderAdresses",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Orders_ShippingUnits_ShippingUnitID",
                         column: x => x.ShippingUnitID,
@@ -515,6 +485,30 @@ namespace API.Migrations
                         name: "FK_ProductDetails_Sizes_SizeId",
                         column: x => x.SizeId,
                         principalTable: "Sizes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderAdresses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RecipientName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AddressDetail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    District = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Commune = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderAdresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderAdresses_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -652,10 +646,10 @@ namespace API.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("1d1b5755-f0c8-4529-8256-96c27d2c32b2"), "2d7e1bf6-2073-4603-b17d-12d450fdade0", "Customer", "CUSTOMER" },
-                    { new Guid("5c5d8502-5037-4b24-ae85-9474a57d36cb"), "73e7637d-7f49-45c6-8c07-cbb99bdaa4fb", "Admin", "ADMIN" },
-                    { new Guid("7dd3d023-9200-4060-b6a1-d64a9ec88581"), "e0761402-78d6-41eb-889a-b8d0da86e9c4", "Employee", "EMPLOYEE" },
-                    { new Guid("b9a7342a-df20-48d2-aff9-1f50c6e6eb50"), "861f9e5f-1fc0-4e49-bfdc-f4a09bb53fa3", "Guest", "GUEST" }
+                    { new Guid("88f63d7f-e8a9-4ba8-b2d6-9a993c7c22ef"), "4c5d0e77-a44a-41c3-ab70-588aa6163b89", "Admin", "ADMIN" },
+                    { new Guid("b403fcbb-b9ff-4154-bc38-6177c12ba5db"), "b9242cee-ad37-4346-a155-2f30266d5b7b", "Guest", "GUEST" },
+                    { new Guid("ba1fd919-8ea5-4d55-a8e5-07580ed5f815"), "5cae457f-6276-4eb3-b7e6-2c97cd031e99", "Employee", "EMPLOYEE" },
+                    { new Guid("fbd6de74-0625-4eab-b9c6-05dad76cf39c"), "42c6ae35-73bd-4194-ad98-6c5bd7784a5a", "Customer", "CUSTOMER" }
                 });
 
             migrationBuilder.InsertData(
@@ -663,8 +657,8 @@ namespace API.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "Birthday", "CIC", "ConcurrencyStamp", "Email", "EmailConfirmed", "ImageURL", "IsSubscribedToNews", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("f7e252d9-557d-4cdc-8803-4c203e1d2d6f"), 0, null, "002204004364", "c667f890-e561-4408-9820-3aab598f0046", "admin@example.com", false, null, false, true, null, "Admin User", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAEAACcQAAAAEJl/O8P2j+OY1PVgK7l6znh73fxIGNKjOBzC4UJWilrWyznRUHNxfq34oWSjVUFbAA==", "0123456789", false, "fc5375dd-0a68-43e5-840e-9f190f37b2f2", false, "admin@example.com" },
-                    { new Guid("ff3239e9-f2be-40ae-b03b-afabc02a1cd4"), 0, null, "004204004364", "0db530d4-9ee0-401f-b640-e55ad07384f7", "user@example.com", false, null, false, true, null, "Regular User", "USER@EXAMPLE.COM", "USER@EXAMPLE.COM", "AQAAAAEAACcQAAAAENpIMNgkDvVxFWbCtk2kuzyadZIsWv1CsNFtUk7QKKOors48O9TJ2fqXrJ9K98ZdiA==", "0987654321", false, "afc87b35-d231-41dd-9002-f24723ff3f3c", false, "user@example.com" }
+                    { new Guid("4c8d81c2-5ae5-4f55-8c67-857bb3d6a3ba"), 0, null, "002204004364", "903658f4-95ce-4f51-a5c0-d189eb7c3c84", "admin@example.com", false, null, false, true, null, "Admin User", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAEAACcQAAAAEJig+wBm1MvYR5kc1+11OBtvP0IIzC+FOaqd5wGdjrt+RHnwFjQZFxgNcHyX8xgJBA==", "0123456789", false, "e2dd5cb0-f3a0-485f-bc74-bee6ad86e65e", false, "admin@example.com" },
+                    { new Guid("caf760e0-11b8-403d-be57-e4e1a79a2b20"), 0, null, "004204004364", "893fae1c-59f3-4338-8235-9815819cdb43", "user@example.com", false, null, false, true, null, "Regular User", "USER@EXAMPLE.COM", "USER@EXAMPLE.COM", "AQAAAAEAACcQAAAAEO/4/E/3/YS9dWWkq0iWhIrL3fqORCaQqJt10jeNu/nFIL41CKI+Y37SP+2BMD2gVg==", "0987654321", false, "36b40238-97c6-4b6f-aaa9-01f3696e2bbe", false, "user@example.com" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -738,6 +732,12 @@ namespace API.Migrations
                 column: "ColorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderAdresses_OrderId",
+                table: "OrderAdresses",
+                column: "OrderId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_OrderId",
                 table: "OrderDetails",
                 column: "OrderId");
@@ -753,19 +753,9 @@ namespace API.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_OrderAddressId1",
-                table: "Orders",
-                column: "OrderAddressId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Orders_ShippingUnitID",
                 table: "Orders",
                 column: "ShippingUnitID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Orders_UserId1",
-                table: "Orders",
-                column: "UserId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_VoucherId",
@@ -855,6 +845,9 @@ namespace API.Migrations
                 name: "Images");
 
             migrationBuilder.DropTable(
+                name: "OrderAdresses");
+
+            migrationBuilder.DropTable(
                 name: "OrderDetails");
 
             migrationBuilder.DropTable(
@@ -886,9 +879,6 @@ namespace API.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "OrderAdresses");
 
             migrationBuilder.DropTable(
                 name: "ShippingUnits");

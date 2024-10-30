@@ -18,5 +18,8 @@ namespace View.IServices
                Guid? brandId = null,
                Guid? soleId = null,
                Guid? materialId = null);
+
+       Task<List<ProductDetail>> GetAllProductDetailByProductId(Guid id);
+
     }
 }

@@ -82,14 +82,14 @@ namespace API.Data
             //    .HasForeignKey(o => o.AddressId)
             //    .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Address>()
-                .HasOne(a => a.User)
-                .WithMany()
-                .HasForeignKey(a => a.AccountId)
-                .OnDelete(DeleteBehavior.Restrict);
-            //SeedData for Account
-           var adminRoleId = Guid.NewGuid();
-           var customerRoleId = Guid.NewGuid();
+            //modelBuilder.Entity<Address>()
+            //    .HasOne(a => a.User)
+            //    .WithMany()
+            //    .HasForeignKey(a => a.AccountId)
+            //    .OnDelete(DeleteBehavior.Restrict);
+            // SeedData for Account
+            var adminRoleId = Guid.NewGuid();
+            var customerRoleId = Guid.NewGuid();
             var employeeRoleId = Guid.NewGuid();
             var guestRoleId = Guid.NewGuid();
 
@@ -159,18 +159,18 @@ namespace API.Data
 
             );
 
-            //modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
-            //    new IdentityUserRole<Guid>
-            //    {
-            //        UserId = adminUserId,
-            //        RoleId = adminRoleId
-            //    },
-            //    new IdentityUserRole<Guid>
-            //    {
-            //        UserId = CustomerUserId,
-            //        RoleId = customerRoleId
-            //    }
-            //);
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
+                new IdentityUserRole<Guid>
+                {
+                    UserId = adminUserId,
+                    RoleId = adminRoleId
+                },
+                new IdentityUserRole<Guid>
+                {
+                    UserId = CustomerUserId,
+                    RoleId = customerRoleId
+                }
+            );
         }
 
 
