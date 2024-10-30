@@ -67,15 +67,8 @@ namespace API.Controllers
            
             try
             {
-                var promotionupdate = await _PromorionRepos.GetPromotionById(promotion.Id);
-                promotionupdate.Name = promotion.Name;
-                promotionupdate.ProductDetailPromotions = promotion.ProductDetailPromotions;
-                promotionupdate.StartDate = promotion.StartDate;
-                promotionupdate.EndDate = promotion.EndDate;
-                promotionupdate.DiscountValue = promotion.DiscountValue;
-                promotionupdate.Status = promotion.Status;
 
-                await _PromorionRepos.Update(promotionupdate);
+                await _PromorionRepos.Update(promotion);
                 await _PromorionRepos.SaveChanges();
             }
             catch (KeyNotFoundException)
