@@ -9,6 +9,7 @@ using DataProcessing.Models;
 using View.IServices;
 using View.Servicecs;
 using View.ViewModel;
+using Newtonsoft.Json;
 
 namespace View.Controllers
 {
@@ -108,14 +109,13 @@ namespace View.Controllers
 
             return View(voucher);
         }
-
         // GET: Vouchers/Create
         public async Task<IActionResult> Create()
         {
             var model = new VoucherViewModel
             {
                 Voucher = new Voucher(),
-                Accounts = await _voucherService.GetAllAccounts(), // Lấy danh sách các tài khoản từ dịch vụ
+                Accounts = await _voucherService.GetAllAccounts(),
                 CurrentPage = 1,
                 TotalPages = 1
             };
@@ -130,20 +130,38 @@ namespace View.Controllers
             if (ModelState.IsValid)
             {
                 model.Voucher.Id = Guid.NewGuid();
+                Console.WriteLine("Voucher data:", JsonConvert.SerializeObject(model.Voucher)); // Log dữ liệu voucher trước khi gửi
+
                 try
                 {
                     await _voucherService.Create(model.Voucher);
+                    Console.WriteLine("Voucher created and sent to API successfully.");
                     return RedirectToAction(nameof(Index));
                 }
                 catch (ArgumentException ex)
                 {
                     ModelState.AddModelError(string.Empty, ex.Message);
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error creating voucher: {ex.Message}");
+                    ModelState.AddModelError(string.Empty, "Đã xảy ra lỗi khi tạo voucher.");
+                }
             }
-            // Reload danh sách Accounts khi xảy ra lỗi
+            else
+            {
+                Console.WriteLine("ModelState is invalid. Errors:");
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                }
+            }
+
             model.Accounts = await _voucherService.GetAllAccounts();
             return View(model);
         }
+
+
 
 
 

@@ -1,7 +1,6 @@
 ﻿@using View.ViewModel
 @model VoucherViewModel
 
-
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
@@ -12,61 +11,94 @@
         <!-- Form Tạo Voucher -->
         <div class="col-md-6">
             <h4 class="mb-4">Tạo phiếu giảm giá</h4>
-            <form asp-action="Create">
+            <form asp-action="Create" asp-controller="Voucher" method="post">
                 <div class="form-group mb-3">
                     <label for="VoucherCode">Mã phiếu giảm giá</label>
-                    <input type="text" class="form-control" id="VoucherCode" name="VoucherCode" required />
+                    <input type="text" class="form-control" id="VoucherCode" name="Voucher.VoucherCode" required />
+                    <span asp-validation-for="Voucher.VoucherCode" class="text-danger"></span>
                 </div>
 
                 <div class="form-group mb-3">
                     <label for="Name">Tên phiếu giảm giá</label>
-                    <input type="text" class="form-control" id="Name" name="Name" required />
+                    <input type="text" class="form-control" id="Name" name="Voucher.Name" required />
+                    <span asp-validation-for="Voucher.Name" class="text-danger"></span>
                 </div>
 
                 <div class="form-group mb-3">
-                    <label for="DiscountValue">Giá trị giảm giá</label>
-                    <div class="input-group">
-                        <input type="number" class="form-control" id="DiscountValue" name="DiscountValue" required />
-                        <span class="input-group-text">%</span>
-                    </div>
+                    <label for="DiscountType">Loại giảm giá</label>
+                    <select class="form-control" id="DiscountType" name="Voucher.DiscountType" required>
+                        <option value="Percent">Phần trăm</option>
+                        <option value="Amount">Tiền</option>
+                    </select>
+                    <span asp-validation-for="Voucher.DiscountType" class="text-danger"></span>
                 </div>
 
                 <div class="form-group mb-3">
-                    <label for="MaxDiscountValue">Giá trị tối đa</label>
-                    <div class="input-group">
-                        <input type="number" class="form-control" id="MaxDiscountValue" name="MaxDiscountValue" />
-                        <span class="input-group-text">VND</span>
-                    </div>
+                    <label for="DiscountPercent">Giá trị giảm phần trăm</label>
+                    <input type="number" class="form-control" id="DiscountPercent" name="Voucher.DiscountPercent" step="0.01" min="0" max="100" />
+                    <span asp-validation-for="Voucher.DiscountPercent" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="DiscountAmount">Giá trị giảm tiền</label>
+                    <input type="number" class="form-control" id="DiscountAmount" name="Voucher.DiscountAmount" step="0.01" min="0" />
+                    <span asp-validation-for="Voucher.DiscountAmount" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="MaxDiscountValue">Giá trị giảm tối đa</label>
+                    <input type="number" class="form-control" id="MaxDiscountValue" name="Voucher.MaxDiscountValue" step="0.01" min="0" />
+                    <span asp-validation-for="Voucher.MaxDiscountValue" class="text-danger"></span>
                 </div>
 
                 <div class="form-group mb-3">
                     <label for="Stock">Số lượng</label>
-                    <input type="number" class="form-control" id="Stock" name="Stock" required />
+                    <input type="number" class="form-control" id="Stock" name="Voucher.Stock" min="0" required />
+                    <span asp-validation-for="Voucher.Stock" class="text-danger"></span>
                 </div>
 
                 <div class="form-group mb-3">
                     <label for="Condition">Điều kiện áp dụng</label>
-                    <input type="text" class="form-control" id="Condition" name="Condition" />
+                    <input type="text" class="form-control" id="Condition" name="Voucher.Condition" />
+                    <span asp-validation-for="Voucher.Condition" class="text-danger"></span>
                 </div>
 
                 <div class="form-group mb-3">
                     <label for="StartDate">Từ ngày</label>
-                    <input type="datetime-local" class="form-control" id="StartDate" name="StartDate" required />
+                    <input type="datetime-local" class="form-control" id="StartDate" name="Voucher.StartDate" required />
+                    <span asp-validation-for="Voucher.StartDate" class="text-danger"></span>
                 </div>
 
                 <div class="form-group mb-3">
                     <label for="EndDate">Đến ngày</label>
-                    <input type="datetime-local" class="form-control" id="EndDate" name="EndDate" required />
+                    <input type="datetime-local" class="form-control" id="EndDate" name="Voucher.EndDate" required />
+                    <span asp-validation-for="Voucher.EndDate" class="text-danger"></span>
                 </div>
 
                 <div class="form-group mb-3">
                     <label>Kiểu</label>
                     <div>
-                        <input class="me-1" type="radio" id="Public" name="Type" value="Public" checked />
+                        <input class="me-1" type="radio" id="Public" name="Voucher.Type" value="Public" checked />
                         <label class="me-3" for="Public">Công khai</label>
-                        <input class="me-1" type="radio" id="Private" name="Type" value="Private" />
+                        <input class="me-1" type="radio" id="Private" name="Voucher.Type" value="Private" />
                         <label class="me-3" for="Private">Cá nhân</label>
                     </div>
+                    <span asp-validation-for="Voucher.Type" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="Status">Trạng thái</label>
+                    <select class="form-control" id="Status" name="Voucher.Status" required>
+                        <option value="true">Hoạt động</option>
+                        <option value="false">Không hoạt động</option>
+                    </select>
+                    <span asp-validation-for="Voucher.Status" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="AccountId">ID tài khoản (nếu có)</label>
+                    <input type="text" class="form-control" id="AccountId" name="Voucher.AccountId" />
+                    <span asp-validation-for="Voucher.AccountId" class="text-danger"></span>
                 </div>
 
                 <button type="submit" class="btn btn-success mb-3">Tạo Voucher</button>
@@ -99,15 +131,13 @@
                                 <td>@account.Name</td>
                                 <td>@account.PhoneNumber</td>
                                 <td>@account.Email</td>
-                                <td>@account.Birthday?.ToString("dd-MM-yyyy")</td> <!-- Sử dụng '?' để kiểm tra null -->
+                                <td>@account.Birthday?.ToString("dd-MM-yyyy")</td>
                             </tr>
                         }
-
                     </tbody>
                 </table>
             </div>
 
-            <!-- Phân Trang -->
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center mt-3">
                     <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
@@ -133,23 +163,23 @@
         </div>
     </div>
 </div>
+
+<!-- Button for back to list -->
 <div class="form-group mb-3 d-flex justify-content-end">
-    <button type="submit" class="btn custom-dark-gray float-end"><a asp-action="Index">Back to List</a></button>
+    <a class="btn custom-dark-gray" asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
     <style>
         .custom-dark-gray {
-            background-color: none; /* Màu xám tối */
-            color: white; /* Chữ màu trắng để dễ đọc */
-            border-color: black ;
+            background-color: #23272b;
+            color: white;
+            border-color: black;
         }
 
-        .custom-dark-gray:hover {
-            background-color: #23272b; /* Màu khi hover (xám tối hơn) */
-        }
+            .custom-dark-gray:hover {
+                background-color: #1c1f23;
+            }
     </style>
 }

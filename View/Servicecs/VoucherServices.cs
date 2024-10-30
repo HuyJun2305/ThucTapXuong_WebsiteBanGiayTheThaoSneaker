@@ -17,14 +17,22 @@ namespace View.Servicecs
         // Create Voucher
         public async Task Create(Voucher voucher)
         {
+            Console.WriteLine("Attempting to create voucher..."); // Log này giúp xác nhận rằng Create đang được gọi
             var response = await _httpClient.PostAsJsonAsync("https://localhost:7170/api/Voucher", voucher);
 
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Failed to create voucher. Status Code: {response.StatusCode}, Error: {errorContent}");
                 throw new Exception($"Failed to create voucher. Status Code: {response.StatusCode}, Error: {errorContent}");
             }
+            else
+            {
+                Console.WriteLine("Voucher created successfully.");
+            }
         }
+
+
 
         // Delete Voucher
         public async Task Delete(Guid id)
