@@ -10,5 +10,6 @@ namespace View.IServices
         Task Update(Voucher voucher);
         Task Delete(Guid id);
         Task<List<ApplicationUser>> GetAllAccounts();
+        Task<bool> IsVoucherCodeUnique(string voucherCode);
     }
 }

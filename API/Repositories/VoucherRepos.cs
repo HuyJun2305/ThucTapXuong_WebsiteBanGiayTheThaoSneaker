@@ -15,7 +15,11 @@ namespace API.Repositories
         }
         public async Task create(Voucher voucher)
         {
-            if (await GetById(voucher.Id) != null) throw new DuplicateWaitObjectException($"Voucher : {voucher.Id} is existed!");
+            // Kiểm tra trùng lặp VoucherCode trước khi thêm
+            if (await _context.Vouchers.AnyAsync(v => v.VoucherCode == voucher.VoucherCode))
+            {
+                throw new ArgumentException("Mã phiếu giảm giá đã tồn tại.");
+            }
 
             // Kiểm tra tính hợp lệ của voucher trước khi thêm
             ValidateVoucher(voucher);
@@ -45,6 +49,11 @@ namespace API.Repositories
         public async Task<Voucher> GetById(Guid id)
         {
             return await _context.Vouchers.FindAsync(id);
+        }
+
+        public async Task<bool> IsVoucherCodeUnique(string voucherCode)
+        {
+            return !await _context.Vouchers.AnyAsync(v => v.VoucherCode == voucherCode);
         }
 
         public async Task SaveChanges()

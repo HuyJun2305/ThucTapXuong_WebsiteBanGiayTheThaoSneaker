@@ -46,6 +46,12 @@ namespace API.Controllers
             if (voucher == null)
                 return BadRequest(new { Message = "Invalid voucher data." });
 
+            var isVoucherCodeUnique = await _voucherRepos.IsVoucherCodeUnique(voucher.VoucherCode);
+            if (!isVoucherCodeUnique)
+            {
+                return BadRequest(new { Message = "Mã phiếu giảm giá đã tồn tại." });
+            }
+
             try
             {
                 await _voucherRepos.create(voucher);
@@ -108,6 +114,14 @@ namespace API.Controllers
             {
                 return BadRequest(new { Message = ex.Message });
             }
+        }
+
+        // GET: api/voucher/is-voucher-code-unique?voucherCode=XXXX
+        [HttpGet("is-voucher-code-unique")]
+        public async Task<IActionResult> IsVoucherCodeUnique([FromQuery] string voucherCode)
+        {
+            var isUnique = await _voucherRepos.IsVoucherCodeUnique(voucherCode);
+            return Ok(isUnique); // trả về true nếu VoucherCode là duy nhất, false nếu trùng lặp
         }
 
         // GET: api/voucher/applicable

@@ -18,6 +18,7 @@
                     <span asp-validation-for="Voucher.VoucherCode" class="text-danger"></span>
                 </div>
 
+
                 <div class="form-group mb-3">
                     <label for="Name">Tên phiếu giảm giá</label>
                     <input type="text" class="form-control" id="Name" name="Voucher.Name" required />
@@ -78,10 +79,10 @@
                 <div class="form-group mb-3">
                     <label>Kiểu</label>
                     <div>
-                        <input class="me-1" type="radio" id="Public" name="Voucher.Type" value="Public" checked />
-                        <label class="me-3" for="Public">Công khai</label>
-                        <input class="me-1" type="radio" id="Private" name="Voucher.Type" value="Private" />
-                        <label class="me-3" for="Private">Cá nhân</label>
+                        <input class="me-1" type="radio" id="Công khai" name="Voucher.Type" value="Công khai" checked />
+                        <label class="me-3" for="Công khai">Công khai</label>
+                        <input class="me-1" type="radio" id="Cá nhân" name="Voucher.Type" value="Cá nhân" />
+                        <label class="me-3" for="Cá nhân">Cá nhân</label>
                     </div>
                     <span asp-validation-for="Voucher.Type" class="text-danger"></span>
                 </div>
@@ -171,6 +172,31 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Hàm kiểm tra tính duy nhất của VoucherCode
+        document.getElementById("VoucherCode").addEventListener("input", function () {
+            var voucherCode = this.value;
+            if (voucherCode) {
+                $.ajax({
+                    url: '@Url.Action("IsVoucherCodeUnique", "Voucher")',
+                    type: 'GET',
+                    data: { voucherCode: voucherCode },
+                    success: function (isUnique) {
+                        if (!isUnique) {
+                            $("#voucherCodeError").text("Mã phiếu giảm giá đã tồn tại.");
+                        } else {
+                            $("#voucherCodeError").text("");
+                        }
+                    },
+                    error: function () {
+                        $("#voucherCodeError").text("Đã xảy ra lỗi khi kiểm tra mã phiếu giảm giá.");
+                    }
+                });
+            } else {
+                $("#voucherCodeError").text("");
+            }
+        });
+    </script>
     <style>
         .custom-dark-gray {
             background-color: #23272b;

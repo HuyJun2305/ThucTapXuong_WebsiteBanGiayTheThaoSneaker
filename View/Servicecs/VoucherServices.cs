@@ -1,4 +1,5 @@
 ﻿using DataProcessing.Models;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Net.Http.Json;
 using View.IServices;
@@ -17,22 +18,19 @@ namespace View.Servicecs
         // Create Voucher
         public async Task Create(Voucher voucher)
         {
-            Console.WriteLine("Attempting to create voucher..."); // Log này giúp xác nhận rằng Create đang được gọi
             var response = await _httpClient.PostAsJsonAsync("https://localhost:7170/api/Voucher", voucher);
 
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Failed to create voucher. Status Code: {response.StatusCode}, Error: {errorContent}");
+                // Kiểm tra nếu thông báo lỗi liên quan đến trùng mã VoucherCode
+                if (response.StatusCode == System.Net.HttpStatusCode.BadRequest && errorContent.Contains("Mã phiếu giảm giá đã tồn tại"))
+                {
+                    throw new ArgumentException("Mã phiếu giảm giá đã tồn tại.");
+                }
                 throw new Exception($"Failed to create voucher. Status Code: {response.StatusCode}, Error: {errorContent}");
             }
-            else
-            {
-                Console.WriteLine("Voucher created successfully.");
-            }
         }
-
-
 
         // Delete Voucher
         public async Task Delete(Guid id)
@@ -92,6 +90,21 @@ namespace View.Servicecs
             var responseString = await response.Content.ReadAsStringAsync();
             var voucher = JsonConvert.DeserializeObject<Voucher>(responseString);
             return voucher;
+        }
+
+        // Kiểm tra tính duy nhất của VoucherCode bằng cách gọi API
+        public async Task<bool> IsVoucherCodeUnique(string voucherCode)
+        {
+            var response = await _httpClient.GetAsync($"https://localhost:7170/api/Voucher/is-voucher-code-unique?voucherCode={voucherCode}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Failed to check uniqueness of voucher code. Status Code: {response.StatusCode}, Error: {errorContent}");
+            }
+
+            var isUnique = await response.Content.ReadAsStringAsync();
+            return bool.Parse(isUnique); // trả về kết quả kiểm tra tính duy nhất của mã voucher
         }
 
         // Update Voucher

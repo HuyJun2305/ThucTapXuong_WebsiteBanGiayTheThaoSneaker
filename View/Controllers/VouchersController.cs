@@ -129,18 +129,15 @@ namespace View.Controllers
         {
             if (ModelState.IsValid)
             {
-                model.Voucher.Id = Guid.NewGuid();
-                Console.WriteLine("Voucher data:", JsonConvert.SerializeObject(model.Voucher)); // Log dữ liệu voucher trước khi gửi
-
                 try
                 {
+                    model.Voucher.Id = Guid.NewGuid();
                     await _voucherService.Create(model.Voucher);
-                    Console.WriteLine("Voucher created and sent to API successfully.");
                     return RedirectToAction(nameof(Index));
                 }
                 catch (ArgumentException ex)
                 {
-                    ModelState.AddModelError(string.Empty, ex.Message);
+                    ModelState.AddModelError("Voucher.VoucherCode", ex.Message);
                 }
                 catch (Exception ex)
                 {
@@ -148,22 +145,10 @@ namespace View.Controllers
                     ModelState.AddModelError(string.Empty, "Đã xảy ra lỗi khi tạo voucher.");
                 }
             }
-            else
-            {
-                Console.WriteLine("ModelState is invalid. Errors:");
-                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    Console.WriteLine(error.ErrorMessage);
-                }
-            }
 
-            model.Accounts = await _voucherService.GetAllAccounts();
-            return View(model);
+            model.Accounts = await _voucherService.GetAllAccounts(); // Đảm bảo danh sách Accounts vẫn được tải lại khi có lỗi
+            return View(model); // Trả lại view với các thông báo lỗi nếu có
         }
-
-
-
-
 
 
         // GET: Vouchers/Edit/5
@@ -240,6 +225,12 @@ namespace View.Controllers
                 return View(await _voucherService.GetVoucherById(id));
             }
             return RedirectToAction(nameof(Index));
+        }
+        [HttpGet]
+        public async Task<JsonResult> IsVoucherCodeUnique(string voucherCode)
+        {
+            bool isUnique = await _voucherService.IsVoucherCodeUnique(voucherCode);
+            return Json(isUnique); // trả về true nếu là duy nhất, ngược lại là false
         }
     }
 }

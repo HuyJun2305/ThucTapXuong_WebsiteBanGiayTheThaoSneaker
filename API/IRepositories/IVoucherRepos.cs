@@ -9,6 +9,7 @@ namespace API.IRepositories
         Task create(Voucher voucher);
         Task update(Voucher voucher);
         Task delete(Guid id);
+        Task<bool> IsVoucherCodeUnique(string voucherCode);
         Task SaveChanges();
     }
 }
