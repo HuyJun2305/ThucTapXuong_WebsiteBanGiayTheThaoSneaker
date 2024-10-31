@@ -112,7 +112,7 @@ namespace API.Repositories
                 if (result.Succeeded)
                 {
                     //await CreateCartForUser(account.Id);
-                    var roleResult = await _userManager.AddToRoleAsync(account, "Employee");
+                    var roleResult = await _userManager.AddToRoleAsync(account, "Customer");
                 }
                 return result;
             }
