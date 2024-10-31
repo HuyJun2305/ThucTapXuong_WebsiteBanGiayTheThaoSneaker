@@ -41,7 +41,7 @@ namespace View.Controllers
 
             var orders = new CounterSalesVM()
             {
-                Products = _productDetailService.GetAllProductDetail().Result,
+                Products = _orderServices.GetProductDetails().Result,
                 Customers = _accountService.GetAllCustomer().Result,
                 Orders = _orderServices.GetAllOrdersByStatus().Result.Where(o => o.WhoCreateThis == Guid.Parse(userId) && o.Status == "Tạo đơn hàng"),
             };

@@ -32,6 +32,7 @@ namespace API.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<OrderHistory> OrderHistories { get; set; }
+        public DbSet<OrderAdress> orderAdresses { get; set; }
         public DbSet<PaymentHistory> PaymentHistories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductDetail> ProductDetails { get; set; }
