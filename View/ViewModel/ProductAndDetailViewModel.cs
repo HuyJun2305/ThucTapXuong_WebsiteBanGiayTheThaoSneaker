@@ -34,6 +34,12 @@ namespace View.ViewModel
         public Guid SizeId { get; set; }
     }
 
+    public class ProductIndexVM
+    {
+        public IEnumerable<Product>? Products { get; set; }
+        public IEnumerable<SelectedImage>? ImagesForProduct { get; set; } 
+    }
+
     public class selectedImageVM
     {
         public string Url { get; set; }
