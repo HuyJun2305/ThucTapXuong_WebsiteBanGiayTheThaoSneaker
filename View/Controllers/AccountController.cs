@@ -249,19 +249,30 @@ namespace View.Controllers
         {
             return View();
         }
-        // thêm các thông báo lỗi khi đăng ký thất bại 
         [HttpPost]
         public async Task<IActionResult> SignUp(SignUpModel account)
         {
             try
-            {             
-                await _accountService.SignUpAsync(account);
-                return RedirectToAction("Login", "Account");
-            }
-            catch
             {
-                return View();
+                var result = await _accountService.SignUpAsync(account);
+
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View("SignUp", account); 
+                }
+                TempData["Success"] = "Đăng ký thành công";
+                return RedirectToAction("Login", "Account"); 
             }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "Đã xảy ra lỗi: " + ex.Message);
+            }
+            return View(account);
         }
+
     }
 }

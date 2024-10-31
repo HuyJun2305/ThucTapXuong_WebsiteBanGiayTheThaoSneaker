@@ -63,13 +63,16 @@ namespace View.Controllers
 
 		// GET: Products/Details/5
 		public async Task<IActionResult> Details(Guid id)
-		{
-			var product = _productServices.GetProductById(id);
-			return View(product);
-		}
+		{	
 
-		// GET: Products/Create
-		public IActionResult Create()
+            var productDetails =  await _productDetailService.GetAllProductDetailByProductId(id);
+            return Json( new { success = true, productDetails });
+        }
+
+
+        
+        // GET: Products/Create
+        public IActionResult Create()
 		{
 			ViewData["BrandId"] = new SelectList(_brandServices.GetAllBrands().Result.Where(x => x.Status), "Id", "Name");
 			ViewData["CategoryId"] = new SelectList(_categoryServices.GetAllCategories().Result.Where(x => x.Status), "Id", "Name");
