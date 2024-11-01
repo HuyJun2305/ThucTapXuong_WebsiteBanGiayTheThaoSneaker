@@ -10,7 +10,7 @@ namespace DataProcessing.Models
     public class CartDetail
     {
         public Guid Id { get; set; }
-        public decimal TotalPrice { get; set; }
+        public decimal TotalPrice { get; set; } = 0;
         public int Quanlity { get; set; }
 
         public Guid CartId { get; set; }
@@ -19,7 +19,6 @@ namespace DataProcessing.Models
         //test
 
         public string ProductDetailId { get; set; }
-        [JsonIgnore]
         public virtual ProductDetail? ProductDetail { get; set; }
     }
 }

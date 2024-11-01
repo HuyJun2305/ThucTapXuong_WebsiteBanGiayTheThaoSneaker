@@ -1,4 +1,4 @@
-﻿@model View.ViewModel.ProductIndexVM
+﻿@model IEnumerable<DataProcessing.Models.Product>
 
 @{
     ViewData["Title"] = "Index";
@@ -52,7 +52,6 @@
                         <tr>
                             <th>STT</th>
                             <th>Sản phẩm</th>
-                            <th>Ảnh</th>
                             <th>Loại</th>
                             <th>Đế giày</th>
                             <th>Thương hiệu</th>
@@ -61,27 +60,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model.Products)
+                        @foreach (var item in Model)
                         {
                             <tr>
                                 <td></td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Name)
-                                </td>
-                                <td>
-                                    <!-- Carousel Slide trong cột thứ hai (không có nút điều khiển) -->
-                                    <div id="productCarousel" class="carousel slide" data-ride="carousel" data-interval="3000" style="width: 100px;">
-
-                                        <!-- Slide ảnh -->
-                                        <div class="carousel-inner">
-                                            @foreach (var image in Model.ImagesForProduct.Where(i => i.ProductId == item.Id).Select((value, index) => new { value, index }))
-                                            {
-                                                <div class="carousel-item @(image.index == 0 ? "active" : "")">
-                                                    <img src="@Url.Content(image.value.URL)" alt="NotFound" style="width:100%; height:auto;">
-                                                </div>
-                                            }
-                                        </div>
-                                    </div>
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Category.Name)
@@ -96,8 +80,9 @@
                                     @Html.DisplayFor(modelItem => item.Material.Name)
                                 </td>
                                 <td>
+                                    <a asp-action="Details" class="details-button" data-id="@item.Id" data-bs-toggle="modal" data-bs-target="#detailsModal">Details</a> |
+                                    <a asp-action="Details" asp-route-id="@item.Id">Edit</a> |
                                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                                 </td>
                             </tr>
@@ -128,3 +113,71 @@
         </div>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailsModalLabel">Thông tin chi tiết sản phẩm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="productDetailsList">
+<!-- Chi tiết sản phẩm sẽ được nạp vào đây bằng JavaScript -->
+
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+            $(document).ready(function () {
+            $('.details-button').on('click', function () {
+                var productId = $(this).data('id');
+
+                // Gọi API hoặc sử dụng Ajax để lấy thông tin chi tiết sản phẩm
+        $.ajax({
+            url: '@Url.Action("Details", "Products")',
+            type: 'GET',
+            data: { id: productId },
+            beforeSend: function () {
+                $('#productDetailsList').append('<tr><td colspan="9">Sản phẩm chi tiết</td></tr>');
+            },
+            success: function (data) {
+                        console.log("Dữ liệu trả về:", data);
+
+                if (data) {
+                    console.log("Dữ liệu hợp lệ, đi vào câu lệnh if");
+
+                            // Thêm chi tiết sản phẩm mới vào bảng
+                            $('#productDetailsList').append(`
+                                <tr>
+                                    <td>${data.productDetails.id}</td>
+                                    <td>${data.productDetails.product?.name || 'Không xác định'}</td>
+                                    <td>${data.productDetails.price || 'Không xác định'}</td>
+                                    <td>${data.productDetails.color?.name || 'Không xác định'}</td>
+                                    <td>${data.productDetails.size?.value || 'Không xác định'}</td>
+                                    <td>${data.productDetails.product?.category?.name || 'Không xác định'}</td>
+                                    <td>${data.productDetails.product?.sole?.typeName || 'Không xác định'}</td>
+                                    <td>${data.productDetails.product?.brand?.name || 'Không xác định'}</td>
+                                    <td>${data.productDetails.product?.material?.name || 'Không xác định'}</td>
+                                    <td>${data.productDetails.product?.description || 'Chưa có mô tả'}</td>
+                         </tr>
+                    `);
+                } else {
+                    console.log("Dữ liệu không hợp lệ, đi vào câu lệnh else");
+                    $('#productDetailsList').append('<tr><td colspan="9">Không tìm thấy thông tin chi tiết cho sản phẩm này.</td></tr>');
+                    }
+                    },
+                    error: function () {
+                        $('#productDetailsList').append('<tr><td colspan="9">Không thể lấy thông tin sản phẩm.</td></tr>');
+                    }
+                });
+            });
+        });
+    </script>
+}
