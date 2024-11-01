@@ -12,14 +12,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241025015629_add_role")]
-    partial class add_role
+    [Migration("20241022025336_test")]
+    partial class test
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.35")
+                .HasAnnotation("ProductVersion", "6.0.33")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -62,9 +62,6 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ApplicationUserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -91,8 +88,6 @@ namespace API.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Addresses");
                 });
@@ -179,48 +174,6 @@ namespace API.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("8abdbfd0-6823-4be8-9942-3820c3eb684c"),
-                            AccessFailedCount = 0,
-                            CIC = "002204004364",
-                            ConcurrencyStamp = "0645c9e6-e261-4148-bbf5-a696cf8f5484",
-                            Email = "admin@example.com",
-                            EmailConfirmed = false,
-                            IsSubscribedToNews = false,
-                            LockoutEnabled = true,
-                            Name = "Admin User",
-                            NormalizedEmail = "ADMIN@EXAMPLE.COM",
-                            NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAENVRP8vdZKt5ssrnztBuYKD6Lq6DdfSCMxAnDU/gWDw+tToQ3ykobhuWhAZCEeLu2A==",
-                            PhoneNumber = "0123456789",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "3a2832b6-d03d-4c2b-80c3-4d7e9c119f59",
-                            TwoFactorEnabled = false,
-                            UserName = "admin@example.com"
-                        },
-                        new
-                        {
-                            Id = new Guid("c8842bc0-9f2a-41fd-8c8d-d1bfc954c6ca"),
-                            AccessFailedCount = 0,
-                            CIC = "004204004364",
-                            ConcurrencyStamp = "e4b0b82f-b2e9-4bb1-8369-5adda2ccfb3f",
-                            Email = "user@example.com",
-                            EmailConfirmed = false,
-                            IsSubscribedToNews = false,
-                            LockoutEnabled = true,
-                            Name = "Regular User",
-                            NormalizedEmail = "USER@EXAMPLE.COM",
-                            NormalizedUserName = "USER@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEZ3/AP3NhrwPzykVM5QlbpqkJfJYCoFpjG2wLJxz4DmftZVXGLlXri5cBG7BvCHQg==",
-                            PhoneNumber = "0987654321",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "f53b2501-1d35-488b-99e0-a506736b7396",
-                            TwoFactorEnabled = false,
-                            UserName = "user@example.com"
-                        });
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Brand", b =>
@@ -397,9 +350,6 @@ namespace API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("VoucherId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("WhoCreateThis")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -755,25 +705,18 @@ namespace API.Migrations
                     b.Property<Guid?>("AccountId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Condition")
+                    b.Property<string>("Condittion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("DiscountAmount")
+                    b.Property<decimal>("DiscountAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("DiscountPercent")
+                    b.Property<decimal>("DiscountPercent")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("DiscountType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<decimal>("MaxDiscountValue")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -789,11 +732,11 @@ namespace API.Migrations
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
-                    b.Property<string>("Type")
+                    b.Property<string>("VoucherCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("VoucherCode")
+                    b.Property<string>("VoucherType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -828,36 +771,6 @@ namespace API.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("ed2e30d9-64ae-4761-9eee-08ec82b64cf4"),
-                            ConcurrencyStamp = "b66fea73-d1c3-4408-95a2-7b7a804dbc20",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = new Guid("0a5fafed-5e7c-4d49-810c-97e37884eefc"),
-                            ConcurrencyStamp = "3c80b00b-9f72-4f49-ad59-9acaf18d8ed5",
-                            Name = "Customer",
-                            NormalizedName = "CUSTOMER"
-                        },
-                        new
-                        {
-                            Id = new Guid("a275704b-ad10-4548-a525-e231cc552846"),
-                            ConcurrencyStamp = "6deeb837-87f2-430b-bc2c-c5327588e318",
-                            Name = "Employee",
-                            NormalizedName = "EMPLOYEE"
-                        },
-                        new
-                        {
-                            Id = new Guid("12694620-509d-4d9a-b312-c8de1cc35f20"),
-                            ConcurrencyStamp = "f6adae70-7735-4599-8a8c-70662fc5b23f",
-                            Name = "Guest",
-                            NormalizedName = "GUEST"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -942,18 +855,6 @@ namespace API.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = new Guid("8abdbfd0-6823-4be8-9942-3820c3eb684c"),
-                            RoleId = new Guid("ed2e30d9-64ae-4761-9eee-08ec82b64cf4")
-                        },
-                        new
-                        {
-                            UserId = new Guid("c8842bc0-9f2a-41fd-8c8d-d1bfc954c6ca"),
-                            RoleId = new Guid("0a5fafed-5e7c-4d49-810c-97e37884eefc")
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -997,14 +898,10 @@ namespace API.Migrations
             modelBuilder.Entity("DataProcessing.Models.Address", b =>
                 {
                     b.HasOne("DataProcessing.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("DataProcessing.Models.ApplicationUser", null)
                         .WithMany("Addresses")
-                        .HasForeignKey("ApplicationUserId");
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

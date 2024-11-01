@@ -21,7 +21,7 @@ namespace View.ViewModel
 
         // Danh sách ảnh của màu
         public IEnumerable<Image>? Images { get; set; }
-    }
+	}
 
     public class ProductDetailViewModel
     {
@@ -32,5 +32,17 @@ namespace View.ViewModel
         public float Weight { get; set; }
         public Guid ColorId { get; set; }
         public Guid SizeId { get; set; }
+    }
+
+    public class ProductIndexVM
+    {
+        public IEnumerable<Product>? Products { get; set; }
+        public IEnumerable<SelectedImage>? ImagesForProduct { get; set; } 
+    }
+
+    public class selectedImageVM
+    {
+        public string Url { get; set; }
+        public string colorId { get; set; }
     }
 }

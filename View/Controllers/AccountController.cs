@@ -13,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using View.IServices;
+using View.Servicecs;
 
 namespace View.Controllers
 {
@@ -244,5 +245,34 @@ namespace View.Controllers
                 return View();
             }
         }
+        public IActionResult SignUp()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SignUp(SignUpModel account)
+        {
+            try
+            {
+                var result = await _accountService.SignUpAsync(account);
+
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View("SignUp", account); 
+                }
+                TempData["Success"] = "Đăng ký thành công";
+                return RedirectToAction("Login", "Account"); 
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "Đã xảy ra lỗi: " + ex.Message);
+            }
+            return View(account);
+        }
+
     }
 }

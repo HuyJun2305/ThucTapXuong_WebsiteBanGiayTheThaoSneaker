@@ -81,13 +81,20 @@ namespace API.Repositories
 
         public async Task<List<CartDetail>?> GetAllCartDetails()
         {
-            var lstCartDetails = await _context.CartDetails.ToListAsync();
+            var lstCartDetails = await _context.CartDetails
+                .Include(c => c.ProductDetail)
+                    .ThenInclude(pd => pd.Product)
+                .ToListAsync();
             return lstCartDetails; 
         }
 
         public async Task<List<CartDetail>?> GetCartDetailByCartId(Guid cartId)
         {
-            return await _context.CartDetails.Where(cd=>cd.CartId==cartId).ToListAsync();
+            return await _context.CartDetails
+                .Where(cd=>cd.CartId==cartId)
+                .Include(cd => cd.ProductDetail)
+					.ThenInclude(pd => pd.Product)
+				.ToListAsync();
         }
 
         public async Task<CartDetail> GetCartDetailById(Guid id)

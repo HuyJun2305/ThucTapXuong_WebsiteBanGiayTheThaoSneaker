@@ -76,9 +76,8 @@ namespace View.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,DiscountValue,StartDate,EndDate,Status")] Promotion promotion, string selectedVariantIds)
         {
-            // Kiểm tra tính hợp lệ của model
             if (ModelState.IsValid)
-            {
+            {   
                 try
                 {
                     promotion.Id = Guid.NewGuid();
@@ -89,42 +88,48 @@ namespace View.Controllers
                     // Kiểm tra xem có biến thể nào được chọn không
                     if (selectedVariantIds != null && selectedVariantIds.Any())
                     {
-                        // Duyệt qua từng biến thể được chọn
                         foreach (var productDetailId in variantIds)
                         {
                             var productDetailPrice = await _ProductDetailService.GetProductDetailById(productDetailId);
                             // Tạo mới mối quan hệ giữa biến thể và khuyến mãi
                             var productDetailPromotion = new ProductDetailPromotion
                             {
-                                Id = Guid.NewGuid(), // Tạo ID mới cho mối quan hệ
-                                ProductDetailId = productDetailId, // ID biến thể sản phẩm
-                                PromotionId = promotion.Id, // ID khuyến mãi
+                                Id = Guid.NewGuid(),
+                                ProductDetailId = productDetailId, 
+                                PromotionId = promotion.Id, 
                                 PriceUpdate = productDetailPrice.Price - productDetailPrice.Price * (promotion.DiscountValue / 100)
                             };
 
-                            // Lưu thông tin mối quan hệ vào cơ sở dữ liệu
                             await _ProductDetailPromotionSer.AddAsync(productDetailPromotion);
                         }
                     }
 
-                    // Chuyển hướng đến trang danh sách khuyến mãi
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
-                    // Xử lý ngoại lệ (có thể ghi lại log hoặc thêm thông báo lỗi)
-                    ModelState.AddModelError("", "An error occurred while saving the promotion. Please try again."); // Thêm thông báo lỗi vào ModelState
-                                                                                                                     // Có thể ghi log ex ở đây
+                    ModelState.AddModelError("", "An error occurred while saving the promotion. Please try again."); 
                 }
             }
 
-            // Nếu model không hợp lệ hoặc xảy ra lỗi, trả về view với thông tin đã nhập
+
             return View(promotion);
         }
 
         // GET: Promotions/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
+            var products = await _ProductServices.GetAllProducts();
+            var productList = products.Select(p => new ProductViewModel
+            {
+                Id = p.Id,
+                Name = p.Name
+            }).ToList();
+
+            ViewBag.ProductList = new SelectList(productList, "Id", "Name");
+
+
+
 
             var promotion = await _PromotionSer.GetPromotionById(id);
             if (promotion == null)
@@ -189,21 +194,17 @@ namespace View.Controllers
         {
             try
             {
-                // Kiểm tra xem danh sách ID có rỗng không
                 if (selectedProductIds == null || selectedProductIds.Count == 0)
                 {
                     return BadRequest("No product IDs provided.");
                 }
 
-                // Gọi dịch vụ để lấy các biến thể sản phẩm dựa trên danh sách ID đã chọn
                 var variants = await _ProductDetailService.GetVariantsByProductIds(selectedProductIds);
 
-                // Trả về kết quả dưới dạng JSON
                 return Json(variants);
             }
             catch (Exception ex)
             {
-                // Ghi log lỗi nếu cần thiết
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
@@ -213,17 +214,32 @@ namespace View.Controllers
         {
             try
             {
-                // Gọi dịch vụ để lấy danh sách chi tiết khuyến mãi sản phẩm
+                
                 var productDetailsPromotion = await _PromotionSer.GetAllProductDetailsPromotion();
 
-                // Trả về view với danh sách chi tiết khuyến mãi
+               
                 return View(productDetailsPromotion);
             }
             catch (Exception ex)
             {
-                // Ghi log lỗi nếu cần thiết
+              
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
+        }
+        [HttpPost]
+        public async Task<IActionResult> ToggleStatus(Guid id)
+        {
+            // Tìm kiếm vật liệu theo ID
+            var material = await _PromotionSer.GetPromotionById(id);
+            if (material == null)
+            {
+                return NotFound();
+            }
+
+            material.Status = !material.Status;
+            await _PromotionSer.Update(material);
+
+            return RedirectToAction("Index");
         }
 
 

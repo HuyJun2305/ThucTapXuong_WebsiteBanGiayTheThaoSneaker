@@ -1,9 +1,11 @@
 ﻿using DataProcessing.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using View.IServices;
 using View.Servicecs;
+using View.ViewModel;
 
 namespace View.Controllers
 {
@@ -11,13 +13,15 @@ namespace View.Controllers
     {
         private readonly ICartServices _cartServices;
         private readonly IProductDetailService _productDetailService;
+        private readonly IOrderServices _orderServices;
 
-        public CartController(ICartServices cartServices , IProductDetailService productDetailService)
+        public CartController(ICartServices cartServices , IProductDetailService productDetailService, IOrderServices orderServices)
         {
             _cartServices = cartServices;
             _productDetailService = productDetailService;
+            _orderServices = orderServices;
         }
-        public ActionResult Index(Guid cartId)
+        public ActionResult Index()
         {
             Guid userId = GetUserIdFromToken();
             // Kiểm tra userId hợp lệ và lấy thông tin giỏ hàng của người dùng
@@ -74,6 +78,60 @@ namespace View.Controllers
             return View("Error");
         }
 
+        public async Task<IActionResult> DeleteCartDetail(Guid id)
+        {
+            var cartDetail = await _cartServices.GetCartDetailById(id);
+            if (cartDetail != null)
+            {
+                await _cartServices.Delete(cartDetail.Id);
+                return RedirectToAction("Index", new { cartId = cartDetail.Id });
+            }
+            return View("Error");
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateCartDetail(Guid id, CartDetail cartDetail)
+        {
+            var item = await _cartServices.GetCartDetailById(id);
+            if (item != null)
+            {
+                await _cartServices.UpdateCartDetails(cartDetail,item.Id);
+                return RedirectToAction("Index", new { cartId = cartDetail.Id });
+            }
+            return View("Error");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateOrder(string selectedProductsJson)
+        {
+            if(selectedProductsJson == null) return View("Error");
+            var productList = JsonConvert.DeserializeObject<List<CartDetail>>(selectedProductsJson);
+            var order = new Order()
+            {
+                Id = Guid.NewGuid(),
+                CreatedDate = DateTime.Now,
+                TotalPrice = 0,
+                PaymentMethod = "Giao hàng",
+                Status = null,
+                UserId = GetUserIdFromToken().ToString(),
+                WhoCreateThis = GetUserIdFromToken()
+            };
+
+            await _orderServices.Create(GetUserIdFromToken() , order);
+            foreach(var product in productList)
+            {
+                await _orderServices.AddToOrder(new OrderDetail()
+                {
+                    Id = Guid.NewGuid(),
+                    TotalPrice = product.TotalPrice,
+                    Quantity = product.Quanlity,
+                    OrderId = order.Id,
+                    ProductDetailId = product.ProductDetailId
+                });
+            }
+
+            await _orderServices.UpdatePriceOrder(order.Id);
+            return RedirectToAction("Viewproduct", "Customer");
+        }
 
         private Guid GetUserIdFromToken()
         {
