@@ -10,7 +10,7 @@ namespace DataProcessing.Models
     public class CartDetail
     {
         public Guid Id { get; set; }
-        public decimal TotalPrice { get; set; } = 0;
+        public decimal TotalPrice { get; set; }
         public int Quanlity { get; set; }
 
         public Guid CartId { get; set; }
