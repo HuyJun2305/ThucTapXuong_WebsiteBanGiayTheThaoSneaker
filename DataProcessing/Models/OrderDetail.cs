@@ -10,7 +10,7 @@ namespace DataProcessing.Models
     public class OrderDetail
     {
         public Guid Id { get; set; }
-        public decimal TotalPrice { get; set; }
+        public decimal? TotalPrice { get; set; }
         public int Quantity { get; set; }
 
 

@@ -113,7 +113,7 @@ namespace View.Controllers
                 CreatedDate = DateTime.Now,
                 TotalPrice = 0,
                 PaymentMethod = "Giao hàng",
-                Status = null,
+                Status = "Chờ xác nhận",
                 UserId = GetUserIdFromToken().ToString(),
                 WhoCreateThis = GetUserIdFromToken()
             };

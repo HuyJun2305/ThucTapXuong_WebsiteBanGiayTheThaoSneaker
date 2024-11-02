@@ -14,7 +14,7 @@ namespace DataProcessing.Models
     {
         public Guid Id { get; set; }
         public DateTime CreatedDate { get; set; }
-        public decimal TotalPrice { get; set; }
+        public decimal? TotalPrice { get; set; }
         [Required]
         public string PaymentMethod { get; set; }
         public string? Status { get; set; } = "Chờ xác nhận";
