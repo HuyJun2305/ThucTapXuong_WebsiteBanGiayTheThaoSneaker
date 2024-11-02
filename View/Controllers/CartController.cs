@@ -132,7 +132,6 @@ namespace View.Controllers
             await _orderServices.UpdatePriceOrder(order.Id);
             return RedirectToAction("Viewproduct", "Customer");
         }
-
         private Guid GetUserIdFromToken()
         {
             var token = HttpContext.Session.GetString("AuthToken");
