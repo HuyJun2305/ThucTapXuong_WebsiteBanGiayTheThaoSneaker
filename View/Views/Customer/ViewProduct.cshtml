@@ -117,19 +117,11 @@
                         <td>@product.Product.Category?.Name</td>
                         <td>@product.Price</td>
                         <td>
-                            <input type="number" id="quantity_@product.Id" name="quantity" min="1" max="10" value="1" class="form-select" />
+                            <input type="number" id="quantity_@product.Id" name="quantity" min="1" value="1" class="form-select" />
                         </td>
                         <td>
-                        <td>
-                            <form asp-controller="Cart" asp-action="AddToCart" method="post" onsubmit="setQuantity('@product.Id')">
-                                <input type="hidden" name="productDetailId" value="@product.Id" />
-                                <input type="hidden" name="quantity" id="hiddenQuantity_@product.Id" value="1" />
-                                <button type="submit" class="btn btn-primary">Add to Cart</button>
-                            </form>
+                            <button type="button" class="btn btn-primary" onclick="addToCart('@product.Id')">Add to Cart</button>
                         </td>
-
-                        </td>
-
                     </tr>
                 }
             }
@@ -150,6 +142,31 @@
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        // Thêm sản phẩm vào giỏ hàng
+        function addToCart(id) {
+            let quantity = document.getElementById(`quantity_${id}`).value;
+            console.log(id);
+            var formData = new FormData();
+            formData.append('productDetailId', id);
+            formData.append('quantity', quantity)
+            fetch('/cart/AddToCart', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Thêm vào giỏ hàng thành công');
+                    } else {
+                        document.getElementById('status').textContent = "Lỗi khi thêm vào giỏ hàng: " + data.message;
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi:', error);
+                    document.getElementById('status').textContent = "Có lỗi xảy ra!";
+                });
+        }
+
         $(document).ready(function () {
             // Hàm lọc sản phẩm dựa trên các giá trị được chọn
             function filterProducts() {
@@ -180,10 +197,6 @@
                         alert('Error retrieving product details.');
                     }
                 });
-            }
-            function setQuantity(productId) {
-                var quantity = document.getElementById("quantity_" + productId).value;
-                document.getElementById("hiddenQuantity_" + productId).value = quantity;
             }
 
             // Hàm cập nhật danh sách sản phẩm hiển thị

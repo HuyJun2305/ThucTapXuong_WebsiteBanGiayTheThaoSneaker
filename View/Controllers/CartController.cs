@@ -36,7 +36,9 @@ namespace View.Controllers
             }
             return View("Error");
         }
-        public async Task<IActionResult> AddToCart(CartDetail cartDetail, string productDetailId, int quantity)
+
+        [HttpPost]
+        public async Task<IActionResult> AddToCart(string productDetailId, int quantity)
         {
             Guid userId = GetUserIdFromToken();
 
@@ -58,7 +60,7 @@ namespace View.Controllers
                 if (productDetail != null)
                 {
                     decimal price = quantity * productDetail.Price;
-                    cartDetail = new CartDetail()
+                    var cartDetail = new CartDetail()
                     {
                         Id = Guid.NewGuid(),
                         CartId = cart.Id,
@@ -71,12 +73,12 @@ namespace View.Controllers
                     // Gọi phương thức để thêm hoặc cập nhật giỏ hàng chi tiết
                     await _cartServices.CreateCartDetails(cartDetail);
 
-                    return RedirectToAction("Index", new { cartId = cart.Id });
+                    return Json( new { success = true });
                 }
             }
 
-            return View("Error");
-        }
+			return Json(new { success = false, message = "Không có sản phẩm được thêm vào giỏ hàng" });
+		}
 
         public async Task<IActionResult> DeleteCartDetail(Guid id)
         {

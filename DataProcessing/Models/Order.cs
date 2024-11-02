@@ -29,6 +29,5 @@ namespace DataProcessing.Models
         public virtual ShippingUnit? ShippingUnit { get; set; }
         [JsonIgnore]
         public ICollection<PaymentHistory>? paymentHistories { get; set; }
-        public Guid? WhoCreateThis { get; set; }
     }
 }
