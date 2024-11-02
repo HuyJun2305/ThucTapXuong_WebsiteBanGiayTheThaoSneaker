@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DataProcessing.Models.Product>
+﻿@model View.ViewModel.ProductIndexVM
 
 @{
     ViewData["Title"] = "Index";
@@ -52,6 +52,7 @@
                         <tr>
                             <th>STT</th>
                             <th>Sản phẩm</th>
+                            <th>Ảnh</th>
                             <th>Loại</th>
                             <th>Đế giày</th>
                             <th>Thương hiệu</th>
@@ -60,12 +61,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model)
+                        @foreach (var item in Model.Products)
                         {
                             <tr>
                                 <td></td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    <!-- Carousel Slide trong cột thứ hai (không có nút điều khiển) -->
+                                    <div id="productCarousel" class="carousel slide" data-ride="carousel" data-interval="3000" style="width: 100px;">
+
+                                        <!-- Slide ảnh -->
+                                        <div class="carousel-inner">
+                                            @foreach (var image in Model.ImagesForProduct.Where(i => i.ProductId == item.Id).Select((value, index) => new { value, index }))
+                                            {
+                                                <div class="carousel-item @(image.index == 0 ? "active" : "")">
+                                                    <img src="@Url.Content(image.value.URL)" alt="NotFound" style="width:100%; height:auto;">
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Category.Name)
@@ -81,7 +97,7 @@
                                 </td>
                                 <td>
                                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                                    <a asp-action="Details"  asp-route-id="@item.Id">Details</a> |
+                                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                                 </td>
                             </tr>

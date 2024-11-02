@@ -48,6 +48,7 @@ namespace View.Controllers
 				OrderDetails = _orderServices.GetAllOrderDetailsByOrderId(id).Result,
 				ProductDetails = _orderServices.GetProductDetails().Result,
 				OrderAdress = _orderServices.GetOrderAddressByOrderId(id).Result,
+				Customers = _orderServices.GetAllCustomers().Result
 			};
 
 			return View(orderVM);
@@ -320,6 +321,14 @@ namespace View.Controllers
 				return Problem(ex.Message);
 			}
 
+			return RedirectToAction(nameof(Details), new { id });
+		}
+
+		public async Task<IActionResult> UpdateUser(Guid id, Guid userId)
+		{
+			var order  = _orderServices.GetOrderById(id).Result;
+			order.UserId = userId.ToString();
+			await _orderServices.Update(order);
 			return RedirectToAction(nameof(Details), new { id });
 		}
 	}

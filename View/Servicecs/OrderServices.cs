@@ -90,6 +90,9 @@ namespace View.Servicecs
 					result = "Chờ giao hàng";
 					break;
 				case "Chờ giao hàng":
+					result = "Đang chuẩn bị đơn hàng";
+					break;
+				case "Đang chuẩn bị đơn hàng":
 					result = "Đang vận chuyển";
 					break;
 				case "Đang vận chuyển":
@@ -160,6 +163,8 @@ namespace View.Servicecs
 				UpdatedByUserId = UserIdCreateThis,
 				OrderId = order.Id,
 			};
+
+			order.WhoCreateThis = UserIdCreateThis;
 
 			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/Orders", order);
 			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/OrderHistories", orderHistory);
@@ -240,7 +245,7 @@ namespace View.Servicecs
 
 		public async Task Update(Order order)
 		{
-			await _httpClient.PutAsJsonAsync("https://localhost:7170/api/Orders", order);
+			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/Orders/{order.Id}", order);
 		}
 
 		public async Task UpdatePriceOrder(Guid OrderId)
@@ -258,6 +263,13 @@ namespace View.Servicecs
 			var order = await GetOrderById(OrderId);
 			order.TotalPrice = totalPrice;
 			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/Orders/{OrderId}", order);
+		}
+
+		public async Task<IEnumerable<ApplicationUser>> GetAllCustomers()
+		{
+			var response = await _httpClient.GetStringAsync("https://localhost:7170/api/AccountControllercs/Get-All-Customer");
+			var result = JsonConvert.DeserializeObject<IEnumerable<ApplicationUser>>(response);
+			return result;
 		}
 	}
 }

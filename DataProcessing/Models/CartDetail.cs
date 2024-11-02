@@ -19,7 +19,6 @@ namespace DataProcessing.Models
         //test
 
         public string ProductDetailId { get; set; }
-        [JsonIgnore]
         public virtual ProductDetail? ProductDetail { get; set; }
     }
 }
