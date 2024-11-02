@@ -80,8 +80,7 @@ namespace API.Data
             //modelBuilder.Entity<Order>()
             //    .HasOne(o => o.Address)
             //    .WithMany()
-            //    .HasForeignKey(o => o.AddressId)
-            //    .OnDelete(DeleteBehavior.Restrict);
+            //    .HasForeignKey(o => o.AddressId
 
             //modelBuilder.Entity<Address>()
             //    .HasOne(a => a.User)
