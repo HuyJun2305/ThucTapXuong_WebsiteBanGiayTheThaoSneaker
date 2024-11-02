@@ -43,7 +43,7 @@ namespace View.Servicecs
 			//Update price of Order
 			await UpdatePriceOrder(orderDetail.OrderId);
 		}
-
+		// cập nhật trạng thái về trạng thái trước đó
 		public async Task BackStatus(Guid UserIdCreateThis, Guid OrderId)
 		{
 			var response = await _httpClient.GetStringAsync("https://localhost:7170/api/OrderHistories");
@@ -75,7 +75,7 @@ namespace View.Servicecs
 		{
 			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/OrderAdresses/{orderAdress.Id}", orderAdress);
 		}
-
+		// thay đổi trạng thái đơn hàng 
 		public async Task ChangeStatus(Guid UserIdCreateThis, Guid OrderId)
 		{
 			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/Orders/{OrderId}");
@@ -95,7 +95,7 @@ namespace View.Servicecs
 				case "Đang vận chuyển":
 					result = "Đã giao hàng";
 					break;
-				case "Đã giao hàng":
+				case "Đã giao hàng": 
 					result = "Hoàn thành";
 					break;
 			}
@@ -111,7 +111,7 @@ namespace View.Servicecs
 			await _httpClient.PutAsJsonAsync($"https://localhost:7170/api/Orders/{OrderId}", data);
 			await _httpClient.PostAsJsonAsync("https://localhost:7170/api/OrderHistories", orderHistory);
 		}
-
+		// hủy đơn hàng 
 		public async Task CancelOrder(Guid UserIdCreateThis, Guid OrderId)
 		{
 			var response = await _httpClient.GetStringAsync($"https://localhost:7170/api/Orders/{OrderId}");

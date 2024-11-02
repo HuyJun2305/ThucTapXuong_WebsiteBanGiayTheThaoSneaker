@@ -81,7 +81,6 @@ namespace API.Data
             //    .WithMany()
             //    .HasForeignKey(o => o.AddressId)
             //    .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<Address>()
                 .HasOne(a => a.User)
                 .WithMany()
