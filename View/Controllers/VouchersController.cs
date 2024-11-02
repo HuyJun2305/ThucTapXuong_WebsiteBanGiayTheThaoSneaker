@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DataProcessing.Models;
 using View.IServices;
 using View.Servicecs;
+using View.ViewModel;
 
 namespace View.Controllers
 {
@@ -21,19 +22,81 @@ namespace View.Controllers
         }
 
         // GET: Vouchers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchQuery, DateTime? fromDate, DateTime? toDate, string type, string status, int currentPage = 1, int rowsPerPage = 10)
         {
             var vouchers = await _voucherService.GetAllVouchers();
-            return vouchers != null ? View(vouchers) : Problem("Entity set 'Voucher' is null.");
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                searchQuery = searchQuery.ToLower();
+                vouchers = vouchers.Where(v => v.Name.ToLower().Contains(searchQuery) || v.VoucherCode.ToLower().Contains(searchQuery)).ToList();
+            }
+
+            if (fromDate.HasValue)
+            {
+                vouchers = vouchers.Where(v => v.StartDate >= fromDate.Value).ToList();
+            }
+
+            if (toDate.HasValue)
+            {
+                vouchers = vouchers.Where(v => v.EndDate <= toDate.Value).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(type))
+            {
+                vouchers = vouchers.Where(v => v.Type == type).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                bool isActive = status == "true";
+                vouchers = vouchers.Where(v => v.Status == isActive).ToList();
+            }
+
+            // Phân trang
+            int totalRecords = vouchers.Count();
+            int totalPages = (int)Math.Ceiling((double)totalRecords / rowsPerPage);
+            var paginatedVouchers = vouchers.Skip((currentPage - 1) * rowsPerPage).Take(rowsPerPage).ToList();
+
+            // Truyền thông tin phân trang vào ViewBag
+            ViewBag.CurrentPage = currentPage;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.RowsPerPage = rowsPerPage;
+
+            ViewData["CurrentSearchQuery"] = searchQuery;
+            ViewData["CurrentFromDate"] = fromDate?.ToString("yyyy-MM-dd");
+            ViewData["CurrentToDate"] = toDate?.ToString("yyyy-MM-dd");
+            ViewData["CurrentType"] = type;
+            ViewData["CurrentStatus"] = status;
+
+            return View(paginatedVouchers);
         }
+
+
         // GET: Vouchers/Applicable
         public async Task<IActionResult> Applicable()
         {
             var vouchers = await _voucherService.GetAllVouchers();
-            var applicableVouchers = vouchers?.Where(v => v.Status && v.StartDate <= DateTime.Now && v.EndDate >= DateTime.Now && v.Stock > 0)
-                .OrderByDescending(v => v.DiscountAmount > 0 ? v.DiscountAmount : v.DiscountPercent).ToList();
-            return applicableVouchers != null ? View(applicableVouchers) : Problem("Entity set 'Voucher' is null");
+
+            if (vouchers == null)
+            {
+                return Problem("Entity set 'Voucher' is null");
+            }
+
+            var applicableVouchers = vouchers
+                .Where(v => v.Status
+                    && v.Stock > 0
+                    && (v.StartDate == null || v.StartDate <= DateTime.Now)  // Nếu có StartDate, nó phải nhỏ hơn hoặc bằng hiện tại
+                    && (v.EndDate == null || v.EndDate >= DateTime.Now))    // Nếu có EndDate, nó phải lớn hơn hoặc bằng hiện tại
+                .OrderByDescending(v => v.DiscountType == "Amount" ? v.DiscountAmount : v.DiscountPercent)
+                .ToList();
+
+
+            return View(applicableVouchers);
         }
+
+
+
         // GET: Vouchers/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
@@ -47,24 +110,43 @@ namespace View.Controllers
         }
 
         // GET: Vouchers/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var model = new VoucherViewModel
+            {
+                Voucher = new Voucher(),
+                Accounts = await _voucherService.GetAllAccounts(), // Lấy danh sách các tài khoản từ dịch vụ
+                CurrentPage = 1,
+                TotalPages = 1
+            };
+            return View(model);
         }
 
         // POST: Vouchers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,VoucherCode,Name,VoucherType,DiscountAmount,DiscountPercent,Condittion,Stock,StartDate,EndDate,Status,AccountId")] Voucher voucher)
+        public async Task<IActionResult> Create(VoucherViewModel model)
         {
             if (ModelState.IsValid)
             {
-                voucher.Id = Guid.NewGuid();
-                await _voucherService.Create(voucher);
-                return RedirectToAction(nameof(Index));
+                model.Voucher.Id = Guid.NewGuid();
+                try
+                {
+                    await _voucherService.Create(model.Voucher);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (ArgumentException ex)
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
             }
-            return View(voucher);
+            // Reload danh sách Accounts khi xảy ra lỗi
+            model.Accounts = await _voucherService.GetAllAccounts();
+            return View(model);
         }
+
+
+
 
         // GET: Vouchers/Edit/5
         public async Task<IActionResult> Edit(Guid id)
@@ -80,7 +162,7 @@ namespace View.Controllers
         // POST: Vouchers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,VoucherCode,Name,VoucherType,DiscountAmount,DiscountPercent,Condittion,Stock,StartDate,EndDate,Status,AccountId")] Voucher voucher)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,VoucherCode,Name,DiscountType,DiscountAmount,DiscountPercent,MaxDiscountValue,Stock,Condition,StartDate,EndDate,Type,Status,AccountId")] Voucher voucher)
         {
             if (id != voucher.Id)
             {
@@ -92,6 +174,7 @@ namespace View.Controllers
                 try
                 {
                     await _voucherService.Update(voucher);
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -104,7 +187,10 @@ namespace View.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (ArgumentException ex)
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
             }
             return View(voucher);
         }
@@ -126,7 +212,15 @@ namespace View.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            await _voucherService.Delete(id);
+            try
+            {
+                await _voucherService.Delete(id);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(await _voucherService.GetVoucherById(id));
+            }
             return RedirectToAction(nameof(Index));
         }
     }

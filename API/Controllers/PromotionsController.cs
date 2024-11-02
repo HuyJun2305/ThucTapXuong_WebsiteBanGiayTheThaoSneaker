@@ -9,6 +9,7 @@ using API.Data;
 using DataProcessing.Models;
 using API.IRepositories;
 using API.Repositories;
+using Data.ViewModels;
 
 namespace API.Controllers
 {
@@ -119,6 +120,20 @@ namespace API.Controllers
             catch (KeyNotFoundException)
             {
                 return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+        [HttpGet("ProductDetailsPromotion")]
+        public async Task<ActionResult<IEnumerable<ProductDetailsPromotionViewModel>>> GetAllProductDetailsPromotion()
+        {
+            try
+            {
+                var ProductDetailsPromotion = await _PromorionRepos.GetAllProductDetailsPromotion();
+                return Ok(ProductDetailsPromotion);
+
             }
             catch (Exception ex)
             {

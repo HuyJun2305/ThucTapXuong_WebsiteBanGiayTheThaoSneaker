@@ -1,4 +1,5 @@
 ﻿using API.DTO;
+using Data.Models;
 
 namespace View.ViewModel
 {
@@ -15,15 +16,7 @@ namespace View.ViewModel
         public Guid Id { get; set; }
         public string Name { get; set; }
     }
-    public class ProductDetailsPromotionViewModel
-    {
-        public string Name { get; set; }
-        public decimal DiscountValue { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public bool Status { get; set; }
-        public List<string> SelectedProductDetailIds { get; set; }
-    }
+    
 
 
 }
