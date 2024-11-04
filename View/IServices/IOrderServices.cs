@@ -19,6 +19,7 @@ namespace View.IServices
 		Task<IEnumerable<OrderDetail>> GetAllOrderDetailsByOrderId(Guid id);
 		Task AddToOrder(OrderDetail order);
 		Task DeleteFromOrder(Guid id);
+		Task UpdatePriceOrder(Guid OrderId);
 		Task ChangeStock(int stock, Guid orderDetailId);
 		Task<IEnumerable<ProductDetail>> GetProductDetails();
 

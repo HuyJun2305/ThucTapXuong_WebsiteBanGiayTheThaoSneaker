@@ -90,6 +90,9 @@ namespace View.Servicecs
 					result = "Chờ giao hàng";
 					break;
 				case "Chờ giao hàng":
+					result = "Đang chuẩn bị đơn hàng";
+					break;
+				case "Đang chuẩn bị đơn hàng":
 					result = "Đang vận chuyển";
 					break;
 				case "Đang vận chuyển":

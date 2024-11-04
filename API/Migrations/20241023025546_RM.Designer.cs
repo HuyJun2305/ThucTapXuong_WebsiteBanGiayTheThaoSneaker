@@ -4,6 +4,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,13 +12,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241023025546_RM")]
+    partial class RM
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.35")
+                .HasAnnotation("ProductVersion", "6.0.33")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -199,17 +201,16 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AccountId")
+                    b.Property<Guid>("AccountId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal?>("TotalPrice")
+                    b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId")
-                        .IsUnique()
-                        .HasFilter("[AccountId] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Carts");
                 });
@@ -351,9 +352,6 @@ namespace API.Migrations
                     b.Property<Guid?>("VoucherId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("WhoCreateThis")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ShippingUnitID");
@@ -401,7 +399,7 @@ namespace API.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("OrderAdress");
+                    b.ToTable("OrderAdresses");
                 });
 
             modelBuilder.Entity("DataProcessing.Models.OrderDetail", b =>
@@ -707,25 +705,18 @@ namespace API.Migrations
                     b.Property<Guid?>("AccountId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Condition")
+                    b.Property<string>("Condittion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("DiscountAmount")
+                    b.Property<decimal>("DiscountAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("DiscountPercent")
+                    b.Property<decimal>("DiscountPercent")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("DiscountType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<decimal>("MaxDiscountValue")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -741,11 +732,11 @@ namespace API.Migrations
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
-                    b.Property<string>("Type")
+                    b.Property<string>("VoucherCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("VoucherCode")
+                    b.Property<string>("VoucherType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -919,7 +910,9 @@ namespace API.Migrations
                 {
                     b.HasOne("DataProcessing.Models.ApplicationUser", "Account")
                         .WithOne("Cart")
-                        .HasForeignKey("DataProcessing.Models.Cart", "AccountId");
+                        .HasForeignKey("DataProcessing.Models.Cart", "AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Account");
                 });
