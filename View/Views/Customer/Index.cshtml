@@ -1,4 +1,57 @@
-﻿
+﻿@model View.ViewModel.ProductDetailIndexDetailsVM
+
 @{
     Layout = "_LayoutCustomer";
 }
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+    @foreach (var item in Model.Products)
+    {
+        <div class="col-md-4 mb-4">
+            <!-- Sử dụng Bootstrap grid system -->
+            <div class="card">
+                <div class="product-image">
+                    <!-- Carousel Slide trong cột thứ hai (không có nút điều khiển) -->
+                    <div id="productCarousel-@item.Id" class="carousel slide" data-ride="carousel" data-interval="3000">
+                        <div class="carousel-inner">
+                            @foreach (var image in Model.ImagesForProduct.Where(i => i.ProductId == item.Id))
+                            {
+                                <div class="carousel-item @(image == Model.ImagesForProduct.First(i => i.ProductId == item.Id) ? "active" : "")">
+                                    <img src="@Url.Content(image.URL)" alt="NotFound" class="d-block w-100" style="height: 200px; object-fit: cover;"> <!-- Điều chỉnh kích thước ảnh -->
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">@Html.DisplayFor(modelItem => item.Name)</h5>
+                    <p class="card-text">
+                        <strong>Price:</strong> @Html.DisplayFor(modelItem => Model.ProductDetails.FirstOrDefault(i => i.ProductId == item.Id).Price)<br />
+                        <strong>Colors:</strong>
+                        @foreach (var color in Model.ProductDetails
+                       .Where(i => i.ProductId == item.Id)
+                       .Select(i => i.Color.Name)
+                       .Distinct())
+                        {
+                            <span class="badge bg-primary">@color</span>
+                        }
+                        <br />
+                        <strong>Sizes:</strong>
+                        @foreach (var size in Model.ProductDetails
+                       .Where(i => i.ProductId == item.Id)
+                       .Select(i => i.Size.Value)
+                       .Distinct())
+                        {
+                            <span class="badge bg-secondary">@size</span>
+                        }
+                    </p>
+                    <div class="product-actions">
+                        <a asp-action="" asp-route-id="@item.Id" class="btn btn-primary">Add to cart</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

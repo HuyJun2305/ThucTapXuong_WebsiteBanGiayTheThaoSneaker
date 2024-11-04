@@ -40,6 +40,14 @@ namespace View.ViewModel
         public IEnumerable<SelectedImage>? ImagesForProduct { get; set; } 
     }
 
+    public class ProductDetailIndexDetailsVM
+    {
+        public IEnumerable<Product>? Products { get; set; }
+        public IEnumerable<SelectedImage>? ImagesForProduct { get; set; }
+        public IEnumerable<ProductDetail>? ProductDetails { get; set; }
+
+    }
+
     public class selectedImageVM
     {
         public string Url { get; set; }
