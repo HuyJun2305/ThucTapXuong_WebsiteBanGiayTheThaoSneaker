@@ -1,4 +1,4 @@
-﻿@model View.ViewModel.ProductIndexVM
+﻿@model View.ViewModel.ProductDetailIndexDetailsVM
 
 @{
     ViewData["Title"] = "Index";
@@ -97,7 +97,7 @@
                                 </td>
                                 <td>
                                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                                    <a href="#" class="details-button" data-product-id="@item.Id">Details</a> |
                                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                                 </td>
                             </tr>
@@ -128,3 +128,130 @@
         </div>
     </div>
 </div>
+
+<!-- Modal hiển thị chi tiết sản phẩm -->
+<div class="modal fade" id="productDetailsModal" tabindex="-1" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productDetailsModalLabel">Chi tiết sản phẩm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Nội dung chi tiết sản phẩm sẽ được chèn vào đây bằng JavaScript -->
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>ProductDetailId</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Brand</th>
+                            <th>Category</th>
+                            <th>Material</th>
+                            <th>Sole</th>
+                            <th>List Color</th>
+                            <th>List Size</th>
+                            <th>Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productDetailsTableBody">
+                        <!-- Chi tiết sản phẩm sẽ được chèn vào đây -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Style-->
+
+<style>
+    .modal-lg {
+        max-width: 90%; /* Đặt chiều rộng tối đa cho modal */
+        width: 90%; /* Đặt chiều rộng modal */
+    }
+</style>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Thêm sự kiện cho thẻ <a> "Details"
+            document.querySelectorAll(".details-button").forEach(button => {
+                button.addEventListener("click", function (event) {
+                    event.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <a>
+
+                    const productId = button.getAttribute("data-product-id");
+                    fetch(`/Products/Details?id=${productId}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error("Network response was not ok");
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            const tableBody = document.getElementById("productDetailsTableBody");
+                            tableBody.innerHTML = "";
+                            // Kiểm tra xem products có tồn tại không
+
+                                    // Hiển thị thông tin chi tiết sản phẩm trong modal
+                            data.productDetails.forEach((detail, index) => {
+                                const row = document.createElement("tr");
+
+                                    // Tìm hình ảnh cho sản phẩm
+                                           const imagesForProduct = data.imagesForProduct.filter(img => img.productId === detail.productId && img.colorId === detail.colorId);
+
+                                   // Tạo nội dung carousel cho hình ảnh
+                                   let carouselInner = '';
+                                   imagesForProduct.forEach((image, imgIndex) => {
+                                       carouselInner += `
+                                         <div class="carousel-item ${imgIndex === 0 ? "active" : ""}">
+                                               <img src="${image.url}" alt="NotFound" style="width:85%; height:auto;">
+                                           </div>
+                                       `;
+                                  });
+                                  console.log(carouselInner);
+                                   // Nếu không có hình ảnh, có thể hiển thị một thông báo hoặc hình ảnh mặc định
+                                   if (carouselInner === '') {
+                                       carouselInner = `
+                                           <div class="carousel-item active">
+                                               <img src="path_to_default_image.jpg" alt="NotFound" style="width:50%; height:auto;">
+                                           </div>
+                                       `;
+                                   }
+                        
+                                        row.innerHTML = `
+                                            <td>${index + 1}</td>
+                                            <td>${detail.id}</td>
+                                             <td>
+                                                    <!-- Carousel Slide trong cột hình ảnh -->
+                                                <div  id="productCarousel${data.imagesForProduct[0].url}" class="carousel slide" data-bs-ride="carousel" data-interval="3000">
+                                                    <div class="carousel-inner">
+                                                        ${carouselInner}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>${data.products[0].name}</td>
+                                            <td>${detail.price}</td>
+                                            <td>${data.products[0].brand.name}</td>
+                                            <td>${data.products[0].category.name}</td>
+                                            <td>${data.products[0].material.name}</td>
+                                            <td>${data.products[0].sole.typeName}</td>
+                                            <td>${detail.color.name}</td>
+                                            <td>${detail.size.value}</td>
+                                            <td>${detail.stock}</td>
+                                        `;
+                                        tableBody.appendChild(row);
+                                    });
+
+                                    // Mở modal
+                            const productDetailsModal = new bootstrap.Modal(document.getElementById("productDetailsModal"));
+                            productDetailsModal.show();
+                                })
+                        .catch(error => console.error("Error loading product details:", error));
+                        });
+                    });
+                });
+    </script>
+}
