@@ -252,7 +252,7 @@ namespace View.Servicecs
 		{
 			//Update price of Order
 			var orderDetails = await GetAllOrderDetailsByOrderId(OrderId);
-			decimal totalPrice = 0;
+			decimal? totalPrice = 0;
 			if (orderDetails != null)
 			{
 				foreach (var item in orderDetails)

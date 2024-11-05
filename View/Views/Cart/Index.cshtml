@@ -21,8 +21,11 @@
                             {
                                 <div class="row mb-4 d-flex justify-content-between align-items-center">
                                     @*Moithemvao*@
-                                    <div class="form-check col-md-2 col-lg-2 col-xl-2">
-                                        <input class="form-check-input" type="checkbox" id="selectedProduct-@item.Id" value="@item.ProductDetailId" onchange="addToOrder('@item.Id')" />
+                                    <div class="form-check">
+                                        <div class="col-md-2 col-lg-2 col-xl-2">
+                                            <input class="form-check-input" type="checkbox" id="selectedProduct-@item.Id" value="@item.ProductDetailId" onchange="addToOrder()" />
+                                            <input class="form-check-input" type="hidden" id="@item.ProductDetailId" value="@item.Id" />
+                                        </div>
                                     </div>
                                     <div class="col-md-2 col-lg-2 col-xl-2">
                                         <img src="@* @item.ProductDetail *@" class="img-fluid rounded-3" alt="Product Image"> <!-- Sửa URL sản phẩm -->
@@ -101,36 +104,38 @@
     <script>
         let selectedProducts = [];
 
-        function addToOrder(id) {
+        function addToOrder() {
             const products = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
-                .filter(checkbox => checkbox.id.startsWith(`selectedProduct-${id}`))
+                .filter(checkbox => checkbox.id.startsWith(`selectedProduct`))
                 .map(checkbox => ({
                     value: checkbox.value,
-                    text: id
+                    text: document.querySelector(`input[id="${checkbox.value}"]`).value
                 }));
 
-            if (products.length === 0) { return; };
-
-            console.log(products);
             selectedProducts = [];
+            if (products.length == 0) { return; };
+
+            
             products.forEach(p => {
                 let quantity = document.getElementById(`quantity-${p.text}`);
                 let totalPrice = document.getElementById(`totalPrice-${p.text}`);
                 selectedProducts.push({
-                    Id: id,
+                    Id: p.text,
                     TotalPrice: totalPrice.value,
                     Quanlity: quantity.value,
                     ProductDetailId: p.value
                 });
             });
+            console.log(selectedProducts);
         }
 
         // Hàm xử lý submit form
         document.getElementById('productForm').addEventListener('submit', function (e) {
             e.preventDefault(); // Ngăn chặn submit mặc định
 
-            if (selectedProducts == null) {
+            if (selectedProducts === []) {
                 alert('Vui lòng chọn sản phẩm để thanh toán!');
+                e.preventDefault();
                 return;
             }
             // Chuyển đổi danh sách biến thể thành JSON
