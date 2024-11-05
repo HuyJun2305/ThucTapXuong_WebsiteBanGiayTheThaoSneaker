@@ -52,25 +52,46 @@ namespace View.Controllers
 		{
 			var products = _productServices.GetAllProducts().Result;
 			var selectedImages = _selectedImageServices.GetAllSelectedImages().Result;
+			var productDetails = _productDetailService.GetAllProductDetail().Result;
 			if (products == null) return View("'Product is null!'");
-			var productIndexData = new ProductIndexVM()
+			var productIndexData = new ProductDetailIndexDetailsVM()
 			{
 				Products = products,
 				ImagesForProduct = selectedImages,
+				ProductDetails = productDetails
 			};
 			return View(productIndexData);
 		}
 
-		// GET: Products/Details/5
-		public async Task<IActionResult> Details(Guid id)
-		{	
+        // GET: Products/Details/5
+        public async Task<IActionResult> Details(Guid id)
+        {
+            var products = await _productServices.GetAllProducts();
+            var selectedImages = await _selectedImageServices.GetAllSelectedImages();
+            var productDetails = await _productDetailService.GetAllProductDetail();
 
-            var productDetails =  await _productDetailService.GetAllProductDetailByProductId(id);
-            return Json( new { success = true, productDetails });
+            var selectedProduct = products.FirstOrDefault(p => p.Id == id);
+            if (selectedProduct == null)
+            {
+                return NotFound("Product not found!");
+            }
+
+            var relatedImages = selectedImages.Where(i => i.ProductId == id).ToList();
+            var relatedProductDetails = productDetails.Where(d => d.ProductId == id).ToList();
+
+            var productDetailData = new ProductDetailIndexDetailsVM
+            {
+                Products = new List<Product> { selectedProduct },
+                ImagesForProduct = relatedImages,
+                ProductDetails = relatedProductDetails
+            };
+
+            return Json(productDetailData);
         }
 
 
-        
+
+
         // GET: Products/Create
         public IActionResult Create()
 		{
