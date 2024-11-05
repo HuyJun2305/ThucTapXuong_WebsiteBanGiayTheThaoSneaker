@@ -110,12 +110,13 @@
                                                type="radio"
                                                name="modalProductColor"
                                                data-color-id="@color.Color.Id"
-                                               data-image-url="@Url.Content(Model.ImagesForProduct.FirstOrDefault(img => img.ColorId == color.Color.Id)?.URL)"
+                                               data-image-urls='@Html.Raw(Json.Serialize(Model.ImagesForProduct.Where(img => img.ColorId == color.Color.Id).Select(img => img.URL).ToList()))'
                                                id="modal-color-@color.Color.Id">
                                         <label class="form-check-label square-radio-label" for="modal-color-@color.Color.Id">
                                             @color.Color.Name
                                         </label>
                                     </div>
+
                                 }
                             </div>
                         </div>
@@ -150,28 +151,28 @@
     </div>
 </div>
 
-    <style>
-        .form-check-input.square-radio {
-            display: none; /* Ẩn radio button gốc */
-        }
+<style>
+    .form-check-input.square-radio {
+        display: none; /* Ẩn radio button gốc */
+    }
 
-        .form-check-label.square-radio-label {
-            display: inline-block;
-            width: 40px; /* Chiều rộng của ô vuông */
-            height: 40px; /* Chiều cao của ô vuông */
-            border: 2px solid #007bff; /* Màu viền */
-            border-radius: 5px; /* Bo tròn góc */
-            text-align: center; /* Căn giữa chữ */
-            line-height: 40px; /* Căn giữa theo chiều dọc */
-            cursor: pointer; /* Con trỏ khi hover */
-            transition: background-color 0.3s; /* Hiệu ứng chuyển màu nền */
-        }
+    .form-check-label.square-radio-label {
+        display: inline-block;
+        width: 40px; /* Chiều rộng của ô vuông */
+        height: 40px; /* Chiều cao của ô vuông */
+        border: 2px solid #007bff; /* Màu viền */
+        border-radius: 5px; /* Bo tròn góc */
+        text-align: center; /* Căn giữa chữ */
+        line-height: 40px; /* Căn giữa theo chiều dọc */
+        cursor: pointer; /* Con trỏ khi hover */
+        transition: background-color 0.3s; /* Hiệu ứng chuyển màu nền */
+    }
 
-        .form-check-input.square-radio:checked + .square-radio-label {
-            background-color: #007bff; /* Màu nền khi chọn */
-            color: white; /* Màu chữ khi chọn */
-        }
-    </style>
+    .form-check-input.square-radio:checked + .square-radio-label {
+        background-color: #007bff; /* Màu nền khi chọn */
+        color: white; /* Màu chữ khi chọn */
+    }
+</style>
 
 @section Scripts {
     <script>
@@ -179,23 +180,43 @@
             const colorButtons = document.querySelectorAll("input[name='modalProductColor']");
             const colorImagePreview = document.getElementById("colorImagePreview");
 
-            // Tự động chọn radio button đầu tiên
+            // Tự động chọn radio button đầu tiên và cập nhật hình ảnh
             if (colorButtons.length > 0) {
                 colorButtons[0].checked = true;
-                colorImagePreview.src = colorButtons[0].getAttribute("data-image-url");
+                // Lấy danh sách URL hình ảnh cho màu đầu tiên
+                const imageUrls = JSON.parse(colorButtons[0].getAttribute("data-image-urls"));
+                // Cập nhật hình ảnh xem trước bằng hình ảnh đầu tiên trong danh sách
+                colorImagePreview.src = imageUrls.length > 0 ? imageUrls[0] : '';
             }
 
             colorButtons.forEach(button => {
                 button.addEventListener("change", function () {
-                    // Lấy URL ảnh từ thuộc tính data-image-url của nút được chọn
-                    const selectedImageUrl = this.getAttribute("data-image-url");
+                    // Lấy danh sách URL hình ảnh từ thuộc tính data-image-urls của nút được chọn
+                    const imageUrls = JSON.parse(this.getAttribute("data-image-urls"));
 
-                    // Kiểm tra xem URL có tồn tại trước khi cập nhật ảnh
-                    if (selectedImageUrl) {
-                        colorImagePreview.src = selectedImageUrl;
+                    // Cập nhật ảnh xem trước màu sắc
+                    if (imageUrls.length > 0) {
+                        colorImagePreview.src = imageUrls[0]; // Lấy hình ảnh đầu tiên trong danh sách
+                        console.log(imageUrls[0]);
+                    } else {
+                        colorImagePreview.src = ''; // Nếu không có hình ảnh, đặt src thành rỗng
+                        console.log(imageUrls);
                     }
+
+                    // Xóa màu nền của tất cả các ô vuông trước đó
+                    colorButtons.forEach(b => {
+                        const label = b.nextElementSibling; // Lấy label tương ứng với radio button
+                        label.style.backgroundColor = ""; // Đặt lại màu nền
+                        label.style.color = ""; // Đặt lại màu chữ
+                    });
+
+                    // Cập nhật màu nền cho ô vuông được chọn
+                    const selectedLabel = this.nextElementSibling;
+                    selectedLabel.style.backgroundColor = "#007bff"; // Màu nền khi chọn
+                    selectedLabel.style.color = "white"; // Màu chữ khi chọn
                 });
             });
         });
     </script>
 }
+
