@@ -14,14 +14,14 @@ namespace DataProcessing.Models
     {
         public Guid Id { get; set; }
         public DateTime CreatedDate { get; set; }
-        public decimal TotalPrice { get; set; }
+        public decimal? TotalPrice { get; set; }
         [Required]
         public string PaymentMethod { get; set; }
         public string? Status { get; set; } = "Chờ xác nhận";
         public virtual OrderAdress? OrderAddress { get; set; }
 
         public string? UserId { get; set; } = "Khách lẻ";
-        public Guid? WhoCreateThis { get; set; }
+        public Guid? WhoCreateThis { get; set; }    
         public Guid? VoucherId { get; set; }
         [JsonIgnore]
         public virtual Voucher? Voucher { get; set; }
@@ -29,6 +29,5 @@ namespace DataProcessing.Models
         public virtual ShippingUnit? ShippingUnit { get; set; }
         [JsonIgnore]
         public ICollection<PaymentHistory>? paymentHistories { get; set; }
-        public Guid? WhoCreateThis { get; set; }
     }
 }

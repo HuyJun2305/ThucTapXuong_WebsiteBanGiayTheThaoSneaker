@@ -43,6 +43,7 @@ namespace View.Servicecs
             }
             else
             {
+                cartDetail.ProductDetail = null;
                 await _client.PostAsJsonAsync($"https://localhost:7170/api/CartDetails/Create", cartDetail);
             }
         }

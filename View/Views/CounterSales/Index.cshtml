@@ -260,7 +260,6 @@
             opacity: 0.5; /* Điều chỉnh độ mờ của backdrop */
             background-color: rgba(0, 0, 0, 0.5); /* Màu sắc của backdrop */
         }
-    }
     </style>
 }
 
@@ -292,6 +291,7 @@
             </li>`;
                 $('#invoiceTabs').append(newTab);
 
+                console.log("check" + newTabId);
 
                 // Add new tab content
                 const newTabContent = `
@@ -447,6 +447,8 @@
             const productDetailModal = bootstrap.Modal.getInstance(document.getElementById('productDetailModal'));
             productDetailModal.hide();
             productModal.hide();
+            console.log(productDetailModal);
+
             
         }
 
