@@ -1,0 +1,201 @@
+﻿@model View.ViewModel.ProductDetailIndexDetailsVM
+
+@{
+    Layout = "_LayoutCustomer";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="container mt-5">
+    <div class="row">
+        <!-- Cột bên trái: Hiển thị ảnh sản phẩm -->
+        <div class="col-md-6 d-flex align-items-center">
+            <div id="productCarousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner border rounded shadow-sm">
+                    @foreach (var image in Model.ImagesForProduct)
+                    {
+                        <div class="carousel-item @(image == Model.ImagesForProduct.First() ? "active" : "")">
+                            <img src="@Url.Content(image.URL)" alt="Product Image" class="d-block w-100" style="height: 400px; object-fit: cover;">
+                        </div>
+                    }
+                </div>
+                <a class="carousel-control-prev" href="#productCarousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#productCarousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Cột bên phải: Hiển thị thông tin chi tiết sản phẩm -->
+        <div class="col-md-6">
+            <h2 class="mb-3 font-weight-bold">@Model.Products.First().Name</h2>
+            <p class="text-muted" style="font-size: 0.85rem;">
+                <strong>Category:</strong> @Model.Products.First().Category.Name |
+                <strong>Brand:</strong> @Model.Products.First().Brand.Name |
+                <strong>Material:</strong> @Model.Products.First().Material.Name |
+                <strong>Sole Type:</strong> @Model.Products.First().Sole.TypeName
+            </p>
+            <h4 class="text-primary mb-4">@Model.ProductDetails.FirstOrDefault()?.Price.ToString("C")</h4>
+
+            <div class="product-colors mb-3">
+                <p><strong>Available Colors:</strong></p>
+                @foreach (var color in Model.ProductDetails
+                .GroupBy(d => new { d.Color.Name, d.Color.Status })
+                .Select(g => g.First()))
+                {
+                    <span class="badge rounded-pill px-3 py-2 text-white @(color.Color.Status ? "bg-primary" : "bg-secondary")">@color.Color.Name</span>
+                }
+            </div>
+
+            <div class="product-sizes mb-4">
+                <p><strong>Available Sizes:</strong></p>
+                @foreach (var size in Model.ProductDetails
+                .GroupBy(d => new { d.Size.Value, d.Size.Status })
+                .Select(g => g.First()))
+                {
+                    <span class="badge rounded-pill px-3 py-2 @(size.Size.Status ? "bg-success text-white" : "bg-secondary text-dark")">@size.Size.Value</span>
+                }
+            </div>
+
+            <div class="product-description mb-4">
+                <p><strong>Description:</strong></p>
+                <p class="text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            </div>
+
+            <div class="product-actions">
+                <button type="button" class="btn btn-lg btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addToCartModal">
+                    Add to Cart
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal cho Add to Cart -->
+<div class="modal fade" id="addToCartModal" tabindex="-1" aria-labelledby="addToCartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addToCartModalLabel">Select Options</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex">
+                    <!-- Ảnh sản phẩm -->
+                    <div class="me-4">
+                        <img src="@Url.Content(Model.ImagesForProduct.FirstOrDefault(img => img.ColorId == Model.ProductDetails.First().Color.Id)?.URL)"
+                             alt="Selected Color Image"
+                             class="img-fluid rounded"
+                             id="colorImagePreview"
+                             style="height: 200px; object-fit: cover;">
+                    </div>
+
+                    <!-- Tùy chọn màu sắc và kích thước -->
+                    <div>
+                        <div class="mb-4">
+                            <p><strong>Colors:</strong></p>
+                            <div class="d-flex flex-wrap">
+                                @foreach (var color in Model.ProductDetails
+                                .GroupBy(d => new { d.Color.Name, d.Color.Status, d.Color.Id })
+                                .Select(g => g.First()))
+                                {
+                                    <div class="form-check me-3">
+                                        <input class="form-check-input square-radio"
+                                               type="radio"
+                                               name="modalProductColor"
+                                               data-color-id="@color.Color.Id"
+                                               data-image-url="@Url.Content(Model.ImagesForProduct.FirstOrDefault(img => img.ColorId == color.Color.Id)?.URL)"
+                                               id="modal-color-@color.Color.Id">
+                                        <label class="form-check-label square-radio-label" for="modal-color-@color.Color.Id">
+                                            @color.Color.Name
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div>
+                            <p><strong>Sizes:</strong></p>
+                            <div class="d-flex flex-wrap">
+                                @foreach (var size in Model.ProductDetails
+                                .GroupBy(d => new { d.Size.Value, d.Size.Status })
+                                .Select(g => g.First()))
+                                {
+                                    <div class="form-check me-3">
+                                        <input class="form-check-input square-radio"
+                                               type="radio"
+                                               name="modalProductSize"
+                                               id="modal-size-@size.Size.Id">
+                                        <label class="form-check-label square-radio-label" for="modal-size-@size.Size.Id">
+                                            @size.Size.Value
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Add to Cart</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <style>
+        .form-check-input.square-radio {
+            display: none; /* Ẩn radio button gốc */
+        }
+
+        .form-check-label.square-radio-label {
+            display: inline-block;
+            width: 40px; /* Chiều rộng của ô vuông */
+            height: 40px; /* Chiều cao của ô vuông */
+            border: 2px solid #007bff; /* Màu viền */
+            border-radius: 5px; /* Bo tròn góc */
+            text-align: center; /* Căn giữa chữ */
+            line-height: 40px; /* Căn giữa theo chiều dọc */
+            cursor: pointer; /* Con trỏ khi hover */
+            transition: background-color 0.3s; /* Hiệu ứng chuyển màu nền */
+        }
+
+        .form-check-input.square-radio:checked + .square-radio-label {
+            background-color: #007bff; /* Màu nền khi chọn */
+            color: white; /* Màu chữ khi chọn */
+        }
+    </style>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const colorButtons = document.querySelectorAll("input[name='modalProductColor']");
+            const colorImagePreview = document.getElementById("colorImagePreview");
+
+            // Tự động chọn radio button đầu tiên
+            if (colorButtons.length > 0) {
+                colorButtons[0].checked = true;
+                colorImagePreview.src = colorButtons[0].getAttribute("data-image-url");
+            }
+
+            colorButtons.forEach(button => {
+                button.addEventListener("change", function () {
+                    // Lấy URL ảnh từ thuộc tính data-image-url của nút được chọn
+                    const selectedImageUrl = this.getAttribute("data-image-url");
+
+                    // Kiểm tra xem URL có tồn tại trước khi cập nhật ảnh
+                    if (selectedImageUrl) {
+                        colorImagePreview.src = selectedImageUrl;
+                    }
+                });
+            });
+        });
+    </script>
+}

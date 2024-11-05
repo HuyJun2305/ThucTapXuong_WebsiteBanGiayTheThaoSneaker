@@ -10,41 +10,43 @@
     @foreach (var item in Model.Products)
     {
         <div class="col-md-3 mb-4">
-            <!-- Sửa thành col-md-3 để có 4 sản phẩm trong một hàng -->
             <div class="card">
                 <div class="product-image">
-                    <!-- Carousel Slide trong cột thứ hai (không có nút điều khiển) -->
                     <div id="productCarousel-@item.Id" class="carousel slide" data-ride="carousel" data-interval="3000">
                         <div class="carousel-inner">
                             @foreach (var image in Model.ImagesForProduct.Where(i => i.ProductId == item.Id))
                             {
                                 <div class="carousel-item @(image == Model.ImagesForProduct.First(i => i.ProductId == item.Id) ? "active" : "")">
-                                    <img src="@Url.Content(image.URL)" alt="NotFound" class="d-block w-100" style="height: 250px; object-fit: cover;"> <!-- Điều chỉnh chiều cao ảnh -->
+                                    <img src="@Url.Content(image.URL)" alt="NotFound" class="d-block w-100" style="height: 250px; object-fit: cover;">
                                 </div>
                             }
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title">@Html.DisplayFor(modelItem => item.Name)</h5>
+                    <h5 class="card-title">
+                        <a asp-action="Details" asp-controller="Customer" asp-route-id="@item.Id" class="text-dark">
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </a>
+                    </h5>
                     <p class="card-text">
                         <strong>Price:</strong> @Html.DisplayFor(modelItem => Model.ProductDetails.FirstOrDefault(i => i.ProductId == item.Id).Price)<br />
                         <strong>Colors:</strong>
                         @foreach (var color in Model.ProductDetails
                        .Where(i => i.ProductId == item.Id)
-                       .GroupBy(i => new { i.Color.Name, i.Color.Status }) // Nhóm theo tên màu và trạng thái
-                       .Select(g => g.First())) // Lấy một phần tử từ mỗi nhóm
+                       .GroupBy(i => new { i.Color.Name, i.Color.Status })
+                       .Select(g => g.First()))
                         {
-                            <span class="badge @(color.Color.Status ? "bg-primary" : "bg-secondary")">@color.Color.Name</span> <!-- Chọn màu dựa vào trạng thái -->
+                            <span class="badge @(color.Color.Status ? "bg-primary" : "bg-secondary")">@color.Color.Name</span>
                         }
                         <br />
                         <strong>Sizes:</strong>
                         @foreach (var size in Model.ProductDetails
                        .Where(i => i.ProductId == item.Id)
-                       .GroupBy(i => new { i.Size.Value, i.Size.Status }) // Nhóm theo kích thước và trạng thái
-                       .Select(g => g.First())) // Lấy một phần tử từ mỗi nhóm
+                       .GroupBy(i => new { i.Size.Value, i.Size.Status })
+                       .Select(g => g.First()))
                         {
-                            <span class="badge @(size.Size.Status ? "bg-success" : "bg-secondary")">@size.Size.Value</span> <!-- Chọn màu dựa vào trạng thái -->
+                            <span class="badge @(size.Size.Status ? "bg-success" : "bg-secondary")">@size.Size.Value</span>
                         }
                     </p>
                 </div>

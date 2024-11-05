@@ -52,22 +52,32 @@ namespace View.Controllers
             return View(productIndexData);
         }
 
-        public IActionResult Details()
+        public IActionResult Details(Guid id)
         {
+            // Lấy tất cả dữ liệu sản phẩm, hình ảnh và chi tiết sản phẩm
             var products = _productServices.GetAllProducts().Result;
             var selectedImages = _selectedImageServices.GetAllSelectedImages().Result;
             var productDetails = _productDetailService.GetAllProductDetail().Result;
-            if (products == null) return View("'Product is null!'");
-            var productIndexData = new ProductDetailIndexDetailsVM()
+
+            // Tìm sản phẩm với id tương ứng
+            var selectedProduct = products.FirstOrDefault(p => p.Id == id);
+            if (selectedProduct == null) return NotFound("Product not found!");
+
+            // Lọc hình ảnh và chi tiết sản phẩm liên quan đến sản phẩm được chọn
+            var relatedImages = selectedImages.Where(i => i.ProductId == id).ToList();
+            var relatedProductDetails = productDetails.Where(d => d.ProductId == id).ToList();
+
+            // Tạo ViewModel chỉ với dữ liệu của sản phẩm được chọn
+            var productDetailData = new ProductDetailIndexDetailsVM
             {
-                Products = products,
-                ImagesForProduct = selectedImages,
-                ProductDetails = productDetails
-
+                Products = new List<Product> { selectedProduct },
+                ImagesForProduct = relatedImages,
+                ProductDetails = relatedProductDetails
             };
-            return View(productIndexData);
 
+            return View(productDetailData); // Hiển thị View với dữ liệu chi tiết của sản phẩm
         }
+
 
         public async Task<IActionResult> ViewProductAsync() 
         {
