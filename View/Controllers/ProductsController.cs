@@ -50,9 +50,15 @@ namespace View.Controllers
 		// GET: Products
 		public async Task<IActionResult> Index()
 		{
-			var viewContext = _productServices.GetAllProducts().Result;
-			if (viewContext == null) return View("'Product is null!'");
-			return View(viewContext.ToList());
+			var products = _productServices.GetAllProducts().Result;
+			var selectedImages = _selectedImageServices.GetAllSelectedImages().Result;
+			if (products == null) return View("'Product is null!'");
+			var productIndexData = new ProductIndexVM()
+			{
+				Products = products,
+				ImagesForProduct = selectedImages,
+			};
+			return View(productIndexData);
 		}
 
 		// GET: Products/Details/5
