@@ -44,6 +44,7 @@ namespace API.Data
         public DbSet<ProductDetailPromotion> ProductDetailPromotions { get; set; }
         public DbSet<ShippingUnit> ShippingUnits { get; set; }
         public DbSet<OrderAdress> OrderAdresses { get; set; }
+        public DbSet<VoucherUser> voucherUsers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -53,6 +54,8 @@ namespace API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+
             modelBuilder.Entity<PaymentHistory>()
                 .HasOne(ph => ph.Order)
                 .WithMany(o => o.paymentHistories)
@@ -77,6 +80,26 @@ namespace API.Data
                 .OnDelete(DeleteBehavior.Cascade); // Thay đổi hành vi khi xóa (nếu cần)
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<VoucherUser>()
+             .HasKey(vu => vu.Id);
+
+            // Thiết lập quan hệ nhiều-nhiều giữa Voucher và ApplicationUser qua VoucherUser
+            modelBuilder.Entity<VoucherUser>()
+                .HasOne(vu => vu.Voucher)
+                .WithMany(v => v.voucherUsers)
+                .HasForeignKey(vu => vu.voucherId);
+
+            modelBuilder.Entity<VoucherUser>()
+                .HasOne(vu => vu.ApplicationUser)
+                .WithMany(u => u.voucherUsers)
+                .HasForeignKey(vu => vu.AccountId);
+
+            // Đặt chỉ mục duy nhất cho VoucherCode trong Voucher
+            modelBuilder.Entity<Voucher>()
+                .HasIndex(v => v.VoucherCode)
+                .IsUnique();
+
             //modelBuilder.Entity<Order>()
             //    .HasOne(o => o.Address)
             //    .WithMany()
