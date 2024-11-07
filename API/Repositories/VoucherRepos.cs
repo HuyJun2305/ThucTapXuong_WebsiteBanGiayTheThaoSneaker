@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.IRepositories;
+using Data.Models;
 using DataProcessing.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Drawing;
@@ -98,6 +99,55 @@ namespace API.Repositories
                 throw new ArgumentException("Chỉ được điền vào một trong hai giá trị giảm giá: phần trăm hoặc tiền mặt, không được điền cả hai.");
             }  
 
+        }
+    }
+
+    public class VoucherUserRepos : IVoucherUserRepo
+    {
+        private readonly ApplicationDbContext _context;
+
+        public VoucherUserRepos(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task create(VoucherUser voucherUser)
+        {
+           await _context.voucherUsers.AddAsync(voucherUser);
+        }
+
+        public async Task delete(Guid id)
+        {
+            var item = await GetById(id);
+            if (item != null)
+            {
+                _context.voucherUsers.Remove(item);
+            }
+        }
+
+        public async Task<List<VoucherUser>> GetAll()
+        {
+            return await _context.voucherUsers.ToListAsync();
+        }
+
+        public async Task<VoucherUser> GetById(Guid id)
+        {
+            return await _context.voucherUsers.FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public async Task SaveChanges()
+        {
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task update(VoucherUser voucherUser)
+        {
+            var item = await GetById(voucherUser.Id);
+            if (item == null)
+            {
+                throw new KeyNotFoundException("Not found this Id!");
+            }
+            _context.Entry(item).State = EntityState.Modified;
         }
     }
 

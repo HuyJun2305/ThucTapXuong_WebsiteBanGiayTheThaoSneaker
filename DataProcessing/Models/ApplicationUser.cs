@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Data.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DataProcessing.Models
@@ -29,5 +31,7 @@ namespace DataProcessing.Models
         public bool IsSubscribedToNews { get; set; } = false; // Mặc định là không đăng ký
         public virtual ICollection<Address> Addresses { get; set; }
         public virtual Cart Cart { get; set; }
+        [JsonIgnore]
+        public ICollection<VoucherUser>? voucherUsers { get; set; }
     }
 }
