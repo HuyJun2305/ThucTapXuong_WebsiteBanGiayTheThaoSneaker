@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241102054619_update_db_orderaddress")]
-    partial class update_db_orderaddress
+    [Migration("20241107090253_Database_ver_1_1")]
+    partial class Database_ver_1_1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -341,10 +341,10 @@ namespace API.Migrations
                     b.Property<Guid?>("ShippingUnitID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("TotalPrice")
+                    b.Property<decimal?>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("UserId")
@@ -422,7 +422,7 @@ namespace API.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("TotalPrice")
+                    b.Property<decimal?>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -446,9 +446,8 @@ namespace API.Migrations
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("StatusType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("StatusType")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
@@ -706,9 +705,6 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AccountId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Condition")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -749,11 +745,35 @@ namespace API.Migrations
 
                     b.Property<string>("VoucherCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("VoucherCode")
+                        .IsUnique();
+
                     b.ToTable("Vouchers");
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.VoucherUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AccountId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("voucherId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("voucherId");
+
+                    b.ToTable("voucherUsers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -1094,6 +1114,23 @@ namespace API.Migrations
                     b.Navigation("Color");
                 });
 
+            modelBuilder.Entity("DataProcessing.Models.VoucherUser", b =>
+                {
+                    b.HasOne("DataProcessing.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("voucherUsers")
+                        .HasForeignKey("AccountId");
+
+                    b.HasOne("DataProcessing.Models.Voucher", "Voucher")
+                        .WithMany("voucherUsers")
+                        .HasForeignKey("voucherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Voucher");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
@@ -1151,6 +1188,8 @@ namespace API.Migrations
 
                     b.Navigation("Cart")
                         .IsRequired();
+
+                    b.Navigation("voucherUsers");
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Cart", b =>
@@ -1178,6 +1217,11 @@ namespace API.Migrations
             modelBuilder.Entity("DataProcessing.Models.ShippingUnit", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.Voucher", b =>
+                {
+                    b.Navigation("voucherUsers");
                 });
 #pragma warning restore 612, 618
         }

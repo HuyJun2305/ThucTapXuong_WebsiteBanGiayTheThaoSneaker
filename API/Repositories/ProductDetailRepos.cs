@@ -17,7 +17,30 @@ namespace API.Repositories
         public async Task Create(ProductDetail productDetail)
         {
             if (await GetProductDetailById(productDetail.Id) != null)
+
                 throw new DuplicateWaitObjectException($"Product Detail : {productDetail.Id} is existed!");
+            // Truy vấn thông tin từ Product
+            var productInfo = await _context.Products
+                                            .Where(p => p.Id == productDetail.ProductId)
+                                            .Select(p => new
+                                            {
+                                                ProductName = p.Name,
+                                                BrandName = p.Brand.Name, // Truy xuất Brand.Name từ bảng liên quan
+                                                CategoryName = p.Category.Name // Truy xuất Category.Name từ bảng liên quan
+                                            })
+                                            .FirstOrDefaultAsync();
+
+            if (productInfo == null)
+                throw new KeyNotFoundException($"Product with ID {productDetail.ProductId} not found.");
+
+            // Tính STT dựa trên số lượng ProductDetail hiện tại liên kết với ProductId
+            int stt = await _context.ProductDetails
+                                    .Where(pd => pd.ProductId == productDetail.ProductId)
+                                    .CountAsync() + 1;
+
+            productDetail.Id = $"{productInfo.BrandName} - {productInfo.CategoryName} - {productInfo.ProductName} - {stt}";
+
+
             await _context.ProductDetails.AddAsync(productDetail);
         }
 
@@ -51,7 +74,7 @@ namespace API.Repositories
                 .Include(pd => pd.Color)
                 .Include(pd => pd.Size)
                 .Include(pd => pd.Product)
-                .ToListAsync(); 
+                .ToListAsync();
         }
 
         public async Task<List<ProductDetail>> GetFilteredProductDetails(
