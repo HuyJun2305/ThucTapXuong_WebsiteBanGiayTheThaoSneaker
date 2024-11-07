@@ -11,5 +11,7 @@ namespace View.IServices
         Task Delete(Guid id);
         Task<List<ApplicationUser>> GetAllAccounts();
         Task<bool> IsVoucherCodeUnique(string voucherCode);
+        Task AssignVoucherToCustomer(Guid voucherId, Guid customerId);
+        Task<List<Voucher>> GetVouchersByCustomerId(Guid customerId);
     }
 }

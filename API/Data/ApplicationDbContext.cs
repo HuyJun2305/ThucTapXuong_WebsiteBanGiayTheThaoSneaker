@@ -39,6 +39,7 @@ namespace API.Data
         public DbSet<Size> Sizes { get; set; }
         public DbSet<Sole> Soles { get; set; }
         public DbSet<Voucher> Vouchers { get; set; }
+        public DbSet<CustomerVoucher> CustomerVouchers { get; set; }
         public DbSet<SelectedImage> SelectedImages { get; set; }
         public DbSet<ProductDetailPromotion> ProductDetailPromotions { get; set; }
         public DbSet<ShippingUnit> ShippingUnits { get; set; }
@@ -56,6 +57,19 @@ namespace API.Data
                 .HasOne(ph => ph.Order)
                 .WithMany(o => o.paymentHistories)
                 .HasForeignKey(ph => ph.OrderId);
+
+            modelBuilder.Entity<CustomerVoucher>()
+            .HasKey(cv => new { cv.VoucherId, cv.CustomerId });
+
+            modelBuilder.Entity<CustomerVoucher>()
+                .HasOne(cv => cv.Voucher)
+                .WithMany(v => v.CustomerVouchers)
+                .HasForeignKey(cv => cv.VoucherId);
+
+            modelBuilder.Entity<CustomerVoucher>()
+                .HasOne(cv => cv.Customer)
+                .WithMany(c => c.CustomerVouchers)
+                .HasForeignKey(cv => cv.CustomerId);
 
             // Khai báo Entity cho ProductDetailPromotion
             modelBuilder.Entity<ProductDetailPromotion>()
@@ -88,89 +102,89 @@ namespace API.Data
             //    .HasForeignKey(a => a.AccountId)
             //    .OnDelete(DeleteBehavior.Restrict);
             // SeedData for Account
-            //    var adminRoleId = Guid.NewGuid();
-            //    var customerRoleId = Guid.NewGuid();
-            //    var employeeRoleId = Guid.NewGuid();
-            //    var guestRoleId = Guid.NewGuid();
+            //var adminRoleId = Guid.NewGuid();
+            //var customerRoleId = Guid.NewGuid();
+            //var employeeRoleId = Guid.NewGuid();
+            //var guestRoleId = Guid.NewGuid();
 
-            //    modelBuilder.Entity<IdentityRole<Guid>>().HasData
-            //        (
-            //            new IdentityRole<Guid>
-            //            {
-            //                Id = adminRoleId,
-            //                Name = "Admin",
-            //                NormalizedName = "ADMIN"
-            //            }, new IdentityRole<Guid>
-            //            {
-            //                Id = customerRoleId,
-            //                Name = "Customer",
-            //                NormalizedName = "CUSTOMER"
-            //            }, new IdentityRole<Guid>
-            //            {
-            //                Id = employeeRoleId,
-            //                Name = "Employee",
-            //                NormalizedName = "EMPLOYEE"
-            //            }, new IdentityRole<Guid>
-            //            {
-            //                Id = guestRoleId,
-            //                Name = "Guest",
-            //                NormalizedName = "GUEST"
-            //            }
-            //        );
-            //    var adminUserId = Guid.NewGuid();
-            //    var CustomerUserId = Guid.NewGuid();
-            //    var EmployeeUserId = Guid.NewGuid();
-            //    var GuestUserId = Guid.NewGuid();
-
-            //    var passwordHasher = new PasswordHasher<ApplicationUser>();
-
-            //    modelBuilder.Entity<ApplicationUser>().HasData(
-            //        new ApplicationUser
+            //modelBuilder.Entity<IdentityRole<Guid>>().HasData
+            //    (
+            //        new IdentityRole<Guid>
             //        {
-            //            Id = adminUserId,
-            //            UserName = "admin@example.com",
-            //            NormalizedUserName = "ADMIN@EXAMPLE.COM",
-            //            Email = "admin@example.com",
-            //            NormalizedEmail = "ADMIN@EXAMPLE.COM",
-            //            Name = "Admin User",
-            //            CIC = "002204004364",
-            //            PhoneNumber = "0123456789",
-            //            LockoutEnabled = true,
-            //            AccessFailedCount = 0,
-            //            PasswordHash = passwordHasher.HashPassword(null, "AdminPass123!"),
-            //            SecurityStamp = Guid.NewGuid().ToString()
-            //        },
-            //        new ApplicationUser
+            //            Id = adminRoleId,
+            //            Name = "Admin",
+            //            NormalizedName = "ADMIN"
+            //        }, new IdentityRole<Guid>
             //        {
-            //            Id = CustomerUserId,
-            //            UserName = "user@example.com",
-            //            NormalizedUserName = "USER@EXAMPLE.COM",
-            //            Email = "user@example.com",
-            //            NormalizedEmail = "USER@EXAMPLE.COM",
-            //            Name = "Regular User",
-            //            CIC = "004204004364",
-
-            //            PhoneNumber = "0987654321",
-            //            LockoutEnabled = true,
-            //            AccessFailedCount = 0,
-            //            PasswordHash = passwordHasher.HashPassword(null, "UserPass123!"),
-            //            SecurityStamp = Guid.NewGuid().ToString()
-            //        }
-
-            //    );
-
-            //    modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
-            //        new IdentityUserRole<Guid>
+            //            Id = customerRoleId,
+            //            Name = "Customer",
+            //            NormalizedName = "CUSTOMER"
+            //        }, new IdentityRole<Guid>
             //        {
-            //            UserId = adminUserId,
-            //            RoleId = adminRoleId
-            //        },
-            //        new IdentityUserRole<Guid>
+            //            Id = employeeRoleId,
+            //            Name = "Employee",
+            //            NormalizedName = "EMPLOYEE"
+            //        }, new IdentityRole<Guid>
             //        {
-            //            UserId = CustomerUserId,
-            //            RoleId = customerRoleId
+            //            Id = guestRoleId,
+            //            Name = "Guest",
+            //            NormalizedName = "GUEST"
             //        }
             //    );
+            //var adminUserId = Guid.NewGuid();
+            //var CustomerUserId = Guid.NewGuid();
+            //var EmployeeUserId = Guid.NewGuid();
+            //var GuestUserId = Guid.NewGuid();
+
+            //var passwordHasher = new PasswordHasher<ApplicationUser>();
+
+            //modelBuilder.Entity<ApplicationUser>().HasData(
+            //    new ApplicationUser
+            //    {
+            //        Id = adminUserId,
+            //        UserName = "admin@example.com",
+            //        NormalizedUserName = "ADMIN@EXAMPLE.COM",
+            //        Email = "admin@example.com",
+            //        NormalizedEmail = "ADMIN@EXAMPLE.COM",
+            //        Name = "Admin User",
+            //        CIC = "002204004364",
+            //        PhoneNumber = "0123456789",
+            //        LockoutEnabled = true,
+            //        AccessFailedCount = 0,
+            //        PasswordHash = passwordHasher.HashPassword(null, "AdminPass123!"),
+            //        SecurityStamp = Guid.NewGuid().ToString()
+            //    },
+            //    new ApplicationUser
+            //    {
+            //        Id = CustomerUserId,
+            //        UserName = "user@example.com",
+            //        NormalizedUserName = "USER@EXAMPLE.COM",
+            //        Email = "user@example.com",
+            //        NormalizedEmail = "USER@EXAMPLE.COM",
+            //        Name = "Regular User",
+            //        CIC = "004204004364",
+
+            //        PhoneNumber = "0987654321",
+            //        LockoutEnabled = true,
+            //        AccessFailedCount = 0,
+            //        PasswordHash = passwordHasher.HashPassword(null, "UserPass123!"),
+            //        SecurityStamp = Guid.NewGuid().ToString()
+            //    }
+
+            //);
+
+            //modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
+            //    new IdentityUserRole<Guid>
+            //    {
+            //        UserId = adminUserId,
+            //        RoleId = adminRoleId
+            //    },
+            //    new IdentityUserRole<Guid>
+            //    {
+            //        UserId = CustomerUserId,
+            //        RoleId = customerRoleId
+            //    }
+            //);
         }
 
 

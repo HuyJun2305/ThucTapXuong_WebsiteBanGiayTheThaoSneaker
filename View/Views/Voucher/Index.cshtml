@@ -99,7 +99,6 @@
                             <th class="text-center">Ngày kết thúc</th>
                             <th class="text-center">Kiểu</th>
                             <th class="text-center">Trạng thái</th>
-                            <th class="text-center">ID tài khoản</th>
                             <th class="text-center">Hành động</th>
                         </tr>
                     </thead>
@@ -141,7 +140,6 @@
                                             @(item.Status ? "Active" : "Inactive")
                                         </span>
                                     </td>
-                                    <td class="text-center">@Html.DisplayFor(modelItem => item.AccountId)</td>
                                     <td class="text-center">
                                         <div class="dropdown">
                                             <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">

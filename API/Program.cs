@@ -41,6 +41,7 @@ builder.Services.AddScoped<IPaymentHistoryRepo, PaymentHistoryRepo>();
 builder.Services.AddScoped<IOrderDetailRepo, OrderDetailRepo>();
 builder.Services.AddScoped<IOrderAddressRepo, OrderAddressRepo>();
 builder.Services.AddScoped<IShippingUnitRepos,ShippingUnitRepos>();
+builder.Services.AddScoped<ICustomerVoucherRepos, CustomerVoucherRepos>();
 builder.Services.AddScoped<IVoucherRepos, VoucherRepos>();
 builder.Services.AddScoped<ICartRepo, CartRepo>();
 builder.Services.AddScoped<ICartDetailsRepo, CartDetailsRepo>();

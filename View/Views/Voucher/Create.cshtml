@@ -80,9 +80,9 @@
                     <label>Kiểu</label>
                     <div>
                         <input class="me-1" type="radio" id="Công khai" name="Voucher.Type" value="Công khai" checked />
-                        <label class="me-3" for="Công khai">Công khai</label>
+                        <label class="me-3" for="PublicType">Công khai</label>
                         <input class="me-1" type="radio" id="Cá nhân" name="Voucher.Type" value="Cá nhân" />
-                        <label class="me-3" for="Cá nhân">Cá nhân</label>
+                        <label class="me-3" for="PrivateType">Cá nhân</label>
                     </div>
                     <span asp-validation-for="Voucher.Type" class="text-danger"></span>
                 </div>
@@ -96,18 +96,12 @@
                     <span asp-validation-for="Voucher.Status" class="text-danger"></span>
                 </div>
 
-                <div class="form-group mb-3">
-                    <label for="AccountId">ID tài khoản (nếu có)</label>
-                    <input type="text" class="form-control" id="AccountId" name="Voucher.AccountId" />
-                    <span asp-validation-for="Voucher.AccountId" class="text-danger"></span>
-                </div>
-
                 <button type="submit" class="btn btn-success mb-3">Tạo Voucher</button>
             </form>
         </div>
 
         <!-- Danh Sách Account Sử Dụng Voucher -->
-        <div class="col-md-6">
+        <div id="CustomerList" class="col-md-6">
             <h4 class="mb-4">Danh sách khách hàng</h4>
             <input type="text" class="form-control mb-3" placeholder="Tìm kiếm khách hàng" />
 
@@ -115,24 +109,26 @@
                 <table class="table table-striped styled-table">
                     <thead>
                         <tr>
-                            <th></th>
+                            <th>STT</th>
                             <th>Tên</th>
                             <th>Số điện thoại</th>
                             <th>Email</th>
-                            <th>Ngày sinh</th>
+                            <th>Chọn</th> <!-- Cột checkbox luôn hiện tiêu đề -->
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var account in Model.Accounts)
                         {
                             <tr>
-                                <td>
-                                    <input type="checkbox" name="SelectedAccounts" value="@account.Id" />
-                                </td>
+                                <td>@Model.Accounts.IndexOf(account) + 1</td> <!-- Thêm số thứ tự -->
                                 <td>@account.Name</td>
                                 <td>@account.PhoneNumber</td>
                                 <td>@account.Email</td>
-                                <td>@account.Birthday?.ToString("dd-MM-yyyy")</td>
+                                <td>
+                                    <div class="checkbox-container" style="display: none;">
+                                        <input type="checkbox" name="SelectedCustomerIds" value="@account.Id" />
+                                    </div>
+                                </td>
                             </tr>
                         }
                     </tbody>
@@ -196,7 +192,48 @@
                 $("#voucherCodeError").text("");
             }
         });
+
+        // Hàm ẩn/hiện các checkbox dựa vào loại Type
+        function toggleCheckboxes() {
+            var isPrivateType = document.getElementById("Cá nhân").checked;
+            var checkboxes = document.querySelectorAll(".checkbox-container");
+
+            // Hiển thị checkbox nếu là "Cá nhân", ẩn nếu là "Công khai"
+            checkboxes.forEach(function (checkboxContainer) {
+                checkboxContainer.style.display = isPrivateType ? "block" : "none";
+            });
+        }
+
+        // Thực thi hàm khi thay đổi loại Type
+        document.getElementById("Công khai").addEventListener("change", toggleCheckboxes);
+        document.getElementById("Cá nhân").addEventListener("change", toggleCheckboxes);
+
+        // Gọi hàm để đặt trạng thái ban đầu của các checkbox
+        toggleCheckboxes();
+
+        // Hàm ẩn/hiện các ô nhập liệu dựa vào loại giảm giá
+        function toggleDiscountFields() {
+            var discountType = document.getElementById("DiscountType").value;
+            var percentField = document.getElementById("DiscountPercent").parentElement;
+            var amountField = document.getElementById("DiscountAmount").parentElement;
+
+            if (discountType === "Percent") {
+                percentField.style.display = "block";
+                amountField.style.display = "none";
+            } else if (discountType === "Amount") {
+                percentField.style.display = "none";
+                amountField.style.display = "block";
+            }
+        }
+
+        // Thực thi hàm khi thay đổi loại giảm giá
+        document.getElementById("DiscountType").addEventListener("change", toggleDiscountFields);
+
+        // Gọi hàm để đặt trạng thái ban đầu của các trường
+        toggleDiscountFields();
+
     </script>
+
     <style>
         .custom-dark-gray {
             background-color: #23272b;
@@ -209,3 +246,4 @@
             }
     </style>
 }
+

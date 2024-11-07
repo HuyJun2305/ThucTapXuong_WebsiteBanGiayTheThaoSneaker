@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Data.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace DataProcessing.Models
 {
@@ -60,8 +62,9 @@ namespace DataProcessing.Models
         [Required(ErrorMessage = "Kiểu phiếu giảm giá là bắt buộc")]
         public bool Status { get; set; }
 
-        // ID của tài khoản (không bắt buộc)
-        public Guid? AccountId { get; set; }
+        // Quan hệ nhiều-nhiều với ApplicationUser
+        [JsonIgnore]
+        public ICollection<CustomerVoucher> CustomerVouchers { get; set; } = new List<CustomerVoucher>();
 
         // Phương thức Validate để đảm bảo chỉ một trong hai giá trị giảm giá được điền
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

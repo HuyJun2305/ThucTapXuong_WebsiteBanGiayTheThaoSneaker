@@ -1,4 +1,5 @@
-﻿using DataProcessing.Models;
+﻿using Data.Models;
+using DataProcessing.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Net.Http.Json;
@@ -13,6 +14,22 @@ namespace View.Servicecs
         public VoucherServices(HttpClient httpClient)
         {
             _httpClient = httpClient;
+        }
+
+        public async Task AssignVoucherToCustomer(Guid voucherId, Guid customerId)
+        {
+            var customerVoucher = new CustomerVoucher 
+            {
+                VoucherId = voucherId,
+                CustomerId = customerId
+            };
+
+            var response = await _httpClient.PostAsJsonAsync("https://localhost:7170/api/CustomerVoucher", customerVoucher);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Failed to assign voucher to customer. Status Code: {response.StatusCode}, Error: {errorContent}");
+            }
         }
 
         // Create Voucher
@@ -92,6 +109,21 @@ namespace View.Servicecs
             return voucher;
         }
 
+        public async Task<List<Voucher>> GetVouchersByCustomerId(Guid customerId)
+        {
+            var response = await _httpClient.GetAsync($"https://localhost:7170/api/CustomerVoucher/customer/{customerId}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Failed to retrieve customer vouchers. Status Code: {response.StatusCode}, Error: {errorContent}");
+            }
+
+            var responseString = await response.Content.ReadAsStringAsync();
+            var vouchers = JsonConvert.DeserializeObject<List<Voucher>>(responseString);
+            return vouchers;
+        }
+
         // Kiểm tra tính duy nhất của VoucherCode bằng cách gọi API
         public async Task<bool> IsVoucherCodeUnique(string voucherCode)
         {
@@ -106,7 +138,7 @@ namespace View.Servicecs
             var isUnique = await response.Content.ReadAsStringAsync();
             return bool.Parse(isUnique); // trả về kết quả kiểm tra tính duy nhất của mã voucher
         }
-
+        
         // Update Voucher
         public async Task Update(Voucher voucher)
         {

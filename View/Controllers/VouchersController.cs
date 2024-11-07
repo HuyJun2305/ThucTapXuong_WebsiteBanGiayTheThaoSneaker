@@ -133,6 +133,16 @@ namespace View.Controllers
                 {
                     model.Voucher.Id = Guid.NewGuid();
                     await _voucherService.Create(model.Voucher);
+
+                    // Lưu các mối quan hệ giữa Voucher và các khách hàng đã chọn
+                    if (model.SelectedCustomerIds != null && model.SelectedCustomerIds.Any())
+                    {
+                        foreach (var customerId in model.SelectedCustomerIds)
+                        {
+                            await _voucherService.AssignVoucherToCustomer(model.Voucher.Id, customerId);
+                        }
+                    }
+
                     return RedirectToAction(nameof(Index));
                 }
                 catch (ArgumentException ex)
@@ -146,9 +156,10 @@ namespace View.Controllers
                 }
             }
 
-            model.Accounts = await _voucherService.GetAllAccounts(); // Đảm bảo danh sách Accounts vẫn được tải lại khi có lỗi
-            return View(model); // Trả lại view với các thông báo lỗi nếu có
+            model.Accounts = await _voucherService.GetAllAccounts(); // Tải lại danh sách Accounts khi có lỗi
+            return View(model);
         }
+
 
 
         // GET: Vouchers/Edit/5

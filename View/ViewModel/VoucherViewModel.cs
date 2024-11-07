@@ -7,6 +7,7 @@ namespace View.ViewModel
     {
         public Voucher Voucher { get; set; }
         public List<ApplicationUser> Accounts { get; set; }
+        public List<Guid> SelectedCustomerIds { get; set; }
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
 
@@ -14,6 +15,7 @@ namespace View.ViewModel
         {
             Voucher = new Voucher(); // Khởi tạo đối tượng Voucher
             Accounts = new List<ApplicationUser>();
+            SelectedCustomerIds = new List<Guid>();
         }
     }
 

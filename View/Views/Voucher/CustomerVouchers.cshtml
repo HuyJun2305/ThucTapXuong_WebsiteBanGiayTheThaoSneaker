@@ -1,0 +1,45 @@
+﻿@model List<DataProcessing.Models.Voucher>
+
+<h2>Danh sách Voucher của khách hàng</h2>
+
+@if (Model == null || !Model.Any())
+{
+    <p>Không có voucher nào.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã Voucher</th>
+                <th>Tên</th>
+                <th>Loại giảm giá</th>
+                <th>Giá trị</th>
+                <th>Ngày bắt đầu</th>
+                <th>Ngày kết thúc</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var voucher in Model)
+            {
+                <tr>
+                    <td>@voucher.VoucherCode</td>
+                    <td>@voucher.Name</td>
+                    <td>@voucher.DiscountType</td>
+                    <td class="text-center">
+                        @if (voucher.DiscountPercent.HasValue)
+                        {
+                            @string.Format("{0}%", voucher.DiscountPercent)
+                        }
+                        else if (voucher.DiscountAmount.HasValue)
+                        {
+                            @string.Format("{0:n0} VND", voucher.DiscountAmount)
+                        }
+                    </td>
+                    <td>@voucher.StartDate.ToString("dd/MM/yyyy")</td>
+                    <td>@voucher.EndDate.ToString("dd/MM/yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
