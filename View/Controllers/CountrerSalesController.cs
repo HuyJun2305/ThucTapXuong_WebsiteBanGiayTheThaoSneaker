@@ -25,30 +25,35 @@ namespace View.Controllers
             _accountService = accountService;
             _productDetailService = productDetailService;
         }
+
         // GET: CounterSalesController
-        public ActionResult Index()
-        {
-            var token = HttpContext.Session.GetString("AuthToken");
-            var userId = "";
-            if (!string.IsNullOrEmpty(token))
-            {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var jwtToken = tokenHandler.ReadJwtToken(token);
 
-                var claims = jwtToken.Claims.ToList();
-                userId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            }
+        // Sửa lại
 
-            var orders = new CounterSalesVM()
-            {
-                Products = _orderServices.GetProductDetails().Result,
-                Customers = _accountService.GetAllCustomer().Result,
-                Orders = _orderServices.GetAllOrdersByStatus().Result.Where(o => o.WhoCreateThis == Guid.Parse(userId) && o.Status == "Tạo đơn hàng"),
-            };
-            ViewData["ShippingUnitID"] = new SelectList(_shippingUnitServices.GetAllShippingUnit().Result, "ShippingUnitID", "Address");
-            ViewData["VoucherId"] = new SelectList(_voucherServices.GetAllVouchers().Result, "Id", "Condittion");
-            return View(orders);
-        }
+
+        //public ActionResult Index()
+        //{
+        //    var token = HttpContext.Session.GetString("AuthToken");
+        //    var userId = "";
+        //    if (!string.IsNullOrEmpty(token))
+        //    {
+        //        var tokenHandler = new JwtSecurityTokenHandler();
+        //        var jwtToken = tokenHandler.ReadJwtToken(token);
+
+        //        var claims = jwtToken.Claims.ToList();
+        //        userId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        //    }
+
+        //    var orders = new CounterSalesVM()
+        //    {
+        //        Products = _orderServices.GetProductDetails().Result,
+        //        Customers = _accountService.GetAllCustomer().Result,
+        //        Orders = _orderServices.GetAllOrdersByStatus().Result.Where(o => o.WhoCreateThis == Guid.Parse(userId) && o.Status == "Tạo đơn hàng"),
+        //    };
+        //    ViewData["ShippingUnitID"] = new SelectList(_shippingUnitServices.GetAllShippingUnit().Result, "ShippingUnitID", "Address");
+        //    ViewData["VoucherId"] = new SelectList(_voucherServices.GetAllVouchers().Result, "Id", "Condittion");
+        //    return View(orders);
+        //}
 
         // GET: CounterSalesController/Details/5
         public ActionResult Details(int id)
