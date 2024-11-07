@@ -33,7 +33,7 @@
             @Html.DisplayNameFor(model => model.Orders.Status)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Orders.Status)
+            @Model.Orders.Status.GetDisplayName()
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Orders.OrderAddress.Id)
@@ -120,7 +120,7 @@
             @foreach (var item in Model.OrderHistories.OrderByDescending(oh => oh.TimeStamp).ToList())
             {
                 <tr>
-                    <td>@item.StatusType</td>
+                    <td>@item.StatusType.GetDisplayName()</td>
                     <td>@item.TimeStamp</td>
                     <td>@item.Note</td>
                     <td>@item.UpdatedByUserId</td>
@@ -208,8 +208,10 @@
 
 
 <!-- Modal -->
+
+<!-- Thêm sản phẩm vào đơn hàng-->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog  modal-xl">
+    <div class="modal-dialog modal-xl" style="max-width: 95%;">
         <div class="modal-content" weight="600px">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Danh sách sản phẩm</h5>
@@ -244,10 +246,9 @@
                                     <td>@product.Product.Name</td>
                                     <td>@product.Color?.Name</td>
                                     <td>
-
                                         <div class="input-group" style="max-width: 145px">
                                             <button type="button" class="btn btn-outline-secondary" onclick="adjustQuantity('Quantity+@product.Id',-1)">-</button>
-                                            <input type="number" name="Quantity" id="Quantity+@product.Id" value="@quantity" min="1" class="form-control" style="text-align:center" />
+                                            <input type="number" name="Quantity" id="Quantity+@product.Id" value="@quantity" min="1" class="form-control w-50" style="text-align:center" />
                                             <button type="button" class="btn btn-outline-secondary" onclick="adjustQuantity('Quantity+@product.Id',1)">+</button>
                                         </div>
                                     </td>
