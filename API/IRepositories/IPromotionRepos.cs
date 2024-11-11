@@ -1,4 +1,5 @@
 ﻿ using Data.Models;
+using Data.ViewModels;
 using DataProcessing.Models;
 
 namespace API.IRepositories
@@ -7,6 +8,7 @@ namespace API.IRepositories
     {
         Task<List<Promotion>> GetAllPromotion();
         Task<Promotion> GetPromotionById(Guid id);
+        Task<List<ProductDetailsPromotionViewModel>> GetAllProductDetailsPromotion();
         Task Create(Promotion promotion);
         Task Update(Promotion promotion);
         Task Delete(Guid id);

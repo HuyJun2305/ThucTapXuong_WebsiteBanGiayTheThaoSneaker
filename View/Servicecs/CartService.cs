@@ -1,4 +1,4 @@
-﻿/*using API.Migrations;*/
+
 using DataProcessing.Models;
 using Newtonsoft.Json;
 using System.Net;
@@ -38,13 +38,8 @@ namespace View.Servicecs
                     cartDetailsItem.Quanlity = cartDetail.ProductDetail.Stock;
                 }
 
-                // Tính lại tổng giá
                 cartDetailsItem.TotalPrice = cartDetail.ProductDetail.Price * cartDetailsItem.Quanlity;
-
-                // Loại bỏ ProductDetail để tránh gửi dữ liệu không cần thiết
                 cartDetailsItem.ProductDetail = null;
-
-                // Gửi yêu cầu cập nhật
                 await _client.PutAsJsonAsync($"https://localhost:7170/api/CartDetails/Update?id={cartDetailsItem.Id}", cartDetailsItem);
             }
             else
@@ -53,10 +48,9 @@ namespace View.Servicecs
             }
         }
 
-
-        public Task Delete(Guid id)
+        public async Task Delete(Guid id)
         {
-            throw new NotImplementedException();
+            await _client.DeleteAsync($"https://localhost:7170/api/CartDetails/Delete?id={id}");
         }
 
         public async Task<List<CartDetail>> GetAllCartDetails()
@@ -85,7 +79,6 @@ namespace View.Servicecs
             {
                 if (ex.StatusCode == HttpStatusCode.NotFound)
                 {
-                    // Nếu API trả về 404, trả về null thay vì lỗi
                     return null;
                 }
                 throw;
@@ -124,7 +117,7 @@ namespace View.Servicecs
             {
                 foreach(var item in cartDetailsItem)
                 {
-                    totalPrice += item.TotalPrice;
+                    totalPrice += (decimal)item.TotalPrice;
                 };
             }
             var cartUser = await GetCartAsync(id);
@@ -132,9 +125,9 @@ namespace View.Servicecs
             await _client.PutAsJsonAsync($"https://localhost:7170/api/Cart/UpdateCart?id={id}",cart);
         }
 
-        public Task Update(CartDetail cartDetail, Guid id)
-        {
-            throw new NotImplementedException();
+        public async Task UpdateCartDetails(CartDetail cartDetail,Guid id)
+        {  
+            await _client.PutAsJsonAsync($"https://localhost:7170/api/CartDetails/Update?id={id}", cartDetail);
         }
     }
 }

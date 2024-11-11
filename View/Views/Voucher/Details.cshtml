@@ -23,16 +23,10 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.VoucherType)
+            @Html.DisplayNameFor(model => model.DiscountType)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.VoucherType)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DiscountAmount)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DiscountAmount)
+            @Html.DisplayFor(model => model.DiscountType)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.DiscountPercent)
@@ -41,16 +35,28 @@
             @Html.DisplayFor(model => model.DiscountPercent)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Condittion)
+            @Html.DisplayNameFor(model => model.DiscountAmount)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Condittion)
+            @Html.DisplayFor(model => model.DiscountAmount)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MaxDiscountValue)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MaxDiscountValue)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Stock)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Stock)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Condition)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Condition)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.StartDate)
@@ -63,6 +69,12 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.EndDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Type)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Status)

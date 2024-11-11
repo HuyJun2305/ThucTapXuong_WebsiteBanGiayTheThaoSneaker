@@ -50,12 +50,24 @@
                                 <td>@Html.DisplayFor(modelItem => item.DiscountValue)</td>
                                 <td>@Html.DisplayFor(modelItem => item.StartDate)</td>
                                 <td>@Html.DisplayFor(modelItem => item.EndDate)</td>
-                                <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                                <td>
+                                    <span class="badge @((item.Status ? "bg-success" : "bg-danger"))">
+                                        @(item.Status ? "Active" : "Inactive")
+                                    </span>
+                                </td>
                                 <td>
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Sửa</a> |
                                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Chi tiết</a> |
                                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" 
                                        onclick="return confirm('Bạn có chắc muốn xóa khuyến mãi này không?');">Xóa</a>
+
+
+                                    <form asp-action="ToggleStatus" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-sm btn-custom @(item.Status ? "btn-danger" : "btn-success")">
+                                            <i class="@(item.Status ? "ti ti-pause" : "ti ti-play")"></i>
+                                            @(item.Status ? "Deactivate" : "Activate")
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         }

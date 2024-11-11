@@ -20,12 +20,16 @@ namespace View.Controllers
 		private readonly IOrderServices _orderServices;
 		private readonly IShippingUnitServices _shippingUnitServices;
 		private readonly IVoucherServices _voucherServices;
-		public OrdersController(IOrderServices orderServices, IShippingUnitServices shippingUnitServices, IVoucherServices voucherServices)
+        private readonly IEmailSender _emailSender;
+
+        public OrdersController(IOrderServices orderServices, IShippingUnitServices shippingUnitServices, IVoucherServices voucherServices, IEmailSender emailSender)
 		{
 			_orderServices = orderServices;
 			_shippingUnitServices = shippingUnitServices;
 			_voucherServices = voucherServices;
-		}
+			_emailSender = emailSender;
+
+        }
 
 		// GET: Orders
 		public async Task<IActionResult> Index()
@@ -44,6 +48,7 @@ namespace View.Controllers
 				OrderDetails = _orderServices.GetAllOrderDetailsByOrderId(id).Result,
 				ProductDetails = _orderServices.GetProductDetails().Result,
 				OrderAdress = _orderServices.GetOrderAddressByOrderId(id).Result,
+				Customers = _orderServices.GetAllCustomers().Result
 			};
 
 			return View(orderVM);
@@ -157,7 +162,7 @@ namespace View.Controllers
 			}
 			return RedirectToAction(nameof(Index));
 		}
-
+		// đổi trạng thái đơn hàng 
 		public async Task<IActionResult> ChangeStatus(Guid id)
 		{
 			try
@@ -181,7 +186,7 @@ namespace View.Controllers
 
 			return RedirectToAction("Details", new { id });
 		}
-
+		// đổi trạng thái đơn hàng về trạng thái trước đó
 		public async Task<IActionResult> BackStatus(Guid id)
 		{
 			try
@@ -205,7 +210,7 @@ namespace View.Controllers
 
 			return RedirectToAction("Details", new { id });
 		}
-
+		// hủy đơn hàng 
 		public async Task<IActionResult> CancelOrder(Guid id)
 		{
 			try
@@ -316,6 +321,14 @@ namespace View.Controllers
 				return Problem(ex.Message);
 			}
 
+			return RedirectToAction(nameof(Details), new { id });
+		}
+
+		public async Task<IActionResult> UpdateUser(Guid id, Guid userId)
+		{
+			var order  = _orderServices.GetOrderById(id).Result;
+			order.UserId = userId.ToString();
+			await _orderServices.Update(order);
 			return RedirectToAction(nameof(Details), new { id });
 		}
 	}

@@ -569,6 +569,7 @@
         function removeProduct(button) {
             const row = button.closest('.product-item');
             row.remove();
+            calculateTotalPrice();
             // Update total price here if needed
         }
 
