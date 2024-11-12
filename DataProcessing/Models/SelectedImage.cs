@@ -13,6 +13,6 @@ namespace DataProcessing.Models
 
         public Guid ProductId { get; set; }
         public Guid ColorId { get; set; }
-        public virtual Color Color { get; set; }
+        public virtual Color? Color { get; set; }
     }
 }

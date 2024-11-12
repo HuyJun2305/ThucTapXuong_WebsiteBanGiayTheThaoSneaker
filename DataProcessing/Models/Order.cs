@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -14,14 +15,14 @@ namespace DataProcessing.Models
     {
         public Guid Id { get; set; }
         public DateTime CreatedDate { get; set; }
-        public decimal TotalPrice { get; set; }
+        public decimal? TotalPrice { get; set; }
         [Required]
         public string PaymentMethod { get; set; }
-        public string? Status { get; set; } = "Chờ xác nhận";
+        public OrderStatus Status { get; set; } = OrderStatus.TaoDonHang;
         public virtual OrderAdress? OrderAddress { get; set; }
 
         public string? UserId { get; set; } = "Khách lẻ";
-        public Guid? WhoCreateThis { get; set; }
+        public Guid? WhoCreateThis { get; set; }    
         public Guid? VoucherId { get; set; }
         [JsonIgnore]
         public virtual Voucher? Voucher { get; set; }
@@ -30,4 +31,28 @@ namespace DataProcessing.Models
         [JsonIgnore]
         public ICollection<PaymentHistory>? paymentHistories { get; set; }
     }
+
+    public enum OrderStatus
+    {
+        [Display(Name = "Tạo đơn hàng")]
+        TaoDonHang = 0,
+        [Display(Name = "Chờ xác nhận")]
+        ChoXacNhan = 1,
+		[Display(Name = "Chuẩn bị đơn hàng")]
+		ChuanBiDonHang = 2,
+		[Display(Name = "Đang giao hàng")]
+		DangGiaoHang = 3,
+		[Display(Name = "Đã giao hàng")]
+		DaGiaoHang = 4,
+		[Display(Name = "Hoàn thành")]
+		HoanThanh = 5,
+
+		// Trong trường hợp xảy ra thất thoát
+		[Display(Name = "Đã huỷ")]
+		DaHuy = 6,
+		[Display(Name = "Mất hàng")]
+		MatHang = 7,
+        [Display(Name = "Hoàn trả")]
+        HoanTra = 8
+	}
 }

@@ -16,5 +16,6 @@ namespace View.ViewModel
 		public int quantity { get; set; }
 		public IEnumerable<ProductDetail> ProductDetails { get; set; }
 		public OrderAdress? OrderAdress { get; set; }
+		public IEnumerable<ApplicationUser> Customers { get; set; }
 	}
 }

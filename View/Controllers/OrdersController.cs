@@ -48,6 +48,7 @@ namespace View.Controllers
 				OrderDetails = _orderServices.GetAllOrderDetailsByOrderId(id).Result,
 				ProductDetails = _orderServices.GetProductDetails().Result,
 				OrderAdress = _orderServices.GetOrderAddressByOrderId(id).Result,
+				Customers = _orderServices.GetAllCustomers().Result
 			};
 
 			return View(orderVM);
@@ -65,7 +66,7 @@ namespace View.Controllers
 		// To protect from overposting attacks, enable the specific properties you want to bind to.
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
-		public async Task<IActionResult> Create([Bind("Id,CreatedDate,TotalPrice,PaymentMethod,Status,AddressId,UserId,VoucherId,ShippingUnitID")] Order order)
+		public async Task<IActionResult> Create([Bind("Id,PaymentMethod,VoucherId,ShippingUnitID")] Order order)
 		{
 			var token = HttpContext.Session.GetString("AuthToken");
 			var userId = "";
@@ -80,6 +81,7 @@ namespace View.Controllers
 			if (ModelState.IsValid)
 			{
 				order.Id = Guid.NewGuid();
+				order.CreatedDate = DateTime.Now;
 				await _orderServices.Create(Guid.Parse(userId), order);
 				return RedirectToAction(nameof(Index));
 			}
@@ -320,6 +322,14 @@ namespace View.Controllers
 				return Problem(ex.Message);
 			}
 
+			return RedirectToAction(nameof(Details), new { id });
+		}
+
+		public async Task<IActionResult> UpdateUser(Guid id, Guid userId)
+		{
+			var order  = _orderServices.GetOrderById(id).Result;
+			order.UserId = userId.ToString();
+			await _orderServices.Update(order);
 			return RedirectToAction(nameof(Details), new { id });
 		}
 	}

@@ -47,6 +47,27 @@ namespace API.Migrations
                     b.ToTable("ProductDetailPromotions");
                 });
 
+            modelBuilder.Entity("Data.Models.VoucherUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AccountId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("voucherId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("voucherId");
+
+                    b.ToTable("voucherUsers");
+                });
+
             modelBuilder.Entity("DataProcessing.Models.Address", b =>
                 {
                     b.Property<Guid>("Id")
@@ -59,9 +80,6 @@ namespace API.Migrations
                     b.Property<string>("AddressDetail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("ApplicationUserId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -89,8 +107,6 @@ namespace API.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Addresses");
                 });
@@ -181,10 +197,10 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("8abdbfd0-6823-4be8-9942-3820c3eb684c"),
+                            Id = new Guid("2b0c19a3-b1d4-4e35-be56-3c043b5d8342"),
                             AccessFailedCount = 0,
                             CIC = "002204004364",
-                            ConcurrencyStamp = "0645c9e6-e261-4148-bbf5-a696cf8f5484",
+                            ConcurrencyStamp = "f9526817-058b-43b9-af10-c09252344a60",
                             Email = "admin@example.com",
                             EmailConfirmed = false,
                             IsSubscribedToNews = false,
@@ -192,19 +208,19 @@ namespace API.Migrations
                             Name = "Admin User",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAENVRP8vdZKt5ssrnztBuYKD6Lq6DdfSCMxAnDU/gWDw+tToQ3ykobhuWhAZCEeLu2A==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFx9TESoxcocCgM64wLTOhixQIAskLPwbwwIAbiGl/qIvqHzdzE+xJ5ld4CrorK5kA==",
                             PhoneNumber = "0123456789",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3a2832b6-d03d-4c2b-80c3-4d7e9c119f59",
+                            SecurityStamp = "18e68b5a-620c-464d-95b5-f78d6d0e8f02",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
                         new
                         {
-                            Id = new Guid("c8842bc0-9f2a-41fd-8c8d-d1bfc954c6ca"),
+                            Id = new Guid("d6fb6b85-959c-41fa-ae0d-c348eebef033"),
                             AccessFailedCount = 0,
                             CIC = "004204004364",
-                            ConcurrencyStamp = "e4b0b82f-b2e9-4bb1-8369-5adda2ccfb3f",
+                            ConcurrencyStamp = "647809b2-d254-437c-ac9f-2cb3d9b3d151",
                             Email = "user@example.com",
                             EmailConfirmed = false,
                             IsSubscribedToNews = false,
@@ -212,10 +228,10 @@ namespace API.Migrations
                             Name = "Regular User",
                             NormalizedEmail = "USER@EXAMPLE.COM",
                             NormalizedUserName = "USER@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEZ3/AP3NhrwPzykVM5QlbpqkJfJYCoFpjG2wLJxz4DmftZVXGLlXri5cBG7BvCHQg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDkwugPbEnkszwZbNjnvnL7k5gVg1B9Jf7WasM12fGxfqFCUfPBUzwIWo+p5mHV0tA==",
                             PhoneNumber = "0987654321",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f53b2501-1d35-488b-99e0-a506736b7396",
+                            SecurityStamp = "6450676e-b684-4db4-ac63-8144cb7fff99",
                             TwoFactorEnabled = false,
                             UserName = "user@example.com"
                         });
@@ -246,16 +262,17 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AccountId")
+                    b.Property<Guid?>("AccountId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("TotalPrice")
+                    b.Property<decimal?>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[AccountId] IS NOT NULL");
 
                     b.ToTable("Carts");
                 });
@@ -276,7 +293,7 @@ namespace API.Migrations
                     b.Property<int>("Quanlity")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("TotalPrice")
+                    b.Property<decimal?>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -385,10 +402,10 @@ namespace API.Migrations
                     b.Property<Guid?>("ShippingUnitID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("TotalPrice")
+                    b.Property<decimal?>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("UserId")
@@ -466,7 +483,7 @@ namespace API.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("TotalPrice")
+                    b.Property<decimal?>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -490,9 +507,8 @@ namespace API.Migrations
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("StatusType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("StatusType")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
@@ -750,9 +766,6 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AccountId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Condition")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -793,9 +806,12 @@ namespace API.Migrations
 
                     b.Property<string>("VoucherCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("VoucherCode")
+                        .IsUnique();
 
                     b.ToTable("Vouchers");
                 });
@@ -830,29 +846,29 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ed2e30d9-64ae-4761-9eee-08ec82b64cf4"),
-                            ConcurrencyStamp = "b66fea73-d1c3-4408-95a2-7b7a804dbc20",
+                            Id = new Guid("ddc29f82-a233-4049-9cbd-ff3d258c0804"),
+                            ConcurrencyStamp = "64c23a46-79a0-4a04-9854-176a66b90e94",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("0a5fafed-5e7c-4d49-810c-97e37884eefc"),
-                            ConcurrencyStamp = "3c80b00b-9f72-4f49-ad59-9acaf18d8ed5",
+                            Id = new Guid("551de65c-93f1-4a2d-8883-27eb260d871b"),
+                            ConcurrencyStamp = "b7ff8f5e-9d13-4efc-a5f5-efaaca89f171",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = new Guid("a275704b-ad10-4548-a525-e231cc552846"),
-                            ConcurrencyStamp = "6deeb837-87f2-430b-bc2c-c5327588e318",
+                            Id = new Guid("c024bc66-7ec3-4384-a3e6-7f0b60f7fb26"),
+                            ConcurrencyStamp = "d49d9a90-8451-4bf3-9436-470a415d9adf",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = new Guid("12694620-509d-4d9a-b312-c8de1cc35f20"),
-                            ConcurrencyStamp = "f6adae70-7735-4599-8a8c-70662fc5b23f",
+                            Id = new Guid("7786068b-0a97-460d-b7c1-629bcf912f71"),
+                            ConcurrencyStamp = "d98d8767-7e02-441e-8cbd-c2d80cbc070a",
                             Name = "Guest",
                             NormalizedName = "GUEST"
                         });
@@ -944,13 +960,13 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("8abdbfd0-6823-4be8-9942-3820c3eb684c"),
-                            RoleId = new Guid("ed2e30d9-64ae-4761-9eee-08ec82b64cf4")
+                            UserId = new Guid("2b0c19a3-b1d4-4e35-be56-3c043b5d8342"),
+                            RoleId = new Guid("ddc29f82-a233-4049-9cbd-ff3d258c0804")
                         },
                         new
                         {
-                            UserId = new Guid("c8842bc0-9f2a-41fd-8c8d-d1bfc954c6ca"),
-                            RoleId = new Guid("0a5fafed-5e7c-4d49-810c-97e37884eefc")
+                            UserId = new Guid("d6fb6b85-959c-41fa-ae0d-c348eebef033"),
+                            RoleId = new Guid("551de65c-93f1-4a2d-8883-27eb260d871b")
                         });
                 });
 
@@ -992,17 +1008,30 @@ namespace API.Migrations
                     b.Navigation("Promotion");
                 });
 
+            modelBuilder.Entity("Data.Models.VoucherUser", b =>
+                {
+                    b.HasOne("DataProcessing.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("voucherUsers")
+                        .HasForeignKey("AccountId");
+
+                    b.HasOne("DataProcessing.Models.Voucher", "Voucher")
+                        .WithMany("voucherUsers")
+                        .HasForeignKey("voucherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Voucher");
+                });
+
             modelBuilder.Entity("DataProcessing.Models.Address", b =>
                 {
                     b.HasOne("DataProcessing.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("DataProcessing.Models.ApplicationUser", null)
                         .WithMany("Addresses")
-                        .HasForeignKey("ApplicationUserId");
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -1011,9 +1040,7 @@ namespace API.Migrations
                 {
                     b.HasOne("DataProcessing.Models.ApplicationUser", "Account")
                         .WithOne("Cart")
-                        .HasForeignKey("DataProcessing.Models.Cart", "AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DataProcessing.Models.Cart", "AccountId");
 
                     b.Navigation("Account");
                 });
@@ -1243,6 +1270,8 @@ namespace API.Migrations
 
                     b.Navigation("Cart")
                         .IsRequired();
+
+                    b.Navigation("voucherUsers");
                 });
 
             modelBuilder.Entity("DataProcessing.Models.Cart", b =>
@@ -1270,6 +1299,11 @@ namespace API.Migrations
             modelBuilder.Entity("DataProcessing.Models.ShippingUnit", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("DataProcessing.Models.Voucher", b =>
+                {
+                    b.Navigation("voucherUsers");
                 });
 #pragma warning restore 612, 618
         }

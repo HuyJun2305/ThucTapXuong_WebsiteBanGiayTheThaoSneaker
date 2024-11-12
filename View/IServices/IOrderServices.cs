@@ -19,11 +19,15 @@ namespace View.IServices
 		Task<IEnumerable<OrderDetail>> GetAllOrderDetailsByOrderId(Guid id);
 		Task AddToOrder(OrderDetail order);
 		Task DeleteFromOrder(Guid id);
+		Task UpdatePriceOrder(Guid OrderId);
 		Task ChangeStock(int stock, Guid orderDetailId);
 		Task<IEnumerable<ProductDetail>> GetProductDetails();
 
 		Task<OrderAdress?> GetOrderAddressByOrderId(Guid id);
 		Task ChangeOrderAddress(OrderAdress orderAdress);
 		Task AddOrderAddress(OrderAdress orderAdress);
+
+		//Customer
+		Task<IEnumerable<ApplicationUser>> GetAllCustomers();
 	}
 }

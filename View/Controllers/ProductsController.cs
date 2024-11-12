@@ -50,20 +50,50 @@ namespace View.Controllers
 		// GET: Products
 		public async Task<IActionResult> Index()
 		{
-			var viewContext = _productServices.GetAllProducts().Result;
-			if (viewContext == null) return View("'Product is null!'");
-			return View(viewContext.ToList());
+			var products = _productServices.GetAllProducts().Result;
+			var selectedImages = _selectedImageServices.GetAllSelectedImages().Result;
+			var productDetails = _productDetailService.GetAllProductDetail().Result;
+			if (products == null) return View("'Product is null!'");
+			var productIndexData = new ProductDetailIndexDetailsVM()
+			{
+				Products = products,
+				ImagesForProduct = selectedImages,
+				ProductDetails = productDetails
+			};
+			return View(productIndexData);
 		}
 
-		// GET: Products/Details/5
-		public async Task<IActionResult> Details(Guid id)
-		{
-			var product = _productServices.GetProductById(id);
-			return View(product);
-		}
+        // GET: Products/Details/5
+        public async Task<IActionResult> Details(Guid id)
+        {
+            var products = await _productServices.GetAllProducts();
+            var selectedImages = await _selectedImageServices.GetAllSelectedImages();
+            var productDetails = await _productDetailService.GetAllProductDetail();
 
-		// GET: Products/Create
-		public IActionResult Create()
+            var selectedProduct = products.FirstOrDefault(p => p.Id == id);
+            if (selectedProduct == null)
+            {
+                return NotFound("Product not found!");
+            }
+
+            var relatedImages = selectedImages.Where(i => i.ProductId == id).ToList();
+            var relatedProductDetails = productDetails.Where(d => d.ProductId == id).ToList();
+
+            var productDetailData = new ProductDetailIndexDetailsVM
+            {
+                Products = new List<Product> { selectedProduct },
+                ImagesForProduct = relatedImages,
+                ProductDetails = relatedProductDetails
+            };
+
+            return Json(productDetailData);
+        }
+
+
+
+
+        // GET: Products/Create
+        public IActionResult Create()
 		{
 			ViewData["BrandId"] = new SelectList(_brandServices.GetAllBrands().Result.Where(x => x.Status), "Id", "Name");
 			ViewData["CategoryId"] = new SelectList(_categoryServices.GetAllCategories().Result.Where(x => x.Status), "Id", "Name");
@@ -84,7 +114,7 @@ namespace View.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create(ProductAndDetailViewModel viewModel, string productDetailsJson)
+		public async Task<IActionResult> Create(ProductAndDetailViewModel viewModel, string productDetailsJson, string selectedImagesJson)
 		{
 			if (ModelState.IsValid)
 			{
@@ -117,6 +147,7 @@ namespace View.Controllers
 					await _emailSender.SendEmailAsync(user.Email, emailSubject, emailMessage);
 				}
 				var productDetails = JsonConvert.DeserializeObject<List<ProductDetailViewModel>>(productDetailsJson);
+				var selectedImages = JsonConvert.DeserializeObject<List<selectedImageVM>>(selectedImagesJson);
 				var productid = product.Id;
 
 				if (productDetails == null || !productDetails.Any())
@@ -140,6 +171,26 @@ namespace View.Controllers
 					};
 
 					await _productDetailService.Create(productDetail);
+				}
+
+				if (selectedImages == null || !selectedImages.Any())
+				{
+					ModelState.AddModelError("", "Images are invalid or empty.");
+					return View(viewModel);
+				}
+
+				//lưu ảnh đã được chọn
+				foreach (var img in selectedImages)
+				{
+					var selectedImage = new SelectedImage()
+					{
+						Id = Guid.NewGuid(),
+						URL = img.Url,
+						ProductId = productid,
+						ColorId = Guid.Parse(img.colorId)
+					};
+
+					await _selectedImageServices.Create(selectedImage);
 				}
 
 				return RedirectToAction(nameof(Index));
@@ -227,6 +278,12 @@ namespace View.Controllers
 			{
 				return Problem("Entity set 'Product'  is null.");
 			}
+			var images = _selectedImageServices.GetAllSelectedImages().Result.Where(si => si.ProductId == id);
+			foreach(var image in images)
+			{
+				await _selectedImageServices.Delete(image.Id);
+			}
+
 			await _productServices.Delete(id);
 
 			return RedirectToAction(nameof(Index));

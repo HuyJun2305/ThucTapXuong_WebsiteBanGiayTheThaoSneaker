@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DataProcessing.Models.ProductDetail>
+﻿@model View.ViewModel.CounterSalesVM
 @{
     ViewData["Title"] = "Quản lý đơn hàng";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
@@ -103,7 +103,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach(var item in Model)
+                            @foreach(var item in Model.Products)
                             {
                                 <tr>
                                     <td style="vertical-align: middle;">
@@ -122,8 +122,8 @@
                                     <td style="vertical-align: middle;">@item.Product.Material?.Name</td>
                                     <td style="vertical-align: middle;">@item.Size?.Value</td>
                                     <td style="vertical-align: middle;">
-                                        <span class="text-decoration-line-through">@item.Price</span>
-                                        <p class="text-danger" style="font-weight: bold;">900,000đ</p>
+                                        <span class="text-decoration-line-through">@item.Price.ToString("C")</span>
+                                        <p class="text-danger" style="font-weight: bold;"></p>
                                     </td>
                                     <td style="vertical-align: middle;">
                                         <button class="btn btn-primary"
@@ -160,12 +160,16 @@
                         </div>
                         <div class="col-md-6">
                             <div class="quantity-control input-group">
-                                <button class="btn btn-secondary" type="button" onclick="decreaseQuantity(this)">-</button>
-                                <input type="number" class="form-control" value="1" id="quantityInput" style="width: 60px; text-align: center;">
-                                <button class="btn btn-secondary" type="button" onclick="increaseQuantity(this)">+</button>
+                                <button class="btn btn-secondary" type="button" onclick="decreaseModalQuantity()">-</button>
+                                <input type="number" class="form-control" value="1" id="quantityInput" min="1" style="width: 60px; text-align: center;">
+                                <button class="btn btn-secondary" type="button" onclick="increaseModalQuantity()">+</button>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" onclick="addProductToTab()">Chọn sản phẩm</button>
                 </div>
             </div>
         </div>
@@ -252,15 +256,6 @@
             padding: 20px;
         }
 
-        /* Custom styles for modal */
-        .modal-header {
-            border-bottom: 2px solid #28a745;
-        }
-
-        .modal-title {
-            color: #28a745;
-        }
-
         .modal-backdrop {
             opacity: 0.5; /* Điều chỉnh độ mờ của backdrop */
             background-color: rgba(0, 0, 0, 0.5); /* Màu sắc của backdrop */
@@ -296,6 +291,7 @@
             </li>`;
                 $('#invoiceTabs').append(newTab);
 
+                console.log("check" + newTabId);
 
                 // Add new tab content
                 const newTabContent = `
@@ -311,36 +307,13 @@
                                                     <hr> <!-- Đường ngang phân cách -->
 
                                                     <div class="product-list mt-2">
-                                                        <!-- Hàng sản phẩm mẫu -->
-                                                        <div class="product-item d-flex justify-content-between align-items-center border-bottom pb-2 mb-2" style="padding: 10px; background-color: #fff; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
-                                                            <div class="product-image position-relative" style="margin-right: 10px;">
-                                                                <img src="https://via.placeholder.com/80" alt="product" class="rounded" style="border-radius: 5px; border: 1px solid #ddd; width: 100px; height: 100px; object-fit: cover;">
-                                                                <div style="position: absolute; top: 5px; right: 5px; background-color: red; color: white; padding: 3px 5px; border-radius: 15px; font-size: 0.75rem;">
-                                                                    10% off
-                                                                </div>
-                                                            </div>
-                                                            <div class="product-details flex-grow-1 mx-2" style="flex: 1;">
-                                                                <strong style="font-size: 1.1rem;">Tên sản phẩm A</strong><br>
-                                                                <span class="text-decoration-line-through" style="color: #999;">1,000,000đ</span><br>
-                                                                <span class="text-danger" style="font-weight: bold; font-size: 0.9rem;">900,000đ</span><br>
-                                                                <span style="font-size: 0.9rem; color: #555;">Size: 42</span>
-                                                            </div>
-                                                            <div class="quantity-control input-group mx-5" style="width: 100px; display: flex;">
-                                                                <button class="btn" type="button" onclick="decreaseQuantity(this)" style="padding: 0.2rem 0.3rem; font-size: 0.8rem; border: 1px solid #ced4da; border-radius: 5px 0 0 5px; background-color: #fff;">-</button>
-                                                                <input type="text" value="1" style="text-align: center; font-size: 0.9rem; height: 30px; width: 30px; border: 1px solid #ced4da; border-radius: 0; outline: none;">
-                                                                <button class="btn" type="button" onclick="increaseQuantity(this)" style="padding: 0.2rem 0.3rem; font-size: 0.8rem; border: 1px solid #ced4da; border-radius: 0 5px 5px 0; background-color: #fff;">+</button>
-                                                            </div>
-                                                            <div class="total-price mx-5 text-danger" style="font-weight: bold; font-size: 0.9rem; margin-right: 10px;">900,000đ</div>
-                                                            <div>
-                                                                <button class="btn btn-danger ms-3 mx-4 text-danger" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;" onclick="removeProduct(this)">Xóa</button>
-                                                            </div>
-                                                        </div>
+                                                        
                                                         <!-- Thêm các sản phẩm khác tại đây -->
                                                     </div>
 
                                                     <!-- Tổng tiền -->
                                                     <div class="mt-2">
-                                                        <h5 class="text-end">Tổng tiền sản phẩm: <span class="text-danger" id="totalPrice-1">900,000đ</span></h5>
+                                                        <h5 class="text-end">Tổng tiền sản phẩm: <span class="text-danger" id="totalPrice-1">0đ</span></h5>
                                                     </div>
                                                 </div>
 
@@ -388,7 +361,7 @@
                                                         <div style="margin-top: 20px;">
                                                             <h5 style="display: flex; justify-content: space-between;">
                                                                 <span>Tiền hàng:</span> 
-                                                                <span id="subtotal-1" class="text-end">900,000đ</span>
+                                                                <span id="subtotal-1" class="text-end">0đ</span>
                                                             </h5>
                                                             <br />
                                                             <h5 style="display: flex; justify-content: space-between;">
@@ -398,7 +371,7 @@
                                                             <br />
                                                             <h5 style="display: flex; justify-content: space-between;">
                                                                 <span>Tổng tiền:</span> 
-                                                                <span id="finalTotal-1">900,000đ</span>
+                                                                <span id="finalTotal-1">0đ</span>
                                                             </h5>
                                                             <br />
                                                             <div class="form-group mt-2">
@@ -407,7 +380,7 @@
                                                             </div>
                                                             <br />
                                                             <h5 style="display: flex; justify-content: space-between;">
-                                                                <span>Tiền thiếu:</span> 
+                                                                <span>Trạng thái: </span> 
                                                                 <span id="balanceDue">0đ</span>
                                                             </h5>
                                                             </div>
@@ -422,6 +395,148 @@
             } else {
                 alert('Bạn chỉ có thể tạo tối đa 5 hóa đơn.');
             }
+        }
+        function addProductToTab() {
+            // Lấy thông tin sản phẩm từ modal
+            const productName = document.getElementById('productDetailModalLabel').textContent.split(' + ')[0];
+            const shoeType = document.getElementById('shoeType').textContent;
+            const brand = document.getElementById('brand').textContent;
+            const price = document.getElementById('price').textContent;
+            const size = document.getElementById('size').textContent;
+            const stockQuantity = document.getElementById('stockQuantity').textContent;
+            const quantity = parseInt(document.getElementById('quantityInput').value);
+
+            // Tìm tab hiện tại đang được mở
+            const activeTab = $('#invoiceTabs .nav-item .btn.active');
+            const currentTabId = activeTab.attr('data-bs-target');
+
+            // Thêm sản phẩm vào danh sách sản phẩm trong tab hiện tại
+            const productList = $(currentTabId).find('.product-list');
+
+            const productItem = `
+                <div class="product-item d-flex justify-content-between align-items-center border-bottom pb-2 mb-2" style="padding: 10px; background-color: #fff; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+                    <div class="product-image position-relative" style="margin-right: 10px;">
+                        <img src="https://via.placeholder.com/80" alt="product" class="rounded" style="border-radius: 5px; border: 1px solid #ddd; width: 100px; height: 100px; object-fit: cover;">
+                        <div style="position: absolute; top: 5px; right: 5px; background-color: red; color: white; padding: 3px 5px; border-radius: 15px; font-size: 0.75rem;">
+                            10% off
+                        </div>
+                    </div>
+                    <div class="product-details flex-grow-1 mx-2" style="flex: 1;">
+                        <strong style="font-size: 1.1rem;">${productName}</strong><br>
+                        <span class="text-decoration-line-through" style="color: #999;">${parseInt(price.replace(/[^0-9]/g, '')) * quantity}đ</span><br>
+                        <span class="text-danger" style="font-weight: bold; font-size: 0.9rem;">${parseInt(price.replace(/[^0-9]/g, '')) * quantity - (parseInt(price.replace(/[^0-9]/g, '')) * quantity * 0.1)}đ</span><br>
+                        <span style="font-size: 0.9rem; color: #555;">Size: ${size}</span>
+                    </div>
+                    <div class="quantity-control input-group mx-5" style="width: 100px; display: flex;">
+                        <button class="btn" type="button" onclick="decreaseQuantity(this)" style="padding: 0.2rem 0.3rem; font-size: 0.8rem; border: 1px solid #ced4da; border-radius: 5px 0 0 5px; background-color: #fff;">-</button>
+                        <input type="text" value="${quantity}" style="text-align: center; font-size: 0.9rem; height: 30px; width: 30px; border: 1px solid #ced4da; border-radius: 0; outline: none; flex: 0 0 40px;">
+                        <button class="btn" type="button" onclick="increaseQuantity(this)" style="padding: 0.2rem 0.3rem; font-size: 0.8rem; border: 1px solid #ced4da; border-radius: 0 5px 5px 0; background-color: #fff;">+</button>
+                    </div>
+                    <div class="total-price mx-5 text-danger" style="font-weight: bold; font-size: 0.9rem; margin-right: 10px;">
+                        ${(parseInt(price.replace(/[^0-9]/g, '')) * quantity * 0.9).toLocaleString('vi-VN')}đ
+                    </div>
+                    <div>
+                        <button class="btn btn-danger ms-3 mx-4 text-danger" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;" onclick="removeProduct(this)">Xóa</button>
+                    </div>
+                </div>
+            `;
+
+            productList.append(productItem);
+            calculateTotalPrice();
+            // Đóng modal sau khi thêm sản phẩm
+            const productDetailModal = bootstrap.Modal.getInstance(document.getElementById('productDetailModal'));
+            productDetailModal.hide();
+            productModal.hide();
+            console.log(productDetailModal);
+
+            
+        }
+
+        function calculateTotalPrice() {
+            let total = 0;
+
+            // Lấy tất cả các phần tử hiển thị giá sản phẩm
+            const totalPrices = document.querySelectorAll('.total-price');
+
+            // Lặp qua tất cả các giá trị giá sản phẩm và cộng vào tổng
+            totalPrices.forEach(priceElement => {
+                const priceText = priceElement.textContent.replace(/[^0-9]/g, ''); // Lọc chỉ lấy số
+                const price = parseInt(priceText); // Chuyển đổi về số nguyên
+                total += price; // Cộng vào tổng
+            });
+
+            // Hiển thị tổng tiền trong phần tử HTML có id "totalPrice-1"
+            document.getElementById('totalPrice-1').textContent = `${total.toLocaleString()}đ`; // Định dạng theo tiền Việt Nam
+            // Cập nhật "Tiền hàng"
+            document.getElementById('subtotal-1').textContent = `${total.toLocaleString('vi-VN')}đ`;
+
+            // Lấy phí vận chuyển từ phần tử HTML có id "shippingFee-1"
+            const shippingFeeText = document.getElementById('shippingFee-1').textContent.replace(/[^0-9]/g, '');
+            const shippingFee = parseInt(shippingFeeText) || 0;
+
+            // Cập nhật "Tổng tiền" bằng cách cộng "Tiền hàng" và "Phí vận chuyển"
+            const finalTotal = total + shippingFee;
+            document.getElementById('finalTotal-1').textContent = `${finalTotal.toLocaleString('vi-VN')}đ`;
+        }
+        function calculateBalance(input) {
+            // Lấy số tiền khách đã thanh toán từ ô input
+            const customerPaid = parseInt(input.value) || 0;
+
+            // Lấy tổng số tiền cần thanh toán từ phần hiển thị (ví dụ: tổng tiền của hóa đơn)
+            const finalTotalText = document.getElementById('finalTotal-1').textContent;
+            const finalTotal = parseInt(finalTotalText.replace(/[^0-9]/g, ''));
+
+            // Tính toán số tiền còn thiếu hoặc thừa
+            const balance = customerPaid - finalTotal;
+
+            // Cập nhật nội dung hiển thị phần "Tiền thiếu" hoặc "Tiền thừa"
+            const balanceElement = document.getElementById('balanceDue');
+            if (balance < 0) {
+                balanceElement.textContent = `Còn thiếu: ${(Math.abs(balance)).toLocaleString('vi-VN')}đ`;
+                balanceElement.style.color = "red";  // Đổi màu chữ để báo hiệu còn thiếu
+            } else if (balance > 0) {
+                balanceElement.textContent = `Thừa: ${balance.toLocaleString('vi-VN')}đ`;
+                balanceElement.style.color = "green";  // Đổi màu chữ để báo hiệu dư tiền
+            } else {
+                balanceElement.textContent = `Đã đủ`;
+                balanceElement.style.color = "black";  // Màu chữ bình thường khi đủ tiền
+            }
+        }
+
+        function increaseQuantity(button) {
+            const input = button.previousElementSibling;
+            let quantity = parseInt(input.value);
+            input.value = quantity + 1;
+
+            // Cập nhật giá tiền của sản phẩm này sau khi thay đổi số lượng
+            updateProductPrice(button);
+
+            // Tính lại tổng tiền
+            calculateTotalPrice();
+        }
+
+        function decreaseQuantity(button) {
+            const input = button.nextElementSibling;
+            let quantity = parseInt(input.value);
+            if (quantity > 1) {
+                input.value = quantity - 1;
+
+                // Cập nhật giá tiền của sản phẩm này sau khi thay đổi số lượng
+                updateProductPrice(button);
+
+                // Tính lại tổng tiền
+                calculateTotalPrice();
+            }
+        }
+        function updateProductPrice(button) {
+            const productItem = button.closest('.product-item');
+            const quantity = parseInt(productItem.querySelector('input[type="text"]').value);
+            const priceText = productItem.querySelector('.text-decoration-line-through').textContent.replace(/[^0-9]/g, '');
+            const originalPrice = parseInt(priceText);
+
+            // Cập nhật lại giá sau khi thay đổi số lượng
+            const discountedPrice = originalPrice * quantity * 0.9; // Giảm giá 10%
+            productItem.querySelector('.total-price').textContent = `${discountedPrice.toLocaleString()}đ`;
         }
 
         // Function to remove an invoice tab
@@ -440,20 +555,16 @@
             }
         }
 
-        // Increase quantity function
-        function increaseQuantity(button) {
-            const input = button.previousElementSibling;
-            input.value = parseInt(input.value) + 1;
-            // Update total price here if needed
+        function increaseModalQuantity() {
+            const quantityInput = document.getElementById('quantityInput');
+            quantityInput.value = parseInt(quantityInput.value) + 1;
         }
 
-        // Decrease quantity function
-        function decreaseQuantity(button) {
-            const input = button.nextElementSibling;
-            if (parseInt(input.value) > 1) {
-                input.value = parseInt(input.value) - 1;
+        function decreaseModalQuantity() {
+            const quantityInput = document.getElementById('quantityInput');
+            if (parseInt(quantityInput.value) > 1) {
+                quantityInput.value = parseInt(quantityInput.value) - 1;
             }
-            // Update total price here if needed
         }
 
         // Remove product function
@@ -492,21 +603,6 @@
             productDetailModal.show();
         }
 
-        // Add event listener to the "Chọn" button
-        document.querySelectorAll('.btn-primary').forEach(button => {
-            button.addEventListener('click', function () {
-                const shoeName = "Tên giày A";
-                const soleType = "Phẳng";
-                const color = "Đen";
-                const shoeType = "Thể thao";
-                const brand = "Nike";
-                const price = "900,000đ";
-                const size = "42";
-                const stockQuantity = 10;
-
-                showProductDetails(shoeName, soleType, color, shoeType, brand, price, size, stockQuantity);
-            });
-        });
     </script>
 }
 

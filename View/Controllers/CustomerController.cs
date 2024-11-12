@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using View.IServices;
+using View.Servicecs;
+using View.ViewModel;
 
 namespace View.Controllers
 {
@@ -15,12 +17,14 @@ namespace View.Controllers
         private readonly ISoleServices _soleServices;
         private readonly IBrandServices _brandServices;
         private readonly IMaterialServices _materialServices;
+        private readonly ISelectedImageServices _selectedImageServices;
 
 
         public CustomerController(IProductDetailService productDetailService,
             ISizeServices sizeServices, IColorServices colorServices,
             IProductServices productServices, ICategoryServices categoryServices,
-            ISoleServices soleServices, IBrandServices brandServices, IMaterialServices materialServices)
+            ISoleServices soleServices, IBrandServices brandServices,
+            IMaterialServices materialServices, ISelectedImageServices selectedImageServices)
         {
             _productDetailService = productDetailService;
             _sizeServices = sizeServices;
@@ -30,17 +34,51 @@ namespace View.Controllers
             _categoryServices = categoryServices;
             _soleServices = soleServices;
             _materialServices = materialServices;
+            _selectedImageServices = selectedImageServices;
         }
         public IActionResult Index()
         {
-            // Kiểm tra xem session có tồn tại không
-            var token = HttpContext.Session.GetString("AuthToken");
-            if (string.IsNullOrEmpty(token))
+            var products = _productServices.GetAllProducts().Result;
+            var selectedImages = _selectedImageServices.GetAllSelectedImages().Result;
+            var productDetails = _productDetailService.GetAllProductDetail().Result;
+            if (products == null) return View("'Product is null!'");
+            var productIndexData = new ProductDetailIndexDetailsVM()
             {
-                return RedirectToAction("Login", "Account");
-            }
-            return View();
+                Products = products,
+                ImagesForProduct = selectedImages,
+                ProductDetails = productDetails
+               
+            };
+            return View(productIndexData);
         }
+
+        public IActionResult Details(Guid id)
+        {
+            // Lấy tất cả dữ liệu sản phẩm, hình ảnh và chi tiết sản phẩm
+            var products = _productServices.GetAllProducts().Result;
+            var selectedImages = _selectedImageServices.GetAllSelectedImages().Result;
+            var productDetails = _productDetailService.GetAllProductDetail().Result;
+
+            // Tìm sản phẩm với id tương ứng
+            var selectedProduct = products.FirstOrDefault(p => p.Id == id);
+            if (selectedProduct == null) return NotFound("Product not found!");
+
+            // Lọc hình ảnh và chi tiết sản phẩm liên quan đến sản phẩm được chọn
+            var relatedImages = selectedImages.Where(i => i.ProductId == id).ToList();
+            var relatedProductDetails = productDetails.Where(d => d.ProductId == id).ToList();
+
+            // Tạo ViewModel chỉ với dữ liệu của sản phẩm được chọn
+            var productDetailData = new ProductDetailIndexDetailsVM
+            {
+                Products = new List<Product> { selectedProduct },
+                ImagesForProduct = relatedImages,
+                ProductDetails = relatedProductDetails
+            };
+
+            return View(productDetailData); // Hiển thị View với dữ liệu chi tiết của sản phẩm
+        }
+
+
         public async Task<IActionResult> ViewProductAsync() 
         {
             ViewData["ColorId"] = new SelectList((await _colorServices.GetAllColors()).Where(x => x.Status), "Id", "Name");
