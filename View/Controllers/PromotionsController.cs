@@ -97,7 +97,7 @@ namespace View.Controllers
                                 Id = Guid.NewGuid(),
                                 ProductDetailId = productDetailId, 
                                 PromotionId = promotion.Id, 
-                                PriceUpdate = productDetailPrice.Price - productDetailPrice.Price * (promotion.DiscountValue / 100)
+                                //PriceUpdate = productDetailPrice.Price - productDetailPrice.Price * (promotion.DiscountValue / 100)
                             };
 
                             await _ProductDetailPromotionSer.AddAsync(productDetailPromotion);
