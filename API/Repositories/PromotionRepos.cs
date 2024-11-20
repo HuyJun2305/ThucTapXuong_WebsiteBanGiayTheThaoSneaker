@@ -59,29 +59,31 @@ namespace API.Repositories
                     .Where(pdp => pdp.Promotion.Status == true) // Lọc các promotion có Status = true
                     .ToListAsync(); // Lấy dữ liệu từ DB trước
 
-                // Thực hiện GroupBy và sắp xếp phía client
-                var result = productDetailsPromotions
-                    .GroupBy(pdp => pdp.ProductDetailId) // Nhóm theo ProductDetailId
-                    .Select(g => g.OrderBy(pdp => pdp.PriceUpdate).FirstOrDefault()) // Chọn bản ghi có PriceUpdate nhỏ nhất
-                    .Select(pdp => new ProductDetailsPromotionViewModel
-                    {
-                        promotionId = pdp.PromotionId,
-                        ProductDetailsID = pdp.ProductDetailId,
-                        ProductName = pdp.ProductDetail.Product.Name,
-                        CategoryName = pdp.ProductDetail.Product.Category.Name,
-                        BrandName = pdp.ProductDetail.Product.Brand.Name,
-                        MaterialName = pdp.ProductDetail.Product.Material.Name,
-                        SizeValue = pdp.ProductDetail.Size != null ? pdp.ProductDetail.Size.Value : 0,
-                        ColorName = pdp.ProductDetail.Color != null ? pdp.ProductDetail.Color.Name : "No color",
-                        SoleName = pdp.ProductDetail.Product.Sole != null ? pdp.ProductDetail.Product.Sole.TypeName : "No sole",
-                        PriceProductDetail = pdp.ProductDetail.Price,
-                        PricePromotion = pdp.PriceUpdate,
-                        DiscountValue = pdp.Promotion.DiscountValue
-                    })
-                    .ToList(); // Thực hiện truy vấn phía client
+           
+            var result = productDetailsPromotions
+           .GroupBy(pdp => pdp.ProductDetailId) // Nhóm theo ProductDetailId
+           .Select(g => g
+               .OrderBy(pdp => pdp.ProductDetail.Price - (pdp.ProductDetail.Price * (pdp.Promotion.DiscountValue / 100))) 
+               .FirstOrDefault() // Chọn bản ghi có giá khuyến mãi nhỏ nhất
+           )
+           .Select(pdp => new ProductDetailsPromotionViewModel
+           {
+               promotionId = pdp.PromotionId,
+               ProductDetailsID = pdp.ProductDetailId,
+               ProductName = pdp.ProductDetail.Product.Name,
+               CategoryName = pdp.ProductDetail.Product.Category.Name,
+               BrandName = pdp.ProductDetail.Product.Brand.Name,
+               MaterialName = pdp.ProductDetail.Product.Material.Name,
+               SizeValue = pdp.ProductDetail.Size != null ? pdp.ProductDetail.Size.Value : 0,
+               ColorName = pdp.ProductDetail.Color != null ? pdp.ProductDetail.Color.Name : "No color",
+               SoleName = pdp.ProductDetail.Product.Sole != null ? pdp.ProductDetail.Product.Sole.TypeName : "No sole",
+               PriceProductDetail = pdp.ProductDetail.Price,
+               DiscountValue = pdp.Promotion.DiscountValue,
+               PricePromotion = pdp.ProductDetail.Price - (pdp.ProductDetail.Price * (pdp.Promotion.DiscountValue / 100)) 
+           }).ToList(); 
 
-                return result;
-            }
+            return result;
+        }
 
         
 

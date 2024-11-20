@@ -28,9 +28,6 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("PriceUpdate")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("ProductDetailId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -176,10 +173,10 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("895f3097-98ac-4a6a-a775-4eef172f936a"),
+                            Id = new Guid("ab296f08-11e2-494f-b3bd-4460bf8b12c6"),
                             AccessFailedCount = 0,
                             CIC = "002204004364",
-                            ConcurrencyStamp = "019f512e-b878-4bfa-b0b8-f5fa80666a58",
+                            ConcurrencyStamp = "7e05d98c-97da-483f-a163-45c14ad046da",
                             Email = "admin@example.com",
                             EmailConfirmed = false,
                             IsSubscribedToNews = false,
@@ -187,19 +184,19 @@ namespace API.Migrations
                             Name = "Admin User",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAENprusmgFfVmFwFpqxbHt4uRpcB8OHm3PFgAZ2LCjqlClD6/2hWnKS3Fq7RMvEtVJA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEO4xc2D652fnUUgHybfh8qQsoqR1vj9Pwk51xGDiS9Xf0P08Oxl/OObrD1XWigSc9A==",
                             PhoneNumber = "0123456789",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5d8b7416-2440-40bb-b84e-d02487c62d02",
+                            SecurityStamp = "20344007-6743-45d9-84ab-6509127742d9",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
                         new
                         {
-                            Id = new Guid("6f1f238e-f3e2-47bb-91a2-ec1add7e82b5"),
+                            Id = new Guid("8c89c410-7b6a-4597-8af1-9e04196684c5"),
                             AccessFailedCount = 0,
                             CIC = "004204004364",
-                            ConcurrencyStamp = "84a1eb53-1f16-40e8-a24c-722159ffd890",
+                            ConcurrencyStamp = "6465b6a1-add4-4369-b5de-651a757af09c",
                             Email = "user@example.com",
                             EmailConfirmed = false,
                             IsSubscribedToNews = false,
@@ -207,10 +204,10 @@ namespace API.Migrations
                             Name = "Regular User",
                             NormalizedEmail = "USER@EXAMPLE.COM",
                             NormalizedUserName = "USER@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAELMhfTSqemC8HF9ALbknC5pqaS/xUXmx1KIMLctqjMVfhwcf7ljmUNfIWfFAc29VAw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEE+oB8il7GHpoDkwmEwNejy8RqqfFMJpDckVs2sDbBBCPhq8xiW5hTgnMFKGV5j+1Q==",
                             PhoneNumber = "0987654321",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e18ac49e-58dc-4533-9abd-bc3522a94a3f",
+                            SecurityStamp = "a2ddd91c-908a-47ad-bc40-7ce944396630",
                             TwoFactorEnabled = false,
                             UserName = "user@example.com"
                         });
@@ -846,29 +843,29 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("dbcad146-270b-4d07-83be-63a785454509"),
-                            ConcurrencyStamp = "0dc0839f-1e2c-46e5-a3f5-06c60df6c919",
+                            Id = new Guid("6fd37f2f-6e62-447c-8009-bf2846e1c580"),
+                            ConcurrencyStamp = "e57f7622-04a4-4fa2-8658-88d8adbbf81e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("6e62d7f3-49b6-494c-a195-b95086293114"),
-                            ConcurrencyStamp = "3894342e-589a-44e0-8f0b-22cbdc4f85c4",
+                            Id = new Guid("397207c4-faae-433c-80c8-16a81ba85c5d"),
+                            ConcurrencyStamp = "6d055f1f-95ba-44b7-bf29-4ba9d9a026c4",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = new Guid("ae8055f2-2857-45bc-bf01-8736ba7fcb3c"),
-                            ConcurrencyStamp = "d98e4d10-6da9-4541-accb-35b2e778104d",
+                            Id = new Guid("da307ca7-1cda-4d0b-afd0-19ed814a115d"),
+                            ConcurrencyStamp = "eee993fc-bbee-4dc1-97b4-97907c2ef610",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = new Guid("a0170155-e574-4e7b-97cf-594a64d5a835"),
-                            ConcurrencyStamp = "2e30b026-fd91-4d3d-8f43-516f0feb172e",
+                            Id = new Guid("09820e60-7acf-4cbd-b766-3d49da4003a0"),
+                            ConcurrencyStamp = "a560ebef-7b64-415c-acaf-ce4bc137c0f0",
                             Name = "Guest",
                             NormalizedName = "GUEST"
                         });
@@ -960,13 +957,13 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("895f3097-98ac-4a6a-a775-4eef172f936a"),
-                            RoleId = new Guid("dbcad146-270b-4d07-83be-63a785454509")
+                            UserId = new Guid("ab296f08-11e2-494f-b3bd-4460bf8b12c6"),
+                            RoleId = new Guid("6fd37f2f-6e62-447c-8009-bf2846e1c580")
                         },
                         new
                         {
-                            UserId = new Guid("6f1f238e-f3e2-47bb-91a2-ec1add7e82b5"),
-                            RoleId = new Guid("6e62d7f3-49b6-494c-a195-b95086293114")
+                            UserId = new Guid("8c89c410-7b6a-4597-8af1-9e04196684c5"),
+                            RoleId = new Guid("397207c4-faae-433c-80c8-16a81ba85c5d")
                         });
                 });
 
