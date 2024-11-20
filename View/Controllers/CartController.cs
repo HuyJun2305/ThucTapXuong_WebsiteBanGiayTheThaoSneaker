@@ -14,28 +14,52 @@ namespace View.Controllers
         private readonly ICartServices _cartServices;
         private readonly IProductDetailService _productDetailService;
         private readonly IOrderServices _orderServices;
+        private readonly ISelectedImageServices _selectedImageServices;
 
-        public CartController(ICartServices cartServices , IProductDetailService productDetailService, IOrderServices orderServices)
+        public CartController(ICartServices cartServices , IProductDetailService productDetailService,
+            IOrderServices orderServices, ISelectedImageServices selectedImageServices)
         {
             _cartServices = cartServices;
             _productDetailService = productDetailService;
             _orderServices = orderServices;
+            _selectedImageServices = selectedImageServices;
         }
         public ActionResult Index()
         {
+            // Lấy UserId từ token (hoặc session)
             Guid userId = GetUserIdFromToken();
-            // Kiểm tra userId hợp lệ và lấy thông tin giỏ hàng của người dùng
+
+            // Kiểm tra UserId hợp lệ
             if (userId != Guid.Empty)
             {
+                // Lấy thông tin giỏ hàng của người dùng
                 var cart = _cartServices.GetCartByUserId(userId).Result;
 
+                // Lấy dữ liệu cần thiết từ các dịch vụ
+                var selectedImages = _selectedImageServices.GetAllSelectedImages().Result;
+                var productDetails = _productDetailService.GetAllProductDetail().Result;
+
+                // Tạo ViewModel chứa dữ liệu cần thiết
+                var cartIndexData = new CartVM
+                {
+                    ImagesForProduct = selectedImages,
+                    ProductDetails = productDetails,
+                };
+
+                // Nếu giỏ hàng tồn tại, thêm chi tiết giỏ hàng vào ViewModel
                 if (cart != null)
                 {
-                    return View(_cartServices.GetCartDetailByCartId(cart.Id).Result);
+                    cartIndexData.CartDetails = _cartServices.GetCartDetailByCartId(cart.Id).Result;
                 }
+
+                // Trả về View với dữ liệu ViewModel
+                return View(cartIndexData);
             }
-            return View("Error");
+
+            // Trả về view mặc định nếu UserId không hợp lệ
+            return View("Index");
         }
+
 
         [HttpPost]
         public async Task<IActionResult> AddToCart(string productDetailId, int quantity)
@@ -80,7 +104,9 @@ namespace View.Controllers
 			return Json(new { success = false, message = "Không có sản phẩm được thêm vào giỏ hàng" });
 		}
 
-        public async Task<IActionResult> DeleteCartDetail(Guid id)
+
+
+        public async Task<IActionResult> RemoveFromCart(Guid id)
         {
             var cartDetail = await _cartServices.GetCartDetailById(id);
             if (cartDetail != null)
@@ -90,6 +116,9 @@ namespace View.Controllers
             }
             return View("Error");
         }
+
+
+
         [HttpPost]
         public async Task<IActionResult> UpdateCartDetail(Guid id, CartDetail cartDetail)
         {
@@ -132,7 +161,7 @@ namespace View.Controllers
             }
 
             await _orderServices.UpdatePriceOrder(order.Id);
-            return RedirectToAction("Viewproduct", "Customer");
+            return RedirectToAction("Index", "Customer");
         }
         private Guid GetUserIdFromToken()
         {

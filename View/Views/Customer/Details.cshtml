@@ -140,11 +140,16 @@
                                 }
                             </div>
                         </div>
+                        <!-- Ô input số lượng -->
+                        <div class="mt-4">
+                            <label for="quantityInput" class="form-label"><strong>Quantity:</strong></label>
+                            <input type="number" class="form-control" id="quantityInput" name="quantity" value="1" min="1" max="100">
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Add to Cart</button>
+                <button type="button" class="btn btn-primary" onclick="addToCart('@Model.ProductDetails.First().Id')">Add to Cart</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
         </div>
@@ -217,6 +222,53 @@
                 });
             });
         });
+    </script>
+    <script>
+        function addToCart(productDetailId) {
+        console.log("ProductDetailId:", productDetailId);
+
+    // Lấy giá trị của màu sắc được chọn
+    const selectedColor = document.querySelector("input[name='modalProductColor']:checked");
+    const colorId = selectedColor ? selectedColor.getAttribute("data-color-id") : null;
+
+    // Lấy giá trị của kích thước được chọn
+    const selectedSize = document.querySelector("input[name='modalProductSize']:checked");
+    const sizeId = selectedSize ? selectedSize.id.split("-")[2] : null;
+
+    // Lấy giá trị số lượng
+    const quantity = document.getElementById("quantityInput").value;
+
+    // Kiểm tra xem tất cả các thông tin đã được chọn chưa
+    if (!colorId || !sizeId || !quantity) {
+        alert("Vui lòng chọn đầy đủ thông tin (màu sắc, kích thước và số lượng).");
+        return;
+    }
+
+    // Tạo dữ liệu để gửi
+    const formData = new FormData();
+    formData.append("productDetailId", productDetailId); // Thêm ProductDetailId
+    formData.append("colorId", colorId);
+    formData.append("sizeId", sizeId);
+    formData.append("quantity", quantity);
+
+    // Gửi yêu cầu tới API thêm vào giỏ hàng
+    fetch('/cart/AddToCart', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Thêm vào giỏ hàng thành công!");
+            } else {
+                alert("Lỗi khi thêm vào giỏ hàng: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Lỗi:', error);
+            alert("Có lỗi xảy ra!");
+        });
+}
     </script>
 }
 

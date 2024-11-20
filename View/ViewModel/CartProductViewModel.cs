@@ -8,6 +8,16 @@ namespace View.ViewModel
         public ProductDetail? productDetail {get;set;}
     }
 
+    public class CartVM
+    {
+        public IEnumerable<Product>? Products { get; set; }
+        public IEnumerable<CartDetail>? CartDetails { get; set; }
+        public IEnumerable<SelectedImage>? ImagesForProduct { get; set; }
+        public IEnumerable<ProductDetail>? ProductDetails { get; set; }
+
+
+    }
+
     //public class CartToPayment
     //{
     //    public List<CartDetail>? cartDetails { get; set; }
